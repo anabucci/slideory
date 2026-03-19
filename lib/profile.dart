@@ -10,7 +10,6 @@ import 'package:fashion/toast.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -28,6 +27,7 @@ void main() async {
 class ProfilePage extends StatefulWidget {
   final dynamic data;
   final dynamic banner;
+
   final dynamic picture;
   const ProfilePage({super.key, this.data, this.banner, this.picture});
 
@@ -36,6 +36,8 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
+    dynamic bannerFile;
+  dynamic pictureFile;
   ScrollController lazyLoading = ScrollController();
     ScrollController likedLoading = ScrollController();
 String bio = 'No bio yet.';
@@ -51,7 +53,9 @@ void reportUser(){
   String selectedCat = 'Select...';
 List categories=['Select...', 'Harrasment', 'Violence', 'Sexual content', 'Promoting illegal activity', 'Spam', 'Copyright violation'] ;
      showModalBottomSheet(context: context,
-                               
+                                 constraints: BoxConstraints(
+    maxWidth: double.infinity
+  ),
                                 builder:(context) {
                                  return StatefulBuilder(
                                    builder: (context, setState) {
@@ -118,13 +122,22 @@ List categories=['Select...', 'Harrasment', 'Violence', 'Sexual content', 'Promo
                                            GestureDetector(
                                      onTap: () async {
                                       if (selectedCat != 'Select...'){
-                                      await supabase.from('report').insert({'type':'user', 'target_id':widget.data['user_id'].toString()
-                                      , 'issue':selectedCat
+                                        try{
+                                                                                // final prefs = await SharedPreferences.getInstance();
+
+                                      await supabase.from('report').insert({'type':'user', 'target_id':widget.data['user_id'].toString(),
+                                      //  'user_id':prefs.getString(
+                                      //   'device_id'
+                                      // )
+                                      // ,
+                                       'issue':selectedCat
                                       });
                                         Navigator.pop(context);
                                             Toast.show(context, 'Thank you. We will look into this issue shortly.',false)   ;  
+                                      } catch (e){
+  // Toast.show(context, 'Report already submitted. Slideory will continue to look into this issue',true)   ;  
                                       }
-                                          
+                                      }   
                                      },
                                              child: Container(
                                                       width:  double.infinity,
@@ -271,7 +284,9 @@ List categories=['Select...', 'Harrasment', 'Violence', 'Sexual content', 'Promo
 
     showModalBottomSheet(
       context: context,
-      
+        constraints: BoxConstraints(
+    maxWidth: double.infinity
+  ),
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(10)),
       ),
@@ -304,7 +319,9 @@ blockUser();
                 ),
                   if (user != null)
                      SizedBox(height: 15,),
+                        if (user != null)
                   Container(width: double.infinity, height: 2, color: const Color.fromARGB(255, 167, 167, 167),),
+                     if (user != null)
                     SizedBox(height: 15,),
                 GestureDetector(
                   onTap: () async {
@@ -330,29 +347,29 @@ blockUser();
     );
   }
     void loadOwnData() async {
-      final id = supabase.auth.currentUser?.id  ;
-final data = await supabase.from('profile').select().eq('user_id', id??1).maybeSingle();
+   
+       if (user == null) return;
+  
+final data = await supabase.from('profile').select().eq('user_id', user).maybeSingle();
 
 userData=data;
-username = data?['username'];
+username = data?['username'] ?? '';
 colorIndex = data?['theme'] ?? 9;
-bio = data?['bio'] ?? 'No bio yet.';
+bio = data?['bio'];
 
-
-
- banner = supabase.storage.from('profile').getPublicUrl('banner/$id.png');
-
-
-
-
- picture = supabase.storage.from('profile').getPublicUrl('picture/$id.png');
-
-
+if (data?['banner'] ?? false){
+ banner = supabase.storage.from('profile').getPublicUrl('banner/$user.png');
+}
+if (data?['picture']??false){
+ picture = supabase.storage.from('profile').getPublicUrl('picture/$user.png');
+}
  setState(() {
    
  });
+      
     }
      void loadOtherData() async {
+      
 bio = widget.data?['bio'] ??'No bio yet.';
 username = widget.data?['username'];
 
@@ -375,21 +392,23 @@ if (!(widget.data['completed'] ?? true)){
 @override 
 void initState() {
 if (widget.data == null){
-  if (user!=null){
+
+  
   loadOwnData();
-  }
+  
 } else {
   loadOtherData();
 }
-if (user != null){
+if (user!=null || widget.data!= null){
   loadOwnStories();
+}
     lazyLoading.addListener((){
 if (lazyLoading.offset >=  (lazyLoading.position.maxScrollExtent) && storyHasMore){
   loadOwnStoriesAfterScrolling();
 }
     
     });
-}
+
    likedLoading.addListener(likedlistn);
     super.initState();
        completedLoading.addListener(likedlistn);
@@ -486,8 +505,8 @@ setState(() {
 });
 }
   void loadOwnStories()  async {
-  final posts = await supabase.from('story').select().not('draft', 'is', true)
-  .eq('author', widget.data == null ?supabase.auth.currentUser?.id : widget.data['user_id'] ?? supabase.auth.currentUser?.id)
+  final posts =  await supabase.from('story').select().not('draft', 'is', true)
+  .eq('author', widget.data == null ? supabase.auth.currentUser!.id : widget.data['user_id'])
   
   .limit(50).order('created_at', ascending: false)
   ;
@@ -612,11 +631,12 @@ Colors.black,
  ];
   @override
   Widget build (BuildContext context){
+           final width = MediaQuery.of(context).size.width;
     final color = colors[widget.data == null ? colorIndex : widget.data['theme'] ?? colorIndex];
   return Scaffold(
      backgroundColor:  const Color.fromARGB(255, 246, 246, 246),
     body: 
-    user == null ? Container(
+    user == null && widget.data == null? Container(
       decoration: BoxDecoration(
 
       
@@ -736,7 +756,7 @@ Colors.black,
                             children: [
 (widget.banner ?? banner) == null || (widget.banner ?? banner)!.contains('null')?
                               Container(
-                                width: MediaQuery.of(context).size.width,
+                                width: width,
                                 height: 130,
                                 decoration: BoxDecoration(color: const Color.fromARGB(255, 255, 199, 217), borderRadius: BorderRadius.only(bottomLeft: Radius.circular(0),
                                 bottomRight: Radius.circular(20))),
@@ -744,11 +764,13 @@ Colors.black,
                               )
                              :
                                Container(
-                                width: MediaQuery.of(context).size.width,
+                                width: width,
                                 height: 130,
                                 decoration: BoxDecoration(
                                   color: const Color.fromARGB(255, 255, 199, 217),
-                                  image: banner == null ? null : DecorationImage(image: NetworkImage(banner??''), fit: BoxFit.cover),
+                                  image: banner == null && bannerFile==null? null : DecorationImage(
+                                 
+                                    image: bannerFile == null ? NetworkImage(banner??'') : FileImage(bannerFile), fit: BoxFit.cover),
                                    borderRadius: BorderRadius.only(bottomLeft: Radius.circular(0),
                                 bottomRight: Radius.circular(20))),
                                            
@@ -838,28 +860,28 @@ selected == 'Liked' ? loadOthers() : loadOwnStories();
                                   
                                   GestureDetector(
                                            onTap: () async {
-      
-  
-      final hasLiked = await supabase.from('likes').select().eq('target_id',selected == 'Stories' ? ownStoryData[index]['id']:
+      dynamic useThisOne;
+  useThisOne = selected == 'Stories' ? ownStoryData[index]:
       selected == 'Liked' ?
-      likedStoryData[index]['id'] : completedStoryData[index]['id'])
-      .eq('user_id', supabase.auth.currentUser?.id ??0);
-      final slideData = await supabase.from('slide').select().eq('story_id'
-      ,selected == 'Stories' ? ownStoryData[index]['id']:  selected == 'Liked' ?
-      likedStoryData[index]['id'] : completedStoryData[index]['id']
-       );
-      final optionData = await supabase.from('options').select().eq('story_id'
-      ,selected == 'Stories' ? ownStoryData[index]['id']:  selected == 'Liked' ?
-      likedStoryData[index]['id'] : completedStoryData[index]['id']);
-      
+      likedStoryData[index] : completedStoryData[index];
+   
+      final results = await Future.wait([
+
+supabase.from('slide').select().eq('story_id',useThisOne['id']),
+supabase.from('options').select().eq('story_id', useThisOne['id']),
+if (user == null)  Future.value([]) else supabase.from('likes').select().eq('target_id', useThisOne['id'])
+                                            .eq('user_id', supabase.auth.currentUser?.id ??0),
+                                            supabase.from('story').select('comments, likes').eq('id', useThisOne['id']),
+                                            ]
+                                            
+                                            );
+                                        
                                           Navigator.of(context).push(
                                     PageRouteBuilder(
                                       pageBuilder: (context, animation, secondaryAnimation) => DetailsPage(
-                       data:selected == 'Stories' ? ownStoryData[index]:
-                       selected=='Liked' ?
-                       likedStoryData[index] : completedStoryData[index],
-                       slideData: slideData, optionData: optionData, hasLiked: 
-                        hasLiked.isNotEmpty 
+                       data:{...useThisOne, 'likes':results[3][0]['likes'], 'comments':results[3][0]['comments']}, 
+                       slideData: results[0], optionData: results[1], hasLiked: 
+                        results[2].isNotEmpty 
                        ,
                       // data: stories[index],  slideData: slides, optionData: options, hasLiked: hasLiked.isNotEmpty,
                                       ),
@@ -953,7 +975,9 @@ selected == 'Liked' ? loadOthers() : loadOwnStories();
                                                   decoration: BoxDecoration(
                                                    borderRadius: BorderRadius.circular(25),
                                                    border: Border.all(color: Colors.white),
-                                                    image: picture == null ? null :DecorationImage(image: NetworkImage(picture??''), fit: BoxFit.cover),
+                                                    image: picture == null && pictureFile==null ? null :DecorationImage(
+                                                     
+                                                      image: pictureFile == null ? NetworkImage(picture??'') : FileImage(pictureFile), fit: BoxFit.cover),
                                                     color:   const Color.fromARGB(255, 196, 163, 254)
                                                   ),
                                                   // child: Center(child: 
@@ -980,6 +1004,7 @@ selected == 'Liked' ? loadOthers() : loadOwnStories();
                          && user != null 
                           ?
                             SafeArea(
+                              
                               child: Stack(
                                 children: [
                                   Positioned(
@@ -992,23 +1017,40 @@ selected == 'Liked' ? loadOthers() : loadOwnStories();
                                                           final userData = await supabase.from('profile').select().eq('user_id', supabase.auth.currentUser?.id??0);
                                                                                      final result = await Navigator.of(context).push(
                                                                                       PageRouteBuilder(
-                                                                                      pageBuilder: (context, animation, secondaryAnimation) => EditProfile(data: userData.toList(), banner: banner, picture: picture,),
+                                                                                      pageBuilder: (context, animation, secondaryAnimation) => EditProfile(
+                                                                                        data: userData.toList(),
+                                                                                        
+                                                                                         banner: banner,
+                                                                                         picture: picture,
+                                                                                         bannerFile: bannerFile,
+                                                                                         pictureFile: pictureFile
+                                                                                         )
+                                                                                         ,
                                                                                         transitionDuration: Duration.zero,
                                                                                         reverseTransitionDuration: Duration.zero,
                                                                                       ),
                                                               );
                                                               if (result != null &&result.isNotEmpty){
+                                                                
                                                                 setState(() {
-                                                                  
-                                                              returnedBio = result[0];
+                                                                
+                                                              returnedBio = result[0] ?? 'No bio yet.';
                                                               bio = returnedBio;
-                                                              colorIndex = result[1];
-                                                              final id = supabase.auth.currentUser?.id  ;
-
-
- banner = supabase.storage.from('profile').getPublicUrl('banner/$id.png');
- picture = supabase.storage.from('profile').getPublicUrl('picture/$id.png');
+                                                               
+                                                              colorIndex = result[1] ?? colorIndex ;
+                                                            
+                                                           
+if ((result[2]!=null)&&banner==null){
+bannerFile = result[2];
+    banner =supabase.storage.from('profile').getPublicUrl('banner/${user}.png');
+}
                                                               
+                                                              if ((result[3]!=null)&&picture==null){
+                                                                pictureFile = result[3];
+                                                                
+ picture = supabase.storage.from('profile').getPublicUrl('picture/${user}.png');
+                                                              }
+
                                                                 });
                                                               }
                                                           },

@@ -70,9 +70,11 @@ void loadStoriesAfterScrolling() async {
     List splitText = searchController.text.toLowerCase().split(type == "Stories" || type == 'Tags' ? RegExp(r'\s+'):RegExp(r''));
   List storyData = [];
       List<String> altSplitText = splitText.map((e)=>'%$e%').toList();
-    dynamic containsTitle = await supabase.from('story').select().ilikeAnyOf('title', altSplitText)
+    dynamic containsTitle = await supabase.from('story').select().ilikeAnyOf('title', altSplitText).not('draft', 'is', true)
     .gt('created_at', lastStoryCreated).order( 'created_at', ascending: true).limit(10);
-dynamic containsTag = await supabase.from('story').select().overlaps('tags', splitText)
+dynamic containsTag = await supabase.from('story').select()
+.not('draft', 'is', true)
+.overlaps('tags', splitText)
 .gt('created_at', lastStoryCreated).order('created_at', ascending: true).limit(10);
 storyData= {
   for (var id in ([...storyData, ...containsTag, ...containsTitle]))
@@ -159,8 +161,14 @@ List sampleStoryData = [
   
     List<String> altSplitText = splitText.map((e)=>'%$e%').toList();
    
-dynamic containsTitle= await supabase.from('story').select().ilikeAnyOf('title', altSplitText).order( 'created_at', ascending: true).limit(20);
-dynamic containsTag = await supabase.from('story').select().overlaps('tags', splitText).order( 'created_at', ascending: true).limit(20);
+dynamic containsTitle= await supabase.from('story')
+
+.select().ilikeAnyOf('title', altSplitText)
+.not('draft', 'is', true)
+.order( 'created_at', ascending: true).limit(20);
+dynamic containsTag = await supabase.from('story').select()
+
+.not('draft', 'is', true).overlaps('tags', splitText).order( 'created_at', ascending: true).limit(20);
 
 storyData= {
   for (var id in ([...storyData, ...containsTag, ...containsTitle]))
@@ -361,7 +369,7 @@ backgroundColor: const Color.fromARGB(255, 248, 248, 248),
     body:  SafeArea(
       child: SingleChildScrollView(
         child: SizedBox(
-          height: 830,
+        
           child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: 
@@ -369,7 +377,7 @@ backgroundColor: const Color.fromARGB(255, 248, 248, 248),
                        children: [
                            Positioned(
                         left: 0,
-                        top: 0,
+                        top: 10,
                         child: SizedBox(
                           width: MediaQuery.of(context).size.width,
                           child: Row(
@@ -412,7 +420,7 @@ backgroundColor: const Color.fromARGB(255, 248, 248, 248),
                          Center(
                            child: Column(
                             children: [
-                              SizedBox(height: 4,),
+                              SizedBox(height: 13,),
                             Text('Search', style: TextStyle(fontFamily: 'Poppins', color: 
                                                                        const Color.fromARGB(255, 0, 0, 0), fontWeight: FontWeight.bold,
                                                                                                           fontSize: 18),),        
@@ -512,9 +520,9 @@ backgroundColor: const Color.fromARGB(255, 248, 248, 248),
                        :
                          SizedBox(
                           
-                              height: MediaQuery.of(context).size.height-370,
+                              height: MediaQuery.of(context).size.height*0.67,
                                child: type == "Stories" ? GridView.builder(
-                                
+                              
                                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount:2, crossAxisSpacing: 10, mainAxisSpacing:3,
                                 childAspectRatio: 0.6
                                 ),
@@ -529,19 +537,25 @@ backgroundColor: const Color.fromARGB(255, 248, 248, 248),
                                       
                                       GestureDetector(
                                         onTap: () async {
-            
-            
-            final hasLiked = await supabase.from('likes').select().eq('target_id', storyResultData[index]['id'])
-            .eq('user_id', supabase.auth.currentUser?.id ??0);
-            final slideData = await supabase.from('slide').select().eq('story_id', storyResultData[index]['id']);
-            final optionData = await supabase.from('options').select().eq('story_id', storyResultData[index]['id']);
-            
+         
+          
+             final results = await Future.wait([
+
+supabase.from('slide').select().eq('story_id',storyResultData[index]['id']),
+supabase.from('options').select().eq('story_id', storyResultData[index]['id']),
+if (Supabase.instance.client.auth.currentUser == null)  Future.value([]) else supabase.from('likes').select().eq('target_id', storyResultData[index]['id'])
+                                            .eq('user_id', supabase.auth.currentUser?.id ??0),
+                                            supabase.from('story').select('comments, likes').eq('id', storyResultData[index]['id']),
+                                            ]
+                                            
+                                            );
+           
                                                 Navigator.of(context).push(
                                           PageRouteBuilder(
                                             pageBuilder: (context, animation, secondaryAnimation) => DetailsPage(
-                             data: storyResultData[index], 
-                             slideData: slideData, optionData: optionData, hasLiked: 
-                              hasLiked.isNotEmpty 
+                             data: {...storyResultData[index],'likes': results[3][0]['likes'], 'comments':results[3][0]['comments']}, 
+                             slideData: results[0], optionData:results[1], hasLiked: 
+                             results[2].isNotEmpty 
                              ,
                             // data: stories[index],  slideData: slides, optionData: options, hasLiked: hasLiked.isNotEmpty,
                                             ),
@@ -591,9 +605,10 @@ backgroundColor: const Color.fromARGB(255, 248, 248, 248),
                                       
                                       GestureDetector(
                                           onTap: () {
+                                        
                                               Navigator.of(context).push(
                                         PageRouteBuilder(
-                                          pageBuilder: (context, animation, secondaryAnimation) => TagSearch(tag: resultData[index],),
+                                          pageBuilder: (context, animation, secondaryAnimation) => TagSearch(tag: genreResult[index]['tag'],),
                                           transitionDuration: Duration.zero,
                                           reverseTransitionDuration: Duration.zero,
                                         ),

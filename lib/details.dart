@@ -5,6 +5,7 @@ import 'package:fashion/storiesforyou.dart';
 import 'package:fashion/tagsearch.dart';
 import 'package:fashion/toast.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
@@ -51,6 +52,7 @@ List nextSlide =   widget.optionData.where((e)=> e['slide_id'] == currentSlide).
   if (subslide == null || subslide.isEmpty ){
 
   } else {
+   
   precacheImage(NetworkImage(supabase.storage.from('stories').getPublicUrl('slides/${subslide[0]['id']}.png')), context);
   
   }
@@ -173,7 +175,7 @@ bool loadingDel = false;
 //           child: Padding(
 //             padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 25),
 //             child: SizedBox(
-//               width: MediaQuery.of(context).size.width*0.9,
+//               width: width*0.9,
 //               child: Column(
 //                 mainAxisSize: MainAxisSize.min,
 //                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -276,7 +278,7 @@ bool loadingDel = false;
 //           child: Padding(
 //             padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 25),
 //             child: SizedBox(
-//               width: MediaQuery.of(context).size.width*0.9,
+//               width: width*0.9,
 //               child: Column(
 //                 mainAxisSize: MainAxisSize.min,
 //                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -372,7 +374,7 @@ bool loadingDel = false;
 List cmnts = [];
 
   FocusNode openKeyboard = FocusNode();
-  void report(type){
+  void report(type, id){
   String selectedCat = 'Select...';
 List categories=['Select...', 'Harrasment', 'Violence', 'Sexual content', 'Promoting illegal activity', 'Spam', 'Copyright violation'] ;
      showModalBottomSheet(context: context,
@@ -443,13 +445,24 @@ List categories=['Select...', 'Harrasment', 'Violence', 'Sexual content', 'Promo
                                            GestureDetector(
                                      onTap: () async {
                                       if (selectedCat != 'Select...'){
-                                      await supabase.from('report').insert({'type':type, 'target_id':widget.data['user_id'].toString()
-                                      , 'issue':selectedCat
+                                        try {
+                                        // final prefs = await SharedPreferences.getInstance();
+                                      await supabase.from('report').insert({'type':type, 'target_id':id.toString(),
+                                      //  'user_id':prefs.getString(
+                                      //   'device_id'
+                                      // )
+                                   
+                                      // , 
+                                      'issue':selectedCat
                                       });
                                         Navigator.pop(context);
                                             Toast.show(context, 'Thank you. We will look into this issue shortly.',false)   ;  
-                                      }
-                                          
+                                      } 
+
+                                       catch (e){
+  // Toast.show(context, 'Report already submitted. Slideory will continue to look into this issue',true)   ;  
+                                      }  
+                                      }   
                                      },
                                              child: Container(
                                                       width:  double.infinity,
@@ -537,9 +550,9 @@ void addComment(isReply, cmntController, cmntid, replyMap, useState) async  {
 //   "reply_author": isReply ? null : cmnts.where((e)=>e['id']==isReply).single['author'],
 'replied_to':isReply == null ? null : int.tryParse(isReply), 
  }).select().single(); 
-    
-   
-if (id != widget.data['author'] || (isReply != null &&   cmnts.where((e)=>e['id']==int.parse(isReply)).singleOrNull?['author'] != id )){
+if ((((id != widget.data['author']) && (isReply== null || ( (cmnts.where((e)=>e['id']==int.tryParse(isReply)).singleOrNull?['author_id']) != id ))) ||
+(id == widget.data['author'] && isReply != null &&( (cmnts.where((e)=>e['id']==int.tryParse(isReply)).singleOrNull?['author_id']) != id ))
+)){
 await supabase.from('notifications').insert({
 'username':getUsername?['username'],
  'target_user': isReply == null ? widget.data['author'] :
@@ -549,7 +562,7 @@ await supabase.from('notifications').insert({
   'type':isReply == null ? 'comment_post' : 'comment_reply',
  });
 }             
- 
+ print('ih2');
                  
                                           cmnts = [ {'content':cmntController,  'author_id':id,
                                           'username':getUsername?['username'] , 
@@ -626,8 +639,10 @@ int? cmntid;
     isScrollControlled: true,
     context: context,
      builder: (context){
+          final width = MediaQuery.of(context).size.width;
+  final height = MediaQuery.of(context).size.height;
 return SizedBox(
-    height: MediaQuery.of(context).size.height*0.85,
+    height: height*0.85,
   width: double.infinity,
   child: Padding(
  padding: EdgeInsets.only(
@@ -673,7 +688,7 @@ return SizedBox(
             scrollDirection: Axis.vertical,
             child:  ConstrainedBox(
     constraints: BoxConstraints(
-      maxHeight: MediaQuery.of(context).size.height * 0.85,
+      maxHeight: height * 0.85,
     ),      child: Padding(
       padding: const EdgeInsets.all(24),
       child: Column(
@@ -684,7 +699,7 @@ return SizedBox(
                                                                                               fontSize: 22),),
                                                                                               SizedBox(height: 40,),
                 SizedBox(
-                  height: MediaQuery.of(context).size.height*0.6,
+                  height: height*0.6,
                   child: ListView.builder(
                     controller: lazyLoading,
                     itemCount: cmnts.where((e)=>e['replied_to'] == null).toList().length,
@@ -739,7 +754,7 @@ return SizedBox(
                                                 ),
                                                  SizedBox(height: 5,),
                                       SizedBox(
-                                        width: MediaQuery.of(context).size.width-100,
+                                        width: width-100,
                                         child: Text(onlyRootCmnts[index]['content'] == null ? 'This comment was deleted.' : '${onlyRootCmnts[index]['content']}', style: TextStyle(fontFamily: 'Poppins', fontSize: 17, color:    const Color.fromARGB(255, 176, 138, 241) ),)),
                                       
                                     ],
@@ -798,7 +813,7 @@ return SizedBox(
                      if        (onlyRootCmnts[index]['author_id'] != user)
                                                  GestureDetector(
                                                   onTap: (){
-                                                    report('comment');
+                                                    report('comment', onlyRootCmnts[index]['id']);
                                                   },
                                                   child: Icon(Icons.flag_outlined, color: Colors.grey.shade400,))
                                         ],
@@ -840,7 +855,7 @@ return SizedBox(
                                                           child: Padding(
                                                             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                                                             child: SizedBox(
-                                                         width: MediaQuery.of(context).size.width-111,
+                                                         width: width-111,
                                                           
                                                               child: Row(
                                                                 // mainAxisAlignment: MainAxisAlignment.end,
@@ -855,9 +870,9 @@ return SizedBox(
                                                     GestureDetector(
                   onTap: () async {
                     if (e['author_id'] != null){
-                     final data = await supabase.from('profile').select().eq('user_id', cmnts[index]['author_id']??1).maybeSingle();
-                   String banner =supabase.storage.from('profile').getPublicUrl('banner/${ cmnts[index]['author_id']}');
-                  String picture = supabase.storage.from('profile').getPublicUrl('picture/${ cmnts[index]['author_id']}');
+                     final data = await supabase.from('profile').select().eq('user_id', e['author_id']??1).maybeSingle();
+                   String banner =supabase.storage.from('profile').getPublicUrl('banner/${ e['author_id']}');
+                  String picture = supabase.storage.from('profile').getPublicUrl('picture/${e['author_id']}');
                                             Navigator.of(context).push(
                                       PageRouteBuilder(
                                         pageBuilder: (context, animation, secondaryAnimation) => ProfilePage(
@@ -877,7 +892,7 @@ return SizedBox(
                                                     ),
                                                      SizedBox(height: 5,),
                                           SizedBox(
-                                            width: MediaQuery.of(context).size.width-111,
+                                            width: width-111,
                                             child: Text(e['content'] == null ? 'This comment was deleted.' : '${e['content']}', style: TextStyle(fontFamily: 'Poppins', fontSize: 17, color:    const Color.fromARGB(255, 176, 138, 241) ),)),
                                           
                                         ],
@@ -972,9 +987,9 @@ return SizedBox(
                                                 ]),
                                              ),
                                              
-                                               user == null ? SizedBox.shrink():
+                                               user == null   || e['author_id'] == null ? SizedBox.shrink():
                                               SizedBox(width: 20,),
-                                            user == null ? SizedBox.shrink():
+                                            user == null || e['author_id'] == null ? SizedBox.shrink():
                                               GestureDetector(
                                                 onTap: (){
                                                  FocusScope.of(context).requestFocus(openKeyboard);
@@ -983,13 +998,13 @@ return SizedBox(
                                                      useState((){});
                                                 },
                                                 child: Text('Reply', style: TextStyle(fontFamily: 'Poppins',  color: const Color.fromARGB(255, 246, 95, 145), fontSize: 15),)),
- if        (e['author_id'] != user)
+ if        (e['author_id'] != user && e['author_id'] != null)
                                                  SizedBox(width: 20,),
                                                   if        (e['author_id'] != user)
                                                GestureDetector(
                                                   onTap: (){
                                                  
-                                                    report('comment');
+                                                    report('comment', e['id']);
                                                   },
                                                   child: Icon(Icons.flag_outlined, color: Colors.grey.shade400,))
                                                   
@@ -1015,7 +1030,7 @@ return SizedBox(
                       },
                        child: Container(
                                                height: 55,
-                                              width:MediaQuery.of(context).size.width *0.7,
+                                              width:width *0.7,
                                               decoration: BoxDecoration(
                                                border: Border.all(color: const Color.fromARGB(255, 195, 166, 246), width: 2 ),
                                                borderRadius: BorderRadius.circular(10) 
@@ -1147,7 +1162,6 @@ if (fullChain.length>1){
 @override
 
 void initState() {
-
     WidgetsBinding.instance.addPostFrameCallback((_) {
    preLoadImgs();
   });
@@ -1163,6 +1177,8 @@ void initState() {
   }
   @override
   Widget build (BuildContext context){
+        final width = MediaQuery.of(context).size.width;
+  final height = MediaQuery.of(context).size.height;
   final containerHeight = 500.00;
     final containerWidth = 370.00;
   
@@ -1176,7 +1192,7 @@ void initState() {
       child: SingleChildScrollView(
         
         child: Container(
-          height: MediaQuery.of(context).size.height > 880 ? MediaQuery.of(context).size.height : 880,
+          height: height > 880 ? height : 880,
            decoration: BoxDecoration(
               
                 color: const Color.fromARGB(255, 248, 248, 248)
@@ -1225,7 +1241,7 @@ void initState() {
                         child: GestureDetector(
                           onTap: (){
                           
-                            report('story');
+                            report('story', widget.data['author']);
                           },
                           child: Container(
                               
@@ -1252,69 +1268,79 @@ void initState() {
                                                  mainAxisAlignment: MainAxisAlignment.start,
                                                                  crossAxisAlignment: CrossAxisAlignment.start,
                                                children: [
-                                                 Align(
-                                                  alignment: MediaQuery.of(context).size.width>700? Alignment.center : Alignment.topLeft,
-                                                   child: Text('${widget.data['title']}', style: TextStyle(fontFamily: 'Poppins', color: 
-                                                   const Color.fromARGB(255, 195, 166, 246), fontWeight: FontWeight.bold,
-                                                                                      fontSize: MediaQuery.of(context).size.height*0.028),),
+                                                 Center(
+                                                   child: SizedBox(
+                                                    width: containerWidth,
+                                                     child: Align(
+                                                      alignment:  Alignment.topLeft,
+                                                       child: Text('${widget.data['title']}', style: TextStyle(fontFamily: 'Poppins', color: 
+                                                       const Color.fromARGB(255, 195, 166, 246), fontWeight: FontWeight.bold,
+                                                                                          fontSize: height*0.028),),
+                                                     ),
+                                                   ),
                                                  ),
-                                                 widget.data['tags'].isEmpty ? SizedBox.shrink() :
+                                                 widget.data['tags'] == null || widget.data['tags'].isEmpty ? SizedBox.shrink() :
                                                                                   
                                            SizedBox(
-                                            width: double.infinity,
-                                               child: SingleChildScrollView(
-                                                 child: Column(
-                                                   children: [
-                                                      SizedBox(height: 10,),
-                                               Row(
-                                                mainAxisAlignment:  MediaQuery.of(context).size.width>700? MainAxisAlignment.center:MainAxisAlignment.start,
-                                                      children: [
-                                                                      ... widget.data['tags'].map((e) {
-                                                                                 return Padding(
-                                                                                   padding: const EdgeInsets.only(right: 10),
-                                                                                   child: GestureDetector(
-                                                                                                  
-                                                                                                     onTap: () {
-                                                                                                   Navigator.of(context).push(
-                                                                                 PageRouteBuilder(
-                                                                                   pageBuilder: (context, animation, secondaryAnimation) => TagSearch(tag: e,),
-                                                                                   transitionDuration: Duration.zero,
-                                                                                   reverseTransitionDuration: Duration.zero,
-                                                                                 ),
-                                                                  );
-                                                                                   },
-                                                                                                  
-                                                                                                 child: Container(
-                                                                                                 
-                                                                                                 decoration: BoxDecoration(
-                                                                                                   border: Border.all(color: const Color.fromARGB(255, 190, 156, 250), width: 2),
-                                                                                                   color:   const Color.fromARGB(255, 244, 237, 255),
-                                                                                                 
-                                                                                                   borderRadius: BorderRadius.circular(20)
-                                                                                                 ),
-                                                                                                 child: Padding(
-                                                                                                   padding: const EdgeInsets.symmetric(vertical: 7, horizontal: 12),
-                                                                                                   child: Center(child: Row(
-                                                                                                     children: [
-                                                                                                     
-                                                      Text('#$e', style: TextStyle(fontFamily: 'Poppins', 
-                                                      decoration: TextDecoration.none,
-                                                      color:   const Color.fromARGB(255, 190, 156, 250), fontWeight: FontWeight.bold, fontSize: 14),),
-                                                      
-                                                                                                     ],
-                                                                                                   )),
-                                                                                                 ),
-                                                          ),
-                                                                                   ),
-                                                                                 );
-                                                                       })]),
-                                                                      
-                                                   ],
-                                                 ),
+                                         
+                                               child: Column(
+                                                 children: [
+                                                    SizedBox(height: 10,),
+Align(
+   alignment:  width>700? Alignment.center:Alignment.centerLeft,
+  child: SizedBox(
+     width:   width>700?containerWidth:width-40,
+                                                                                      height: 38,
+                                                                                      child: ListView.builder(
+                                                                                       scrollDirection: Axis.horizontal,
+                                                                                        itemCount: widget.data['tags'].length,
+                                                                                        itemBuilder: (context, index){
+                                                                                        return Padding(
+                                                                                                                 padding:  EdgeInsets.only(right: index == widget.data['tags'].length +1 ? 0 :10),
+                                                                                                                 child: GestureDetector(
+                                                                                                                                
+                                                                                                                                   onTap: () {
+                                                                                                                                 Navigator.of(context).push(
+                                                                                                               PageRouteBuilder(
+                                                                                                                 pageBuilder: (context, animation, secondaryAnimation) => TagSearch(tag: widget.data['tags'][index],),
+                                                                                                                 transitionDuration: Duration.zero,
+                                                                                                                 reverseTransitionDuration: Duration.zero,
+                                                                                                               ),
+                                                                                                );
+                                                                                                                 },
+                                                                                                                                
+                                                                                                                               child: Container(
+                                                                                                                               
+                                                                                                                               decoration: BoxDecoration(
+                                                                                                                                 border: Border.all(color: const Color.fromARGB(255, 190, 156, 250), width: 2),
+                                                                                                                                 color:   const Color.fromARGB(255, 244, 237, 255),
+                                                                                                                               
+                                                                                                                                 borderRadius: BorderRadius.circular(20)
+                                                                                                                               ),
+                                                                                                                               child: Padding(
+                                                                                                                                 padding: const EdgeInsets.symmetric(vertical: 7, horizontal: 12),
+                                                                                                                                 child: Center(child: Row(
+                                                                                                                                   children: [
+                                                                                                                                   
+                                                                                                                                              Text('#${widget.data['tags'][index]}', style: TextStyle(fontFamily: 'Poppins', 
+                                                                                                                                              decoration: TextDecoration.none,
+                                                                                                                                              color:   const Color.fromARGB(255, 190, 156, 250), fontWeight: FontWeight.bold, fontSize: 14),),
+                                                                                                                                              
+                                                                                                                                   ],
+                                                                                                                                 )),
+                                                                                                                               ),
+                                                                                        ),
+                                                                                                                 ),
+                                                                                                               );
+                                                                                      }),
+                                                                                    ),
+),
+                                                                    
+                                                 ],
                                                ),
                                                                  
                                              ),
-                                              SizedBox(height: 10,),
+                                             SizedBox(height: 10,),
                                               
                                                                                 GestureDetector(
                     onTap: () async {
@@ -1332,18 +1358,23 @@ void initState() {
                                       ),
                                                             );
                                         },                                              
-                                                                                  child: Row(
-                                                                                      mainAxisAlignment:  MediaQuery.of(context).size.width>700? MainAxisAlignment.center:MainAxisAlignment.start,
-                                                                                    children: [
-                                                                                      Text("@${widget.data['username'] ?? 'Anonymous'}",
-                                                                                      
-                                                                                      style: TextStyle(fontFamily: 'Poppins', color: 
-                                                                                                                               const Color.fromARGB(255, 0, 0, 0), fontWeight: FontWeight.bold,
-                                                                                      fontSize: 16),
-                                                                                       ),
-                                                                                     
-    
-                                                                                    ],
+                                                                                  child: Center(
+                                                                                    child: SizedBox(
+                                                                                      width: containerWidth,
+                                                                                      child: Row(
+                                                                                          mainAxisAlignment: MainAxisAlignment.start,
+                                                                                        children: [
+                                                                                          Text("@${widget.data['username'] ?? 'Anonymous'}",
+                                                                                          
+                                                                                          style: TextStyle(fontFamily: 'Poppins', color: 
+                                                                                                                                   const Color.fromARGB(255, 0, 0, 0), fontWeight: FontWeight.bold,
+                                                                                          fontSize: 16),
+                                                                                           ),
+                                                                                         
+                                                                                          
+                                                                                        ],
+                                                                                      ),
+                                                                                    ),
                                                                                   ),
                                                                                 ),
                                              ],
@@ -1378,7 +1409,11 @@ void initState() {
             });
             
           Toast.show(context, 'Ending reached!', false);
+          try {
               await supabase.from('completion').insert({'story_id':widget.data['id']});
+          } catch (e){
+            
+          }
       
           } else {
            setState(() {
@@ -1527,16 +1562,23 @@ final compare = widget.slideData.where((er){
                                           return   er['subslide'] == null && er['slide']==int.parse(e['next_slide_id']);}).toList();
                                         
                                               if (compare == null ? false : (compare[0]['next_slide_id'] != null || compare[0]['type'] == 'choice')){
-                                           currentSlide = int.parse(e['next_slide_id']);
+                                           currentSlide = e['next_slide_id'].runtimeType == String ? int.tryParse(e['next_slide_id']) : e['next_slide_id'];
                                               } else {
-                                                currentSlide = int.parse(e['next_slide_id']);
+                                                currentSlide = e['next_slide_id'].runtimeType == String ? int.tryParse(e['next_slide_id']) : e['next_slide_id'];
+                                                if (widget.data['storytype'] != 'Basic' || widget.slideData.where((e)=>e['subslide']==null).length==currentSlide+(
+                                                  widget.data['storytype']=='Basic' ? 0 :1
+                                                )){
+                                                
                                                   Toast.show(context, 'Ending reached!', false);
+                                              
                                                      reachedEnding=true;
+                                                }
                                          setState(() {
                                            
                                          });
                                               }
                                              } else {
+                                           
                                                              Toast.show(context, 'Ending reached!', false);
                                                               reachedEnding=true;
                                          setState(() {
@@ -1560,7 +1602,9 @@ final compare = widget.slideData.where((er){
                                          });
                                          preLoadImgs();
                                        },
-                                       child: e['type'] =='text' ? Text('${e['text']}', style: TextStyle(fontSize: e['size'].toDouble()),) : Container(
+                                       child: e['type'] =='text' ? Text('${e['text']}', style: TextStyle(
+                                        fontFamily: 'Poppins',
+                                        fontSize: e['size'].toDouble()),) : Container(
                                          
                                          width: (e['width'].toDouble()), height: (e['height'].toDouble() ),
                                          decoration: BoxDecoration(
@@ -1700,7 +1744,7 @@ final compare = widget.slideData.where((er){
                                                                       });
                                                                        final id = supabase.auth.currentUser!.id;
       final getUsername = await supabase.from('profile').select('username').eq('user_id', id).maybeSingle();
-      if (id != widget.data['author']) {
+      if (id != widget.data['author'] ) {
       await supabase.from('notifications').insert({
       'username':getUsername?['username'],
        'target_user': widget.data['author'], 
@@ -1731,7 +1775,9 @@ final compare = widget.slideData.where((er){
                                                                                color: const Color.fromARGB(255, 246, 95, 145),
                                                                               ),
                                                                           const   SizedBox(width: 10),
-                                                                              Text(convertAmnt((widget.data['likes'] ?? 0) + ((hasLiked && !widget.hasLiked) ? 1 : 0)), style: TextStyle(
+                                                                              Text(convertAmnt((widget.data['likes'] ?? 0) + ((hasLiked && !widget.hasLiked) ? 1 : 0)
+                                                                              - (!hasLiked && widget.hasLiked ? 1 :0)
+                                                                              ), style: TextStyle(
                                                                                  fontWeight: FontWeight.bold,
                                                                                 fontFamily: 'Poppins',
                                                                                color: const Color.fromARGB(255, 246, 95, 145),

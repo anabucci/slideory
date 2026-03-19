@@ -37,6 +37,7 @@ dependencies:
   flutter_native_splash: ^2.4.7
   shared_preferences: ^2.5.4
   flutter_launcher_icons: ^0.14.4
+  url_launcher: ^6.3.2
 
   #nsfw_detector_flutter: ^1.0.5
   # The following adds the Cupertino Icons font to your application.
@@ -72,14 +73,18 @@ flutter:
     - assets/create.png
     - assets/Untitled design (16).png
     - assets/playstories.png
+    - assets/createipad.png
+    - assets/exploreipad.png
+    - assets/playipad.png
+
+    
+    
 
   fonts:
   - family: Inter
     fonts:
         - asset: assets/Inter-VariableFont_opsz,wght.ttf
-  - family: Playfair
-    fonts:
-        - asset: assets/PlayfairDisplay-VariableFont_wght.ttf
+  
   - family: Poppins
     fonts:
         - asset: assets/Poppins-Regular.ttf
@@ -102,7 +107,7 @@ flutter_launcher_icons:
   android: true
   ios: true
   image_path: assets/applogo (1).png
-
+  
   adaptive_icon_background: "#FFFFFF"
 
   #   - images/a_dot_ham.jpeg

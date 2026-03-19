@@ -1,4 +1,5 @@
 import 'package:fashion/main.dart';
+import 'package:fashion/studiomenu.dart';
 import 'package:flutter/material.dart';
 import 'package:fashion/login.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -119,7 +120,7 @@ class _WelcomeState extends State<Welcome>
                                     textAlign: TextAlign.center,
                                      style: TextStyle(
                                  
-                            fontFamily: 'Playfair',
+                            fontFamily: 'Poppins',
                             fontSize: 55,
                             fontWeight: FontWeight.bold,
                            foreground: Paint()
@@ -233,6 +234,7 @@ class _WelcomeState extends State<Welcome>
                                                    onTap: () async {
                                                   final pref = await SharedPreferences.getInstance();
                                                pref.setBool('Guest', true);
+                                               await Supabase.instance.client.auth.signOut();
                            Navigator.of(context).push(
                                                     PageRouteBuilder(
                            pageBuilder: (context, animation, secondaryAnimation) => MyApp(selectedIndex: 0, guest: true,),

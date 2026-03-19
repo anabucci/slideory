@@ -81,7 +81,7 @@ class _StudioMenuState extends State<StudioMenu> {
                       
                   
                       
-                            Text('Story Studio', style: TextStyle(fontFamily: 'Poppins', color: const Color.fromARGB(255, 246, 95, 145)
+                            Text('Story Studio', style: TextStyle(fontFamily: 'Poppins', color:  const Color.fromARGB(255, 255, 127, 170)
                                                           //     const Color.fromARGB(255, 195, 166, 246)
                                                                , fontWeight: FontWeight.bold,
                                                                                                   fontSize: 35),),
@@ -170,7 +170,7 @@ class _StudioMenuState extends State<StudioMenu> {
                       
                   
                       
-                      Text('Story Studio', style: TextStyle(fontFamily: 'Poppins', color: const Color.fromARGB(255, 246, 95, 145)
+                      Text('Story Studio', style: TextStyle(fontFamily: 'Poppins', color:  const Color.fromARGB(255, 255, 127, 170)
                                                     //     const Color.fromARGB(255, 195, 166, 246)
                                                          , fontWeight: FontWeight.bold,
                                                                                             fontSize: 35),),

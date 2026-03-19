@@ -1,12 +1,12 @@
 
 import 'package:fashion/main.dart';
 import 'package:fashion/manageprofile.dart';
-import 'package:fashion/privacy.dart';
-import 'package:fashion/terms.dart';
+
 import 'package:fashion/toast.dart';
 import 'package:fashion/welcome.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 
 void main() async {
@@ -281,21 +281,15 @@ void initState() {
                                                               });
                                                             }
             } else if (e=='Privacy Policy'){
-              Navigator.of(context).push(
-                                      PageRouteBuilder(
-                                        pageBuilder: (context, animation, secondaryAnimation) => PrivacyPolicy(),
-                                        transitionDuration: Duration.zero,
-                                        reverseTransitionDuration: Duration.zero,
-                                      ),
-                                                            );
+           final Uri url =  Uri.parse('https://anabucci.github.io/slideorypolicy/privacy-policy');
+                              if (!await launchUrl(url, mode: LaunchMode.externalApplication,)){
+                                Toast.show(context, 'Error loading terms of service', true);
+                              }
             } else if (e=='Terms of Service'){
-              Navigator.of(context).push(
-                                      PageRouteBuilder(
-                                        pageBuilder: (context, animation, secondaryAnimation) => TermsofServices(),
-                                        transitionDuration: Duration.zero,
-                                        reverseTransitionDuration: Duration.zero,
-                                      ),
-                                                            );  
+             final Uri url =  Uri.parse('https://anabucci.github.io/slideorypolicy/terms-of-service');
+                              if (!await launchUrl(url, mode: LaunchMode.externalApplication,)){
+                                Toast.show(context, 'Error loading terms of service', true);
+                              }
             }
             
              else if (e=='Logout'){

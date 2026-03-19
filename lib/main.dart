@@ -189,7 +189,7 @@ ProfilePage()
       Supabase.instance.client.auth.currentUser== null && !guest ? Welcome() :
        
       Scaffold(
-        backgroundColor: const Color.fromARGB(255, 246, 246, 246),
+        backgroundColor: const Color.fromARGB(255, 255, 255, 255),
         body: Stack(
           children: [
              IndexedStack(

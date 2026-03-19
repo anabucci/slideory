@@ -1,6 +1,7 @@
 import 'package:fashion/main.dart';
 import 'package:fashion/privacy.dart';
 import 'package:fashion/terms.dart';
+import 'package:fashion/toast.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:fashion/login.dart';
@@ -8,7 +9,7 @@ import 'package:fashion/welcome.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-
+import 'package:url_launcher/url_launcher.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -104,11 +105,12 @@ return;
 return;
      }        
 try{
+   await Supabase.instance.client.auth.signOut();
 await Supabase.instance.client.auth.signUp(
   password: passController.text, 
   email: emailController.text,
   );
-await Supabase.instance.client.from('profile').insert({'username':nameController.text.trim()});
+await Supabase.instance.client.from('profile').insert({'username':nameController.text.trim(), 'theme':9});
 HapticFeedback.mediumImpact();
         Navigator.of(context).push(
           
@@ -246,15 +248,11 @@ setState(() {
                             ),
                             children: [
                               TextSpan(
-                                recognizer: TapGestureRecognizer()..onTap =((){
-                  Navigator.of(context).push(
-                  PageRouteBuilder(
-                    pageBuilder: (context, animation, secondaryAnimation) => 
-                  TermsofServices(),
-                    transitionDuration: Duration.zero,
-                    reverseTransitionDuration: Duration.zero,
-                  ),
-                              );
+                                recognizer: TapGestureRecognizer()..onTap =(() async {
+                final Uri url =  Uri.parse('https://anabucci.github.io/slideorypolicy/terms-of-service');
+                              if (!await launchUrl(url, mode: LaunchMode.externalApplication,)){
+                                Toast.show(context, 'Error loading terms of service', true);
+                              }
                                 }),
                                 text:" Terms of Service",
                                 style: TextStyle(
@@ -271,15 +269,11 @@ setState(() {
                               color: Colors.grey.shade800,
                             ),),
                               TextSpan(
-                                recognizer: TapGestureRecognizer()..onTap =((){
-                  Navigator.of(context).push(
-                  PageRouteBuilder(
-                    pageBuilder: (context, animation, secondaryAnimation) => 
-                                   PrivacyPolicy(),
-                    transitionDuration: Duration.zero,
-                    reverseTransitionDuration: Duration.zero,
-                  ),
-                              );
+                                recognizer: TapGestureRecognizer()..onTap =(() async{
+                final Uri url =  Uri.parse('https://anabucci.github.io/slideorypolicy/privacy-policy');
+                              if (!await launchUrl(url, mode: LaunchMode.externalApplication,)){
+                                Toast.show(context, 'Error loading terms of service', true);
+                              }
                                 }),
                                 text:" Privacy Policy",
                                 style: TextStyle(
@@ -337,7 +331,7 @@ setState(() {
                            
                             isLoading ? SizedBox(
                         width: 20, height: 20,
-                        child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2,)) : 
+                        child: CircularProgressIndicator(color:   Color.fromARGB(255, 244, 237, 255), strokeWidth: 2,)) : 
                               Icon(Icons.arrow_forward, color: Colors.white, size: 20,)
                             ],
                           ),

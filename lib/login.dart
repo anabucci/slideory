@@ -61,7 +61,7 @@ class _LogInState extends State<LogIn>
       
     });
       try{
-                   
+                   await Supabase.instance.client.auth.signOut();
                     await Supabase.instance.client.auth.signInWithPassword(password: passController.text, email: emailController.text);
                                
     Navigator.of(context).push(
@@ -245,7 +245,7 @@ return '${text[0].toUpperCase()}${text.split('').toList().skip(1).join('')}';
                           SizedBox(width: 10,),
                        isLoading ? SizedBox(
                         width: 20, height: 20,
-                        child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2,)) :  Icon(Icons.arrow_forward, color: Colors.white, size: 20,)
+                        child: CircularProgressIndicator(color:   Color.fromARGB(255, 244, 237, 255), strokeWidth: 2,)) :  Icon(Icons.arrow_forward, color: Colors.white, size: 20,)
                         ],
                       ),
                     ),

@@ -23,7 +23,9 @@ class EditProfile extends StatefulWidget {
   final dynamic data;
   final dynamic banner;
   final dynamic picture;
-  const EditProfile({super.key, this.data, this.banner, this.picture});
+  final dynamic pictureFile;
+  final dynamic bannerFile;
+  const EditProfile({super.key, this.data, this.banner, this.picture, this.pictureFile, this.bannerFile});
 
   @override
   State<EditProfile> createState() => _EditProfileState();
@@ -33,11 +35,14 @@ class _EditProfileState extends State<EditProfile> {
   final supabase= Supabase.instance.client;
   dynamic bio;
   String? banner;
+  String? username;
 String? picture;
 bool isLoading = false;
   @override
   void initState(){
+
     if (widget.data != null){
+      username = widget.data[0]['username'];
     selected = colors[widget.data[0]['theme']];
     bio = widget.data[0]['bio'];
  bioController = TextEditingController(text: bio);
@@ -65,6 +70,9 @@ setState(() {
     void showImagePickerOptions(type) {
 
     showModalBottomSheet(
+        constraints: BoxConstraints(
+    maxWidth: double.infinity
+  ),
       context: context,
       
       shape: const RoundedRectangleBorder(
@@ -123,8 +131,12 @@ bannerFile = image;
   }
   TextEditingController bioController = TextEditingController();
   Future<void> updateProfile() async {
+    
+ 
    await supabase.from('profile')
-   .update({'bio':bioController.text, 'theme':colors.indexOf(selected)})
+   .update({'bio': RegExp(r'^\s*$').hasMatch(bioController.text) ? null : bioController.text, 'theme':colors.indexOf(selected),
+   'picture':(pictureFile!=null || widget.picture != null), 'banner':(bannerFile!=null || widget.banner!=null)
+   })
 
    .eq('user_id', supabase.auth.currentUser?.id ?? 1);
    savedBio = true;
@@ -151,6 +163,8 @@ Colors.black,
 
   @override
   Widget build (BuildContext context){
+        final width = MediaQuery.of(context).size.width;
+
   return Scaffold(
     resizeToAvoidBottomInset: true,
     backgroundColor: const Color.fromARGB(255, 248, 248, 248),
@@ -158,14 +172,14 @@ Colors.black,
       child: SingleChildScrollView(
         scrollDirection: Axis.vertical,
         child: SizedBox(
-          // height:MediaQuery.of(context).size.height+MediaQuery.of(context).viewInsets.bottom,
+          // height:height+MediaQuery.of(context).viewInsets.bottom,
           child: Stack(
             children: [
                Positioned(
                         left: 20,
                         top: 20,
                         child: SizedBox(
-                          width: MediaQuery.of(context).size.width,
+                          width: width,
                           child: Row(
                           
                             children: [
@@ -174,8 +188,15 @@ Colors.black,
                                 child: GestureDetector(
                                   onTap: (){
                                     if (Navigator.canPop(context)){
-                               Navigator.pop(context, savedBio == null && savedTheme == null ? [null, null] : [widget.data[0]['bio'] == savedBio ? null : bioController.text, 
-                        colors[widget.data[0]['theme']] == savedTheme ? null : colors.indexOf(selected)]);
+                                    List themebio = savedBio == null && savedTheme == null ? [null, null,
+                                     (widget.banner == null ? bannerFile : null ),  (widget.picture == null ? pictureFile : null )]
+                                     : [widget.data[0]['bio'] == savedBio ? null : RegExp(r'^\s*$').hasMatch(bioController.text) ? null : bioController.text
+                               , 
+                        colors[widget.data[0]['theme']] == savedTheme ? null : colors.indexOf(selected), 
+                         (widget.banner == null ? bannerFile : null ),  (widget.picture == null ? pictureFile : null )
+                        ];
+                     print('themmebio: $themebio');
+                               Navigator.pop(context, themebio);
                                     } else {
                                          Navigator.of(context).push(
                                           PageRouteBuilder(
@@ -222,19 +243,23 @@ Colors.black,
            
             Stack(
              children: [
-              bannerFile == null ?
+              bannerFile == null  ?
                Container(
-                                            width: MediaQuery.of(context).size.width,
+                                            width: width,
                                             height: 130,
                                             decoration: BoxDecoration(color: const Color.fromARGB(255, 255, 199, 217),
-                                            image: DecorationImage(image: NetworkImage(widget.banner??''), fit: BoxFit.cover),
+                                            image: 
+                                            widget.banner == null && widget.bannerFile ==null ? null :
+                                            DecorationImage(image: widget.bannerFile==null ?  NetworkImage(widget.banner??'')
+                                            
+                                            : FileImage(widget.bannerFile), fit: BoxFit.cover),
                                              borderRadius: BorderRadius.only(bottomLeft: Radius.circular(0),
                                             bottomRight: Radius.circular(20))),
                                              
                                           )
                                            :
               Container(
-                                            width: MediaQuery.of(context).size.width,
+                                            width: width,
                                             height: 130,
                                             
                                             decoration: BoxDecoration(
@@ -249,7 +274,7 @@ Colors.black,
                         
                         child: 
                          Container(
-                                            width: MediaQuery.of(context).size.width,
+                                            width: width,
                                             height: 130,
                                             decoration: BoxDecoration(color: const Color.fromARGB(255, 98, 98, 98).withAlpha(30), borderRadius: BorderRadius.only(bottomLeft: Radius.circular(0),
                                             bottomRight: Radius.circular(20))),
@@ -281,14 +306,14 @@ Colors.black,
                                                                                                             SizedBox(height: 15,),
                                                         Container(
                                                
-                                              width:MediaQuery.of(context).size.width-40,
+                                              width:width-40,
                                               decoration: BoxDecoration(
                                                border: Border.all(color: const Color.fromARGB(255, 195, 166, 246), width: 2 ),
                                                borderRadius: BorderRadius.circular(10) 
                                               ),
                                               
                                               child:  TextField(
-                                              maxLines: null,
+                                              maxLines: 1,
                                             maxLength: 80,
                                             
                                              controller: bioController,
@@ -315,8 +340,9 @@ Colors.black,
                                                                                     SizedBox(height: 30,),
                                                   SizedBox(
                                                     height: 240,
-                                                      width:MediaQuery.of(context).size.width-85,
-                                                    child: GridView.builder(gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 4), 
+                                                      width:width-85,
+                                                    child: GridView.builder(gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                                                      crossAxisCount: MediaQuery.of(context).size.width > 700 ? 8: 4), 
                                                     itemCount: colors.length,
                                                     itemBuilder: (context, index){
                                                     return GestureDetector(
@@ -363,6 +389,8 @@ Colors.black,
                                 }
                                 if (!isLoading ){
                                   isLoading = true;
+
+                                   await  updateProfile();
                                 try{
                                 if (bannerFile != null){
                                         await updateBanner(supabase.auth.currentUser?.id, bannerFile);
@@ -371,7 +399,7 @@ Colors.black,
                                          await  updatePic(supabase.auth.currentUser?.id, pictureFile);
                                         }
                                         
-                                         await    updateProfile();           
+                                                print('pic, $pictureFile $bannerFile ${widget.banner} ${widget.picture}');   
                                              Toast.show(context, 'Update successful. ${
                                          ((widget.banner!= null && widget.picture != null)) ?  bannerFile != null || pictureFile != null ?
                                               'Please wait at most a couple hours for the images to update.' : '' :
@@ -381,6 +409,7 @@ Colors.black,
                                               'Please wait at most a couple hours for the images to update.' : '' 
                                               }', false);
                                 } catch (e) {
+                                  print('error  $e');
                                         Toast.show(context, 'Update failed!', true);
                                 }
                                 isLoading = false;
@@ -435,7 +464,11 @@ Colors.black,
                                                                borderRadius: BorderRadius.circular(25),
                                                                border: Border.all(color: Colors.white),
                                                                 color:   const Color.fromARGB(255, 196, 163, 254),
-                                                                image: DecorationImage(image: NetworkImage(widget.picture??''), fit: BoxFit.cover)
+                                                                image:
+                                                                widget.picture == null && widget.pictureFile == null? null :
+                                                                 DecorationImage(image: 
+                                                                 widget.pictureFile == null? 
+                                                                 NetworkImage(widget.picture??'') : FileImage(widget.pictureFile), fit: BoxFit.cover)
                                                               ),
                                                             
                                                                  ) 
@@ -471,7 +504,7 @@ Colors.black,
                                Column(
                                  children: [
                                   SizedBox(height: 30,),
-                                   Text('@anabucci', style: TextStyle(fontFamily: 'Poppins', fontWeight: FontWeight.bold,
+                                   Text('@${username}', style: TextStyle(fontFamily: 'Poppins', fontWeight: FontWeight.bold,
                                    fontSize: 22, color: Colors.black),),
                                  ],
                                ),

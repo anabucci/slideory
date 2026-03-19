@@ -3,6 +3,7 @@ import 'package:fashion/onboarding.dart';
 import 'package:flutter/material.dart';
 
 import 'package:supabase_flutter/supabase_flutter.dart';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -35,12 +36,19 @@ List pages = ['Explore', 'Play', 'Create'];
   @override
   void initState() {
     super.initState();
-    _animController = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 800),
-    )..forward();
+ //  genDeviceID();
   }
+// void genDeviceID() async {
+// final  prefs = await SharedPreferences.getInstance();
+// final uuuid = prefs.getString('device_id');
+// if (uuuid == null){
+// final uuid = Uuid();
+// String id = uuid.v4();
+// prefs.setString('device_id', id);
 
+// }
+
+// }
   @override
   void dispose() {
     _animController.dispose();
@@ -117,6 +125,56 @@ List pages = ['Explore', 'Play', 'Create'];
                                     mainAxisAlignment: MainAxisAlignment.end,
                                     crossAxisAlignment: CrossAxisAlignment.center,
                                       children: [
+                                       MediaQuery.of(context).size.height > 1000 ?
+                                        Column(
+                                          children: [
+                                       Text(
+                                                'Create & Play',
+                                                textAlign: TextAlign.center,
+                                                 style: TextStyle(
+                                             fontWeight: FontWeight.bold,
+                                        fontFamily: 'Poppins',
+                                        shadows: [BoxShadow(color: Color.fromARGB(255, 186, 186, 186), blurRadius: 20)],
+                                        fontSize: MediaQuery.of(context).size.height*0.03,
+                                        wordSpacing: 3,
+                                        color:   const Color.fromARGB(255, 255, 129, 188),
+                                    
+                                      ),
+                                    ),
+                                    SizedBox(height: 2,),
+                                    
+                                     Text(
+                                                'INTERACTIVE \nSLIDESHOW',
+                                                textAlign: TextAlign.center,
+                                                 style: TextStyle(
+                                             fontWeight: FontWeight.bold,
+                                        fontFamily: 'Poppins',
+                                        fontSize: MediaQuery.of(context).size.height*0.05,
+                                        wordSpacing: 3,
+                                           shadows: [BoxShadow(color: Color.fromARGB(255, 255, 176, 219), blurRadius: 30)],
+                                        color: const Color.fromARGB(255, 0, 0, 0),
+                                        
+                                  
+                                    
+                                      ),
+                                    ),
+                                       SizedBox(height: 2,),
+                                     Text(
+                                                'Games',
+                                                textAlign: TextAlign.center,
+                                                 style: TextStyle(
+                                             fontWeight: FontWeight.bold,
+                                                shadows: [BoxShadow(color: Color.fromARGB(255, 186, 186, 186), blurRadius: 20)],
+                                                                                        fontSize: MediaQuery.of(context).size.height*0.03,
+                                        fontFamily: 'Poppins',
+                                  
+                                        wordSpacing: 3,
+                                        color:               const Color.fromARGB(255, 192, 159, 252),
+                                    
+                                      ),
+                                    ),
+                                          ]):   Column(
+                                          children: [
                                        const Text(
                                                 'Create & Play',
                                                 textAlign: TextAlign.center,
@@ -130,8 +188,9 @@ List pages = ['Explore', 'Play', 'Create'];
                                       ),
                                     ),
                                     SizedBox(height: 2,),
+                                    
                                      Text(
-                                                'INTERACTIVE SLIDESHOW',
+                                                'INTERACTIVE \nSLIDESHOW',
                                                 textAlign: TextAlign.center,
                                                  style: TextStyle(
                                              fontWeight: FontWeight.bold,
@@ -165,6 +224,7 @@ List pages = ['Explore', 'Play', 'Create'];
                                     
                                       ),
                                     ),
+                                          ]),
                                     //             SizedBox(height: 5,),
                                     //                Text(
                                     //             'SLIDEORY',
@@ -192,8 +252,10 @@ List pages = ['Explore', 'Play', 'Create'];
                                                           Navigator.push(
   context,
   PageRouteBuilder(
+    transitionDuration: Duration(milliseconds: 500),
     pageBuilder: (context, animation, secondaryAnimation) => Onboarding(),
     transitionsBuilder: (context, animation, secondaryAnimation, child) {
+    
       const begin = Offset(1.0, 0.0); 
       const end = Offset.zero;
       const curve = Curves.ease;
@@ -214,9 +276,9 @@ List pages = ['Explore', 'Play', 'Create'];
                                       borderRadius: BorderRadius.circular(30),
                                       
                                                                ),
-                                                               height: 50,
+                                                               height:  MediaQuery.of(context).size.height > 1000 ? 65 :50,
                                                                width: MediaQuery.of(context).size.width*0.7,
-                                                               child: const Center(
+                                                               child:  Center(
                                       child: Row(
                                         mainAxisAlignment: MainAxisAlignment.center,
                                         crossAxisAlignment: CrossAxisAlignment.center,
@@ -228,7 +290,7 @@ List pages = ['Explore', 'Play', 'Create'];
                                               color:     Color.fromARGB(255, 0, 0, 0),
                                               fontFamily: 'Poppins',
                                               fontWeight: FontWeight.bold,
-                                              fontSize: 16,
+                                              fontSize: MediaQuery.of(context).size.height > 1000 ? 24 : 16,
                                             ),
                                           ),
                                           SizedBox(width: 10,),

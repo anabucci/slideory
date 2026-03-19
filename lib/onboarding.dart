@@ -64,7 +64,7 @@ int currentPage = 0;
       body:
        Stack(
          children: [
-         
+        
            Container(
                       
                       decoration: BoxDecoration(
@@ -77,7 +77,7 @@ int currentPage = 0;
                       ),
                       child: SafeArea(
                         child: Padding(
-                                             padding: const EdgeInsets.only(left: 20, right: 20, bottom: 10),
+                                             padding: const EdgeInsets.only(left: 20, right: 20, bottom: 10, ),
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                              
@@ -141,15 +141,8 @@ int currentPage = 0;
                                       Rect.fromLTWH(0, 0, 200, 70),
                                     ),
                            fontWeight: FontWeight.bold, fontSize: 35),),
-                         SizedBox(height: 20,),
-                        Container(
-                          width: double.infinity,
-                          height: MediaQuery.of(context).size.height*0.56,
-                          decoration: BoxDecoration(
-                             image: DecorationImage(
-                              
-                                                      image: AssetImage('assets/${ currentPage == 1 ? 'playstories' : pages[currentPage].toLowerCase()}.png')),
-                          ),),
+                         SizedBox(height: 50,),
+
                                             
                           Spacer(),
                          
@@ -214,7 +207,29 @@ int currentPage = 0;
                         ),
                       ),
                     ),
-                   
+                    Positioned(
+          right: 0,
+          left: 0, bottom: 0, top: 0,
+          child: 
+            Center(
+                          child: Transform.scale(
+                            scale:  MediaQuery.of(context).size.width > 700  ? (MediaQuery.of(context).size.height/800) : (MediaQuery.of(context).size.height/720), 
+                            child: Container(
+                              
+                            
+                              height: MediaQuery.of(context).size.height > 1000 ? MediaQuery.of(context).size.height*0.7: MediaQuery.of(context).size.height*0.4,
+                              decoration: BoxDecoration(
+                                
+                                 image: DecorationImage(
+                                     alignment: Alignment.center,
+                                                
+
+                                                          image: AssetImage('assets/${
+                                                       MediaQuery.of(context).size.width > 700   ?    '${pages[currentPage].toLowerCase()}ipad':  
+                                                             currentPage == 1 ? 'playstories' : pages[currentPage].toLowerCase()}.png')),
+                              ),),
+                          ),
+                        )),
          ],
        )
     );

@@ -87,6 +87,9 @@ final supabase = Supabase.instance.client;
    void showImagePickerOptions() {
 
     showModalBottomSheet(
+        constraints: BoxConstraints(
+    maxWidth: double.infinity
+  ),
       context: context,
       
       shape: const RoundedRectangleBorder(
@@ -174,7 +177,7 @@ dynamic subslide;
    
 
   Widget build (BuildContext context){
-    
+           final width = MediaQuery.of(context).size.width;
   
   return Scaffold(
       body: Container(
@@ -214,7 +217,7 @@ dynamic subslide;
                     left: 20,
                     top: 20,
                     child: SizedBox(
-                      width: MediaQuery.of(context).size.width,
+                      width: width,
                       child: Row(
                       
                         children: [
@@ -252,7 +255,7 @@ dynamic subslide;
                     left: 0,
                     top: 20,
                     child: SizedBox(
-                      width: MediaQuery.of(context).size.width,
+                      width: width,
                       child: 
                           Align(
           alignment: Alignment.center,
@@ -280,7 +283,7 @@ dynamic subslide;
           showImagePickerOptions();
                 },
                                                   child: Container(
-                                                                                width: (MediaQuery.of(context).size.width-40)*0.6,
+                                                                                width: (width-40)*0.6,
                                                                                 height:  (MediaQuery.of(context).size.height * 0.59)*0.6,
                                                                                 // height: 200,
                                                                                  decoration: BoxDecoration(
@@ -317,7 +320,7 @@ dynamic subslide;
                                                                                                     SizedBox(height: 15,),
                                                 Container(
                                        
-                                      width:MediaQuery.of(context).size.width-40,
+                                      width:width-40,
                                       decoration: BoxDecoration(
                                        border: Border.all(color: const Color.fromARGB(255, 195, 166, 246), width: 2 ),
                                        borderRadius: BorderRadius.circular(10) 
@@ -361,7 +364,7 @@ dynamic subslide;
                                                     children: [
                                                       Container(
                                                                                            
-                                                                                          width:MediaQuery.of(context).size.width*3/4,
+                                                                                     width: width-110,
                                                                                           decoration: BoxDecoration(
                                                                                            border: Border.all(color: const Color.fromARGB(255, 195, 166, 246), width: 2 ),
                                                                                            borderRadius: BorderRadius.circular(10) 
@@ -405,7 +408,7 @@ dynamic subslide;
                                                 ) ,
                                     SizedBox(height: 20,),
                                     SizedBox(
-                                        width:MediaQuery.of(context).size.width-40,
+                                        width:width-40,
                                       child: SingleChildScrollView(
                                         scrollDirection: Axis.horizontal,
                                         child: Row(
@@ -590,7 +593,7 @@ dynamic subslide;
                           
                           
                              SizedBox(
-                              width: MediaQuery.of(context).size.width-20,
+                              width: width-20,
                                child: Row(
                                                                                                           children: [
                                                                                                              SizedBox(width: 20,),
@@ -621,6 +624,10 @@ dynamic subslide;
 Toast.show(context, 'Title cannot be left blank', true);
 return;
                 }
+                 if (tags.length>5){
+Toast.show(context, 'Stories cannot have more than 5 tags', true);
+return;
+                }
                                        if (!isSaving){
                                          setState(() {
                                          
@@ -637,17 +644,24 @@ return;
             'lives': livesEnabled ? startingLivs : null,
             'storytype':widget.storyType, 
             'username':fetchuser?['username'],
-            'comments':null,
-            'likes':null,
+            'comments':0,
+            'likes':0,
 
           'hasCover': photo!= null,
-            'score':null,
+            'score':0,
             'draft':true,
             'path':insertCoverTime.toString(),
             }).select('id');
-            if (cover!=null){
-                                               final path = 'cover/${storyInsert[0]['id']}${insertCoverTime.toString()}';
+            print('phoo $photo');
+            if (photo!=null){
+
+                                               final path = 'cover/${insertCoverTime.toString()}${storyInsert[0]['id']}.png';
+                                               print('path $path');
+                                               try{
           await supabase.storage.from('stories').upload(path, photo, fileOptions: FileOptions(upsert: true)); 
+                                               } catch (e){
+                                                print('error: $e');
+                                               }
             }
 //        final slideFutures = widget.slideData.map((slide) async {
 //  final insertDate = DateTime.now();
@@ -739,6 +753,10 @@ return;
 Toast.show(context, 'Title cannot be left blank', true);
 return;
                 }
+                     if (tags.length>5){
+Toast.show(context, 'Stories cannot have more than 5 tags', true);
+return;
+                }
                 if (!isLoading){
 
           isLoading=true;
@@ -805,13 +823,15 @@ final path = 'options/${option['id']}.png';
             'storytype':widget.storyType, 
             'hasCover':photo!=null,
             'username':fetchuser?['username'],
-            'comments':null,
-            'likes':null,
-            'score':null,
+            'comments':0,
+            'likes':0,
+            'score':0,
             
             }).select();
-               final path = 'cover/${storyInsert[0]['id']}';
+            if (photo != null){
+               final path = 'cover/${storyInsert[0]['id']}.png';
           await supabase.storage.from('stories').upload(path, photo, fileOptions: FileOptions(upsert: true));
+            }
           for (final slide in widget.slideData){
           
             slide.remove('id');
@@ -902,7 +922,7 @@ final path = 'options/${option['id']}.png';
           //                                                         );
           // },
             child: Container(
-                 width:  MediaQuery.of(context).size.width * 0.5,
+                 width:  width * 0.5,
                  height: 50,
           decoration: BoxDecoration(
           gradient: LinearGradient(

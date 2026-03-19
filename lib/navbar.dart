@@ -43,130 +43,133 @@ class CustomNavBar extends StatelessWidget {
         
         borderRadius: BorderRadius.only(topLeft: Radius.circular(10), topRight: Radius.circular(10))
       ),
-        child: Column(
-          
-          children: [
-            // Divider(color: purpleColor, thickness: 1,),
-            Container(
-              height: navheight,
-              decoration: BoxDecoration(
-                
-                borderRadius: BorderRadius.circular(20),
-                
-               
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: tabs.map((tab) {
-                  final label = tab['label'] as String;
-                  final icon = tab['icon'] as IconData;
-                  final isSelected = current == label;
+        child: Padding(
+          padding: const EdgeInsets.only(bottom: 10),
+          child: Column(
             
-                  return GestureDetector(
-                    onTap: () => onTabSelected(label),
-                    child: AnimatedContainer(
-                      duration: const Duration(milliseconds: 200),
-                      width:  40,
-                      height:navheight,
-                    
-                      child: Stack(
-                        
-
-                                              children: [
-// isSelected ?  Positioned(
-//   top: 0,
-//   child: Container(
-//   width: 40,
-//   height: 5,
-//   decoration: BoxDecoration(
-//     borderRadius: BorderRadius.only(bottomLeft: Radius.circular(10),
-//     bottomRight: Radius.circular(10)
-//     ),
-//     color:  const Color.fromRGBO(173, 142, 227, 1),
-//     // color:const Color.fromARGB(255, 195, 166, 246)
-//   ),
-//     ),
-// ) : SizedBox.shrink(),
-                          Column(
-                             mainAxisAlignment: MainAxisAlignment.center,
-
-crossAxisAlignment: CrossAxisAlignment.center, 
-                            children: [
-                              Center(
-                                child: Stack(
-                                  children: [
-                                
-                                    Column(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      crossAxisAlignment: CrossAxisAlignment.center,
-                                      children: [
-                                        
-                                        Padding(
-                                          padding: const EdgeInsets.all(3),
-                                          child: Icon(
-                                            shadows:  isSelected ? [Shadow(color:  const Color.fromARGB(255, 173, 142, 227), blurRadius: 25 )]:[],
-                                            icon,
-                                            size: isSelected ? 35 : 35,
-                                            color: isSelected
-                                                // ? const Color.fromARGB(255, 195, 166, 246)
-                                                
-                                                ?   const Color.fromARGB(255, 250, 111, 157)
-                                                : const Color.fromARGB(255, 215, 215, 215)
-                                          ),
-                                        ),
-                                         
-                                      ],
-                                    ),
-                                       
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
+            children: [
+              // Divider(color: purpleColor, thickness: 1,),
+              Container(
+                height: navheight,
+                decoration: BoxDecoration(
+                  
+                  borderRadius: BorderRadius.circular(20),
+                  
+                 
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: tabs.map((tab) {
+                    final label = tab['label'] as String;
+                    final icon = tab['icon'] as IconData;
+                    final isSelected = current == label;
+              
+                    return GestureDetector(
+                      onTap: () => onTabSelected(label),
+                      child: AnimatedContainer(
+                        duration: const Duration(milliseconds: 200),
+                        width:  40,
+                        height:navheight,
                       
+                        child: Stack(
                           
-                          
-                        ],
+          
+                                                children: [
+          // isSelected ?  Positioned(
+          //   top: 0,
+          //   child: Container(
+          //   width: 40,
+          //   height: 5,
+          //   decoration: BoxDecoration(
+          //     borderRadius: BorderRadius.only(bottomLeft: Radius.circular(10),
+          //     bottomRight: Radius.circular(10)
+          //     ),
+          //     color:  const Color.fromRGBO(173, 142, 227, 1),
+          //     // color:const Color.fromARGB(255, 195, 166, 246)
+          //   ),
+          //     ),
+          // ) : SizedBox.shrink(),
+                            Column(
+                               mainAxisAlignment: MainAxisAlignment.center,
+          
+          crossAxisAlignment: CrossAxisAlignment.center, 
+                              children: [
+                                Center(
+                                  child: Stack(
+                                    children: [
+                                  
+                                      Column(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        crossAxisAlignment: CrossAxisAlignment.center,
+                                        children: [
+                                          
+                                          Padding(
+                                            padding: const EdgeInsets.all(3),
+                                            child: Icon(
+                                              shadows:  isSelected ? [Shadow(color:  const Color.fromARGB(255, 173, 142, 227), blurRadius: 25 )]:[],
+                                              icon,
+                                              size: isSelected ? 35 : 35,
+                                              color: isSelected
+                                                  // ? const Color.fromARGB(255, 195, 166, 246)
+                                                  
+                                                  ?   const Color.fromARGB(255, 255, 127, 170)
+                                                  : const Color.fromARGB(255, 215, 215, 215)
+                                            ),
+                                          ),
+                                           
+                                        ],
+                                      ),
+                                         
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                        
+                            
+                            
+                          ],
+                        ),
                       ),
-                    ),
-                  );
-                //      return GestureDetector(
-                //   onTap: () => onTabSelected(label),
-                //   child: AnimatedContainer(
-                //     duration: const Duration(milliseconds: 250),
-                //     curve: Curves.easeOut,
-                //     padding: const EdgeInsets.symmetric(
-                //       horizontal: 16,
-                //       vertical: 8,
-                //     ),
-                //     decoration: BoxDecoration(
-                //       borderRadius: BorderRadius.circular(18),
-                //       color: isSelected
-                //           ? const Color.fromARGB(255, 234, 117, 255)
-                //               .withOpacity(.15)
-                //           : const Color.fromARGB(0, 255, 255, 255),
-                //     ),
-                //     child: Row(
-                //       children: [
-                //         AnimatedScale(
-                //           duration: const Duration(milliseconds: 200),
-                //           scale: isSelected ? 1.15 : 1,
-                //           child: Icon(
-                //             icon,
-                //             size: label == "Add" ? 32 : 26,
-                //             color: isSelected
-                //                 ? const Color.fromARGB(255, 250, 111, 157)
-                //                 : Colors.grey[400],
-                //           ),
-                //         ),
-                //       ],
-                //     ),
-                //   ),
-                // );
-                }).toList(),
+                    );
+                  //      return GestureDetector(
+                  //   onTap: () => onTabSelected(label),
+                  //   child: AnimatedContainer(
+                  //     duration: const Duration(milliseconds: 250),
+                  //     curve: Curves.easeOut,
+                  //     padding: const EdgeInsets.symmetric(
+                  //       horizontal: 16,
+                  //       vertical: 8,
+                  //     ),
+                  //     decoration: BoxDecoration(
+                  //       borderRadius: BorderRadius.circular(18),
+                  //       color: isSelected
+                  //           ? const Color.fromARGB(255, 234, 117, 255)
+                  //               .withOpacity(.15)
+                  //           : const Color.fromARGB(0, 255, 255, 255),
+                  //     ),
+                  //     child: Row(
+                  //       children: [
+                  //         AnimatedScale(
+                  //           duration: const Duration(milliseconds: 200),
+                  //           scale: isSelected ? 1.15 : 1,
+                  //           child: Icon(
+                  //             icon,
+                  //             size: label == "Add" ? 32 : 26,
+                  //             color: isSelected
+                  //                 ? const Color.fromARGB(255, 250, 111, 157)
+                  //                 : Colors.grey[400],
+                  //           ),
+                  //         ),
+                  //       ],
+                  //     ),
+                  //   ),
+                  // );
+                  }).toList(),
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

@@ -167,7 +167,9 @@ setState(() {
 )
       ),
         child: SafeArea(
+          bottom: false,
           child: Container(
+
                     decoration: BoxDecoration(
           
             gradient: LinearGradient(

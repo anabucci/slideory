@@ -43,6 +43,7 @@ class _BasicEditorState extends State<BasicEditor> {
     final supabase = Supabase.instance.client;
   dynamic currentImg;
   dynamic currentID;
+  Map textMap = {};
   dynamic currentPath;
 //   late NsfwDetector moderator;
 //   void loadModerator() async {
@@ -51,8 +52,19 @@ class _BasicEditorState extends State<BasicEditor> {
     @override
   void initState(){
 //loadModerator();
+
     if (widget.optionData != null){
       optionData=widget.optionData;
+       for (final option in optionData.where((e)=>e['type']=='text')){
+  dynamic painterText = TextPainter(text: TextSpan(text: option['text'], style: TextStyle(fontSize: option['size'].toDouble(),
+                                                  fontFamily: 'Poppins'
+
+                                                  )),
+                                                  textDirection: TextDirection.ltr
+                                                  )..layout();
+                                                
+textMap[option['id']] = {'width': painterText.width, 'height':painterText.height};
+      }
     }
     if (widget.slideData != null){
       (widget.slideData as List).sort((a,b){ 
@@ -67,6 +79,7 @@ if (a['subslide']==null && b['subslide']!=null){
         return (a['slide']).compareTo(b['slide']
         );});
       slideData = widget.slideData;
+     
     }
     super.initState();
   }
@@ -165,11 +178,15 @@ setState(() {
                                                                         void explain(type){
 
      showModalBottomSheet(context: context,
-                               
+                                 constraints: BoxConstraints(
+    maxWidth: double.infinity
+  ),
                                 builder:(context) {
                                  return StatefulBuilder(
+                                  
                                    builder: (context, setState) {
                                      return Container(
+                                   
                                            decoration: BoxDecoration(
                                              color: Colors.white,
                                              borderRadius: BorderRadius.circular(10)
@@ -201,7 +218,7 @@ setState(() {
                                           SizedBox(height: 20,),
                                            GestureDetector(
                                      onTap: () async {
-                                   Navigator.pop(context);
+                                                                        Navigator.pop(context);
                                           
                                      },
                                              child: Container(
@@ -321,6 +338,9 @@ final picker = ImagePicker();
   void showImagePickerOptions() {
 
     showModalBottomSheet(
+        constraints: BoxConstraints(
+    maxWidth: double.infinity
+  ),
       context: context,
       
       shape: const RoundedRectangleBorder(
@@ -425,7 +445,8 @@ dynamic optionInsert =   { 'slide_id':currentSlide,   'type':'img',
       })
     : 
     Map<String, dynamic>.from(optionInsert);
-
+  
+                                             
 optionData.add(newOption                            
                                                                                           );
                                                                                          
@@ -467,6 +488,9 @@ void addOption(){
   void optionImage(setLocalState) {
  
     showModalBottomSheet(
+        constraints: BoxConstraints(
+    maxWidth: double.infinity
+  ),
       context: context,
       
       shape: const RoundedRectangleBorder(
@@ -527,16 +551,22 @@ dynamic existingSlide = 'Use Existing Slide';
 
 dynamic nextSlide = 'new';
 int lives = 0;
+
   showModalBottomSheet(
+      constraints: BoxConstraints(
+    maxWidth: double.infinity
+  ),
     isScrollControlled: true,
     context: context,
   backgroundColor: Colors.white, 
   
   builder:(context) {
+        final width = MediaQuery.of(context).size.width;
+  final height = MediaQuery.of(context).size.height;
     return StatefulBuilder(
       builder: (context, setLocalState) {
         return SizedBox(
-          height: MediaQuery.of(context).size.height*0.8 ,
+          height: height*0.8 ,
           width: double.infinity,
           child: Padding(
             padding: const EdgeInsets.all(20),
@@ -548,7 +578,7 @@ int lives = 0;
                                                                                               fontSize: 22),),
                                                                                               SizedBox(height: 15,),
                 SizedBox(
-                  height: MediaQuery.of(context).size.height*0.55,
+                  height: height*0.55,
                   child: SingleChildScrollView(
                     scrollDirection: Axis.vertical,
                     child: Column(
@@ -570,7 +600,7 @@ int lives = 0;
                             });
                               },
                               child: SizedBox(
-                            width: MediaQuery.of(context).size.width>700 ? MediaQuery.of(context).size.width*0.2:MediaQuery.of(context).size.width*0.4,
+                            width: width>700 ? width*0.2:width*0.4,
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
@@ -604,7 +634,7 @@ int lives = 0;
                             });
                               },
                               child: SizedBox(
-                             width: MediaQuery.of(context).size.width>700 ? MediaQuery.of(context).size.width*0.2:MediaQuery.of(context).size.width*0.4,
+                             width: width>700 ? width*0.2:width*0.4,
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
@@ -635,7 +665,7 @@ int lives = 0;
                                                                                               SizedBox(height: 20,),
                                                                                                    text ? Container(
                                
-                              width:MediaQuery.of(context).size.width-40,
+                              width:width-40,
                               decoration: BoxDecoration(
                                border: Border.all(color: const Color.fromARGB(255, 195, 166, 246), width: 2 ),
                                borderRadius: BorderRadius.circular(10) 
@@ -659,7 +689,7 @@ int lives = 0;
 optionImage(setLocalState);
                               },
                               child: Container(
-                                width: MediaQuery.of(context).size.width-40,
+                                width: width-40,
                                                 height: 100,         
                                  decoration: BoxDecoration(
                                   image: photo == null ? null : DecorationImage(image: FileImage
@@ -817,7 +847,7 @@ optionImage(setLocalState);
                                                                              buttonStyleData:  ButtonStyleData(
                     
                                                         height: 45,
-                                                        width: MediaQuery.of(context).size.width-40,
+                                                        width: width-40,
                                                         padding: EdgeInsets.symmetric(horizontal: 0),
                                                         decoration: BoxDecoration(
                                                            color:  const Color.fromARGB(255, 195, 166, 246).withAlpha(100),
@@ -1008,6 +1038,16 @@ optionImage(setLocalState);
     : Map<String, dynamic>.from(optionInsert);
 
 optionData.add(newOption);
+  
+                                               dynamic painterText = TextPainter(text: TextSpan(text: newOption['text'], style: TextStyle(fontSize: newOption['size'].toDouble(),
+                                                  fontFamily: 'Poppins'
+
+                                                  )),
+                                                  textDirection: TextDirection.ltr
+                                                  )..layout();
+                                                
+textMap[newOption['id']] = {'width': painterText.width, 'height':painterText.height};
+                                                
                                                                                        }
                     //                                                                    !text ? addImg(nextSlide, count, existingSlide, lives, photo)  : optionData.add(
                     //                                                                         { 'slide_id':currentSlide,   'type': 'text',
@@ -1060,7 +1100,17 @@ optionData.add(newOption);
       })
     : Map<String, dynamic>.from(optionInsert);
 
-optionData.add(newOption);                              
+optionData.add(newOption); 
+
+                                               dynamic painterText = TextPainter(text: TextSpan(text: newOption['text'], style: TextStyle(fontSize: newOption['size'].toDouble(),
+                                                  fontFamily: 'Poppins'
+
+                                                  )),
+                                                  textDirection: TextDirection.ltr
+                                                  )..layout();
+                                                
+textMap[newOption['id']] = {'width': painterText.width, 'height':painterText.height};
+                                                                            
                                                                                        }                                                                          
 //                                                                                                !text ? addImg(nextSlide, null, existingSlide, lives, photo)  :
 // optionData.add(
@@ -1144,6 +1194,8 @@ TextEditingController titleController = TextEditingController();
    
 
   Widget build (BuildContext context){
+        final width = MediaQuery.of(context).size.width;
+  final height = MediaQuery.of(context).size.height;
    final match = slideData.firstWhere(
   (e) => e['slide'] == currentSlide && subslide == e['subslide'],
   orElse: () =><String, dynamic>{},
@@ -1163,35 +1215,14 @@ currentPath =match['path'];
 ,
     body: SafeArea(
       child: SingleChildScrollView(
- child: ConstrainedBox(
-  constraints: BoxConstraints(
-    minHeight: MediaQuery.of(context).size.height -
-        MediaQuery.of(context).padding.top -
-        MediaQuery.of(context).padding.bottom,
-  ),
-          child: Center(
-            child: Container(
-                  height: 820,
-               decoration: BoxDecoration(
-                  
-            
-                  ),
-              child: Padding(
-                padding: const EdgeInsets.only(left: 0),
-                child: 
-                      Stack(
-                        alignment: AlignmentGeometry.center,
-                         children: [
-                          
+ child: Stack(
+   children: [
+              if (width>550)
                           Positioned(
-                            left:   MediaQuery.of(context).size.width>700? 0 : 20,
-                            right:   MediaQuery.of(context).size.width>700? 0 : null,
-                            top: 0,
-                            child: SizedBox(
-                              width: containerWidth,
-                              child: Row(
-                                children: [
-                                  GestureDetector(
+                            left: 20,
+                            top: 20,
+                            child: 
+                           GestureDetector(
                                     onTap: (){
                                       if (Navigator.canPop(context)){
                                   Navigator.pop(context);
@@ -1218,246 +1249,338 @@ currentPath =match['path'];
                                       ),
                                     ),
                                   ),
-                                  SizedBox(width: 10,),
-                                  GestureDetector(
-                                    onTap: (){
-                                    showModalBottomSheet(context: context,
-                                     
-                                      builder:(context) {
-                                       return StatefulBuilder(
-                                         builder: (context, setState) {
-                                           return Container(
-                                                 decoration: BoxDecoration(
-                                                   color: Colors.white,
-                                                   borderRadius: BorderRadius.circular(10)
-                                                 ),
-                                                 child: Padding(
-                                                   padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
-                                                   child: Column(
-                                                 mainAxisAlignment: MainAxisAlignment.center,
-                                                 crossAxisAlignment: CrossAxisAlignment.center,
-                                                 mainAxisSize: MainAxisSize.min,
-                                                 children: [
-                                                    Center(
-                                                      child: Text('Save Draft', 
-                                                                           textAlign: TextAlign.center,
-                                                                           style: TextStyle(fontFamily: 'Poppins', color: const Color.fromARGB(255, 246, 95, 145),
-                                                                                                                   
-                                                                            fontWeight: FontWeight.bold,
-                                                                                                              fontSize: 20),),
-                                                    ),
-                                                        SizedBox(height: 10,),
-                                                   Text('To save this story as a draft, add a title.', 
-                                                                         textAlign: TextAlign.center,
-                                                                         style: TextStyle(fontFamily: 'Poppins', color: Colors.black
-                                                                                                 ,
-                                                                                                            fontSize: 17),),
-                                                                                SizedBox(height: 30,),
-                                                   Align(
-                                                 alignment: Alignment.topLeft,
-                                                 child: Text('Title', style: TextStyle(fontFamily: 'Poppins', color: const Color.fromARGB(255, 246, 95, 145),
-                                                                                                                                            fontSize:18, fontWeight: FontWeight.bold),),
-                                                   ),
-                                                                                                                SizedBox(height: 15,),
-                                                            Container(
-                                                   
-                                                  width:double.infinity,
-                                                  decoration: BoxDecoration(
-                                                   border: Border.all(color: const Color.fromARGB(255, 195, 166, 246), width: 2 ),
-                                                   borderRadius: BorderRadius.circular(10) 
-                                                  ),
-                                                  
-                                                  child:  TextField(
-                                                  maxLines: null,
-                                                maxLength: 80,
-                                               controller: titleController,
-                                                decoration: InputDecoration(border: InputBorder.none, contentPadding: EdgeInsets.symmetric(horizontal: 10),
-                                                hint: Text('What will you call your story?', style:   TextStyle(fontFamily: 'Poppins', color: 
-                                                                               const Color.fromARGB(255, 111, 111, 111),
-                                                                                                                  fontSize: 15)),
-                                                ),
-                                                style: TextStyle(fontFamily: 'Poppins', color: 
-                                                                               const Color.fromARGB(255, 0, 0, 0),
-                                                                                                                  fontSize: 16)
-                                                  ),
-                                                ) ,        
-                                                SizedBox(height: 20,),
-                                                 GestureDetector(
-                                           onTap: () async {
-                                            
-                                             if (!isLoading){
-                                               setState(() {
+                          ),
+     ConstrainedBox(
+      constraints: BoxConstraints(
+        minHeight: height -
+            MediaQuery.of(context).padding.top -
+            MediaQuery.of(context).padding.bottom,
+      ),
+              child: Center(
+                child: Container(
+                      height: 820,
+                   decoration: BoxDecoration(
+                      
+                
+                      ),
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 0),
+                    child: 
+                          Stack(
+                            alignment: AlignmentGeometry.center,
+                             children: [
+                          
+                              Positioned(
+                                // left:   width>700? 0 : 20,
+                                // right:   width>700? 0 : null,
+                                top: 0,
+                                child: SizedBox(
+                                  width: containerWidth,
+                                  child: Row(
+                                    children: [
+                                      if (width<550)
+                                      SizedBox(width: 10,),
+                                        if (width<550)
+                                      GestureDetector(
+                                        onTap: (){
+                                          if (Navigator.canPop(context)){
+                                      Navigator.pop(context);
+                                          } else {
+                                              //  Navigator.of(context).push(
+                                              //   PageRouteBuilder(
+                                              //     pageBuilder: (context, animation, secondaryAnimation) => StoriesForYou(),
+                                              //     transitionDuration: Duration.zero,
+                                              //     reverseTransitionDuration: Duration.zero,
+                                              //   ),
+                                              //                         );
+                                          }
+                                        },
+                                        child: Container(
+                                      
+                                          decoration: BoxDecoration(
+                                            color: const Color.fromARGB(255, 175, 175, 175).withAlpha(50),
+                                            shape: BoxShape.circle
+                                          ),
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(5),
+                                            child: Center(child: Icon(Icons.arrow_back, size: 23, 
+                                            color: const Color.fromARGB(255, 0, 0, 0), )),
+                                          ),
+                                        ),
+                                      ),
+                                      SizedBox(width: 10,),
+                                      GestureDetector(
+                                        onTap: (){
+                                        showModalBottomSheet(context: context,
+                                                                                isScrollControlled: true,
+
+                                           constraints: BoxConstraints(
+    maxWidth: double.infinity
+  ),
+                                          builder:(context) {
+                                           return StatefulBuilder(
+                                             builder: (context, setState) {
+                                               return Padding(
+                                                   padding: EdgeInsets.only(
+            bottom: MediaQuery.of(context).viewInsets.bottom,
+          ),
                                                
-                                             isLoading  = true;
-                                             
-                                               });
-                                              final id = supabase.auth.currentUser?.id;
-                                                     final fetchuser = await supabase.from('profile').select().eq('user_id', id!).maybeSingle();
-                                                      final storyInsert = await supabase.from('story').insert(
-                                                       {'title':titleController.text,
-                                                       'tags':[],
-                                                       "author":id,
-                                                        'comments':null, 'likes':null, 
-                                                       'score':null,
-                                                       'draft':true,
-                                                       'lives': null,
-                                                       'storytype':'Basic', 
-                                                       'username':fetchuser?['username'],
-                                                       }).select();
-                                                      
-                                                     for (final slide in slideData){
-                                                        final insertDate = DateTime.now();
-                                                       slide.remove('id');
-                                                     slide.remove('text', );
-                                                      final slideInsert = await supabase.from('slide').insert(
-                                                          {...slide, 'img': null, 'story_id':storyInsert[0]['id'], 'path':'${insertDate}' }
-                                                      ).select();
-                                                         final path = 'slides/${insertDate}${slideInsert[0]['id']}.png';
-                                                         if (slide['img']!=null){
-                                                     await supabase.storage.from('stories').upload(path, slide['img'], fileOptions: FileOptions(upsert: true));
-                                                         }
-                                                     }
+                                                 child: Container(
+                                                       decoration: BoxDecoration(
+                                                         color: Colors.white,
+                                                         borderRadius: BorderRadius.circular(10)
+                                                       ),
+                                                       child: Padding(
+                                                         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
+                                                         child: Column(
+                                                       mainAxisAlignment: MainAxisAlignment.center,
+                                                       crossAxisAlignment: CrossAxisAlignment.center,
+                                                       mainAxisSize: MainAxisSize.min,
+                                                       children: [
+                                                          Center(
+                                                            child: Text('Save Draft', 
+                                                                                 textAlign: TextAlign.center,
+                                                                                 style: TextStyle(fontFamily: 'Poppins', color: const Color.fromARGB(255, 246, 95, 145),
+                                                                                                                         
+                                                                                  fontWeight: FontWeight.bold,
+                                                                                                                    fontSize: 20),),
+                                                          ),
+                                                              SizedBox(height: 10,),
+                                                         Text('To save this story as a draft, add a title.', 
+                                                                               textAlign: TextAlign.center,
+                                                                               style: TextStyle(fontFamily: 'Poppins', color: Colors.black
+                                                                                                       ,
+                                                                                                                  fontSize: 17),),
+                                                                                      SizedBox(height: 30,),
+                                                         Align(
+                                                       alignment: Alignment.topLeft,
+                                                       child: Text('Title', style: TextStyle(fontFamily: 'Poppins', color: const Color.fromARGB(255, 246, 95, 145),
+                                                                                                                                                  fontSize:18, fontWeight: FontWeight.bold),),
+                                                         ),
+                                                                                                                      SizedBox(height: 15,),
+                                                                  Container(
+                                                         
+                                                        width:double.infinity,
+                                                        decoration: BoxDecoration(
+                                                         border: Border.all(color: const Color.fromARGB(255, 195, 166, 246), width: 2 ),
+                                                         borderRadius: BorderRadius.circular(10) 
+                                                        ),
                                                         
-                                                     for (final option in optionData){
-                                                         option.remove('id', );
-                                                        final insertDate = DateTime.now();
-                                                     final optionInsert  = await supabase.from('options').insert(
-                                                      
-                                                         {...option, 'img': null, 
-                                                           'story_id':storyInsert[0]['id'], 'path':'${insertDate}' 
-                                                            }
-                                                      ).select();
-                                                     final path ='options/${insertDate}${optionInsert[0]['id']}.png';
-                                                     if (option['img'] != null){
-                                                     await supabase.storage.from('stories').upload(path, option['img'], fileOptions: FileOptions(upsert: true));
-                                                     }
-                                                     }
-                                                     isLoading = false;
-                                                      HapticFeedback.mediumImpact();
-                                                     Toast.show(context, 'Draft Saved', false);
-                                                      Navigator.of(context).push(
+                                                        child:  TextField(
+                                                        maxLines: null,
+                                                      maxLength: 80,
+                                                     controller: titleController,
+                                                      decoration: InputDecoration(border: InputBorder.none, contentPadding: EdgeInsets.symmetric(horizontal: 10),
+                                                      hint: Text('What will you call your story?', style:   TextStyle(fontFamily: 'Poppins', color: 
+                                                                                     const Color.fromARGB(255, 111, 111, 111),
+                                                                                                                        fontSize: 15)),
+                                                      ),
+                                                      style: TextStyle(fontFamily: 'Poppins', color: 
+                                                                                     const Color.fromARGB(255, 0, 0, 0),
+                                                                                                                        fontSize: 16)
+                                                        ),
+                                                      ) ,        
+                                                      SizedBox(height: 20,),
+                                                       GestureDetector(
+                                                 onTap: () async {
+                                                  
+                                                   if (!isLoading){
+                                                     setState(() {
+                                                     
+                                                   isLoading  = true;
+                                                   
+                                                     });
+                                                    final id = supabase.auth.currentUser?.id;
+                                                           final fetchuser = await supabase.from('profile').select().eq('user_id', id!).maybeSingle();
+                                                            final storyInsert = await supabase.from('story').insert(
+                                                             {'title':titleController.text,
+                                                             'tags':[],
+                                                             "author":id,
+                                                              'comments':0, 'likes':0, 
+                                                             'score':0,
+                                                             'draft':true,
+                                                             'lives': null,
+                                                             'storytype':'Basic', 
+                                                             'username':fetchuser?['username'],
+                                                             }).select();
+                                                            
+                                                           for (final slide in slideData){
+                                                              final insertDate = DateTime.now();
+                                                             slide.remove('id');
+                                                           slide.remove('text', );
+                                                            final slideInsert = await supabase.from('slide').insert(
+                                                                {...slide, 'img': null, 'story_id':storyInsert[0]['id'], 'path':'${insertDate}' }
+                                                            ).select();
+                                                               final path = 'slides/${insertDate}${slideInsert[0]['id']}.png';
+                                                               if (slide['img']!=null){
+                                                           await supabase.storage.from('stories').upload(path, slide['img'], fileOptions: FileOptions(upsert: true));
+                                                               }
+                                                           }
+                                                              
+                                                           for (final option in optionData){
+                                                               option.remove('id', );
+                                                              final insertDate = DateTime.now();
+                                                           final optionInsert  = await supabase.from('options').insert(
+                                                            
+                                                               {...option, 'img': null, 
+                                                                 'story_id':storyInsert[0]['id'], 'path':'${insertDate}' 
+                                                                  }
+                                                            ).select();
+                                                           final path ='options/${insertDate}${optionInsert[0]['id']}.png';
+                                                           if (option['img'] != null){
+                                                           await supabase.storage.from('stories').upload(path, option['img'], fileOptions: FileOptions(upsert: true));
+                                                           }
+                                                           }
+                                                           isLoading = false;
+                                                            HapticFeedback.mediumImpact();
+                                                           Toast.show(context, 'Draft Saved', false);
+                                                            Navigator.of(context).push(
+                                                      PageRouteBuilder(
+                                                        pageBuilder: (context, animation, secondaryAnimation) => Drafts(),
+                                                        transitionDuration: Duration.zero,
+                                                        reverseTransitionDuration: Duration.zero,
+                                                      ),
+                                                                            );
+                                                   }   
+                                                                                
+                                                 },
+                                                         child: Container(
+                                                                  width:  double.infinity,
+                                                                  height: 50,
+                                                               decoration: BoxDecoration(
+                                                               gradient: LinearGradient(
+                                                               begin: Alignment.topLeft,
+                                                               end: Alignment.bottomRight,
+                                                               
+                                                               colors: [const Color.fromARGB(255, 195, 166, 246).withAlpha(50), const Color.fromARGB(255, 165, 122, 241).withAlpha(110), ]
+                                                                                                                                            
+                                                               ),
+                                                               borderRadius: BorderRadius.circular(10),
+                                                               
+                                                               ),
+                                                               child: Center(child: 
+                                                               isLoading?
+                                                                SizedBox(
+                                                                 width: 25,
+                                                                 height: 25,
+                                                                  child: CircularProgressIndicator(
+                                                                   strokeWidth: 3,
+                                                                   color: const Color.fromARGB(255, 141, 116, 185),),
+                                                                ):
+                                                               Text('Save',                                                                                                                  
+                                                               style: 
+                                                               TextStyle(fontFamily: 'Poppins', 
+                                                               color: const Color.fromARGB(255, 141, 116, 185),
+                                                               fontWeight: FontWeight.bold,
+                                                               fontSize: 18)),),
+                                                               ),
+                                                       ),                      
+                                                      SizedBox(height: 10,)
+                                                       ],
+                                                         ),
+                                                       ),
+                                                 ),
+                                               );
+                                             }
+                                           );
+                                         },);
+                                        },
+                                        child:  Center(child: 
+                                             Row(
+                                          children: [
+                                            SizedBox(width: 10,),
+                                               widget.isDraft?? false ?
+                                   Text(isSaving ? 'Saving draft...': 'Draft saved', style: TextStyle(fontFamily: 'Poppins',
+                                   
+                                    fontSize: 16, color:  const Color.fromARGB(255, 246, 95, 145).withAlpha(150)),)
+                                
+                                     :   Icon(Icons.text_snippet, size: 30, color:  const Color.fromARGB(255, 246, 95, 145), )
+                                          ],
+                                        ) 
+                                      ),),
+                                      Spacer(),
+                                        GestureDetector(
+                                            onTap: () async {
+                                              dynamic sentData = [];
+                                              if (widget.isDraft??false){
+                                                sentData = await supabase.from('story').select().eq('id', slideData[0]['story_id']).maybeSingle();
+                                              }
+                                                               Navigator.of(context).push(
                                                 PageRouteBuilder(
-                                                  pageBuilder: (context, animation, secondaryAnimation) => Drafts(),
+                                                  pageBuilder: (context, animation, secondaryAnimation) => PublishStory(storyType: 'Basic', slideData: slideData, optionData: optionData, 
+                                                  
+                                                  
+                                                  draftData: (widget.isDraft??false) ?sentData: null,),
                                                   transitionDuration: Duration.zero,
                                                   reverseTransitionDuration: Duration.zero,
                                                 ),
                                                                       );
-                                             }   
-                                                                          
-                                           },
-                                                   child: Container(
-                                                            width:  double.infinity,
-                                                            height: 50,
-                                                         decoration: BoxDecoration(
-                                                         gradient: LinearGradient(
-                                                         begin: Alignment.topLeft,
-                                                         end: Alignment.bottomRight,
-                                                         
-                                                         colors: [const Color.fromARGB(255, 195, 166, 246).withAlpha(50), const Color.fromARGB(255, 165, 122, 241).withAlpha(110), ]
-                                                                                                                                      
-                                                         ),
-                                                         borderRadius: BorderRadius.circular(10),
-                                                         
-                                                         ),
-                                                         child: Center(child: 
-                                                         isLoading?
-                                                          SizedBox(
-                                                           width: 25,
-                                                           height: 25,
-                                                            child: CircularProgressIndicator(
-                                                             strokeWidth: 3,
-                                                             color: const Color.fromARGB(255, 141, 116, 185),),
-                                                          ):
-                                                         Text('Save',                                                                                                                  
-                                                         style: 
-                                                         TextStyle(fontFamily: 'Poppins', 
-                                                         color: const Color.fromARGB(255, 141, 116, 185),
-                                                         fontWeight: FontWeight.bold,
-                                                         fontSize: 18)),),
-                                                         ),
-                                                 ),                      
-                                                SizedBox(height: 10,)
-                                                 ],
-                                                   ),
-                                                 ),
-                                           );
-                                         }
-                                       );
-                                     },);
-                                    },
-                                    child:  Center(child: 
-                                         Row(
-                                      children: [
-                                        SizedBox(width: 10,),
-                                           widget.isDraft?? false ?
-                               Text(isSaving ? 'Saving draft...': 'Draft saved', style: TextStyle(fontFamily: 'Poppins',
-                               
-                                fontSize: 16, color:  const Color.fromARGB(255, 246, 95, 145).withAlpha(150)),)
-                            
-                                 :   Icon(Icons.text_snippet, size: 30, color:  const Color.fromARGB(255, 246, 95, 145), )
-                                      ],
-                                    ) 
-                                  ),),
-                                  Spacer(),
-                                    GestureDetector(
-                                        onTap: () async {
-                                          dynamic sentData = [];
-                                          if (widget.isDraft??false){
-                                            sentData = await supabase.from('story').select().eq('id', slideData[0]['story_id']).maybeSingle();
-                                          }
-                                                           Navigator.of(context).push(
-                                            PageRouteBuilder(
-                                              pageBuilder: (context, animation, secondaryAnimation) => PublishStory(storyType: 'Basic', slideData: slideData, optionData: optionData, 
-                                              
-                                              
-                                              draftData: (widget.isDraft??false) ?sentData: null,),
-                                              transitionDuration: Duration.zero,
-                                              reverseTransitionDuration: Duration.zero,
-                                            ),
-                                                                  );
-                            },
-                                      child: Row(
-                                        children: [
-                                          Text('Finish', style: TextStyle(fontFamily: 'Poppins', color: const Color.fromARGB(255, 173, 142, 227)
-                                                                //     const Color.fromARGB(255, 195, 166, 246)
-                                                                     , fontWeight: FontWeight.bold,
-                                                                                                        fontSize: 17),),
-                                                                                                        SizedBox(width: 2,),
-                                      Icon(Icons.chevron_right, color: const Color.fromARGB(255, 173, 142, 227), size: 30,)
-                                        ],
-                                      ),
-                                    ),
-                                ],
-                              ),
-                            )),
-                           Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                                         SizedBox(height: 50,),
-                                             SizedBox(
-                                                 width: containerWidth,
-                                               child: Column(
-                                                   mainAxisAlignment: MainAxisAlignment.start,
-                                                                   crossAxisAlignment: CrossAxisAlignment.start,
-                                                 children: [
-                                                   Text('Slide ${currentSlide}${slideData.where((entry) => entry
-                                                   ['subslide'] == subslide && entry['slide'] == currentSlide).first['subslide'] == null ? '':', Option ${
-                                                   slideData.where((entry) => entry
-                                                   ['subslide'] == subslide && entry['slide'] == currentSlide).first['subslide']
-                                                   }'}', style: TextStyle(fontFamily: 'Poppins', color: 
-                                                   const Color.fromARGB(255, 195, 166, 246), fontWeight: FontWeight.bold,
-                                                                                      fontSize: 25),),
-                                                                                      SizedBox(height: 10,),
-                                                                                      Row(
-                                                                                        children: [
-                                                                                          subslide != null ? SizedBox.shrink() :
-                                                                                          GestureDetector(
-                                                                                            onTap: (){
-                                                                                              addOption();
-                                                                                            },
-                                                                                            child: Container(
-                                                                                            
+                                },
+                                          child: Row(
+                                            children: [
+                                              Text('Finish', style: TextStyle(fontFamily: 'Poppins', color: const Color.fromARGB(255, 173, 142, 227)
+                                                                    //     const Color.fromARGB(255, 195, 166, 246)
+                                                                         , fontWeight: FontWeight.bold,
+                                                                                                            fontSize: 17),),
+                                                                                                            SizedBox(width: 2,),
+                                          Icon(Icons.chevron_right, color: const Color.fromARGB(255, 173, 142, 227), size: 30,)
+                                            ],
+                                          ),
+                                        ),
+                                    ],
+                                  ),
+                                )),
+                               Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                             SizedBox(height: 50,),
+                                                 SizedBox(
+                                                     width: containerWidth,
+                                                   child: Column(
+                                                       mainAxisAlignment: MainAxisAlignment.start,
+                                                                       crossAxisAlignment: CrossAxisAlignment.start,
+                                                     children: [
+                                                       Text('Slide ${currentSlide}${slideData.where((entry) => entry
+                                                       ['subslide'] == subslide && entry['slide'] == currentSlide).first['subslide'] == null ? '':', Option ${
+                                                       slideData.where((entry) => entry
+                                                       ['subslide'] == subslide && entry['slide'] == currentSlide).first['subslide']
+                                                       }'}', style: TextStyle(fontFamily: 'Poppins', color: 
+                                                       const Color.fromARGB(255, 195, 166, 246), fontWeight: FontWeight.bold,
+                                                                                          fontSize: 25),),
+                                                                                          SizedBox(height: 10,),
+                                                                                          Row(
+                                                                                            children: [
+                                                                                              subslide != null ? SizedBox.shrink() :
+                                                                                              GestureDetector(
+                                                                                                onTap: (){
+                                                                                                  addOption();
+                                                                                                },
+                                                                                                child: Container(
+                                                                                                
+                                                                                                  decoration: BoxDecoration(
+                                                                                                    color: const Color.fromARGB(255, 255, 209, 224),
+                                                                                                    borderRadius: BorderRadius.circular(10),
+                                                                                                    
+                                                                                                  ),
+                                                                                                  child: Padding(
+                                                                                                    padding: const EdgeInsets.all(12),
+                                                                                                    child: Center(child: Text('Add Choice', style: 
+                                                                                                    TextStyle(fontFamily: 'Poppins', 
+                                                                                                      color: const Color.fromARGB(255, 246, 95, 145),
+                                                                                                        fontWeight: FontWeight.bold,
+                                                                                                                                                                                fontSize: 14)),),
+                                                                                                
+                                                                                                  ),
+                                                                                                ),
+                                                                                              ),
+                                                                                       subslide != null ? SizedBox.shrink() :   SizedBox(width: 10,),
+                                                                                            GestureDetector(
+                                              onTap: (){
+                                                showImagePickerOptions();
+                                              },
+                                                                                              child: Container(
+                                                                                              
                                                                                               decoration: BoxDecoration(
                                                                                                 color: const Color.fromARGB(255, 255, 209, 224),
                                                                                                 borderRadius: BorderRadius.circular(10),
@@ -1465,544 +1588,540 @@ currentPath =match['path'];
                                                                                               ),
                                                                                               child: Padding(
                                                                                                 padding: const EdgeInsets.all(12),
-                                                                                                child: Center(child: Text('Add Choice', style: 
-                                                                                                TextStyle(fontFamily: 'Poppins', 
-                                                                                                  color: const Color.fromARGB(255, 246, 95, 145),
-                                                                                                    fontWeight: FontWeight.bold,
-                                                                                                                                                                            fontSize: 14)),),
-                                                                                            
+                                                                                                child: Center(child: Text('Background Image', style: 
+                                                                                              TextStyle(fontFamily: 'Poppins', 
+                                                                                                color: const Color.fromARGB(255, 246, 95, 145)
+                                                                                                , fontWeight: FontWeight.bold,
+                                                                                              fontSize: 14)
+                                                                                                ),),
                                                                                               ),
+                                                                                                                                                                            ),
                                                                                             ),
+                                                                                            SizedBox(width: 10,),
+                
+                                                           ((subslide == null ? slideData.where((e)=>e['subslide'] == null).length > 1 : true)) ?   Container(
+                                                                                
+                                                         decoration: BoxDecoration(
+                                                           color: const Color.fromARGB(255, 255, 173, 173),
+                                                           shape: BoxShape.circle
+                                                           
+                                                         ),
+                                                         child: Padding(
+                                                           padding: const EdgeInsets.all(8),
+                                                           child: Center(child: 
+                                                         
+                                                           Row(
+                                                             mainAxisAlignment: MainAxisAlignment.center,
+                                                             crossAxisAlignment: CrossAxisAlignment.center,
+                                                             children: [
+                                                         
+                                                          GestureDetector(
+                                                            onTap: (){
+                                                          delSlide();
+                                                            },
+                                                            child: Icon(
+                                                               Icons.delete, size: 27,  color: const Color.fromARGB(255, 255, 84, 84)),
+                                                          )
+                                                             ],
+                                                           ),),
+                                                         ),
+                                                                                                                                           ) : SizedBox.shrink(),
+                                                                                            ],
                                                                                           ),
-                                                                                   subslide != null ? SizedBox.shrink() :   SizedBox(width: 10,),
-                                                                                        GestureDetector(
-                                          onTap: (){
-                                            showImagePickerOptions();
-                                          },
-                                                                                          child: Container(
-                                                                                          
-                                                                                          decoration: BoxDecoration(
-                                                                                            color: const Color.fromARGB(255, 255, 209, 224),
-                                                                                            borderRadius: BorderRadius.circular(10),
-                                                                                            
-                                                                                          ),
-                                                                                          child: Padding(
-                                                                                            padding: const EdgeInsets.all(12),
-                                                                                            child: Center(child: Text('Background Image', style: 
-                                                                                          TextStyle(fontFamily: 'Poppins', 
-                                                                                            color: const Color.fromARGB(255, 246, 95, 145)
-                                                                                            , fontWeight: FontWeight.bold,
-                                                                                          fontSize: 14)
-                                                                                            ),),
-                                                                                          ),
-                                                                                                                                                                        ),
-                                                                                        ),
-                                                                                        SizedBox(width: 10,),
-            
-                                                       ((subslide == null ? slideData.where((e)=>e['subslide'] == null).length > 1 : true)) ?   Container(
-                                                                            
-                                                     decoration: BoxDecoration(
-                                                       color: const Color.fromARGB(255, 255, 173, 173),
-                                                       shape: BoxShape.circle
+                
+                                                    
+                                                   ],
+                                                   ),
+                                                 ),
+                SizedBox(height: 10,),
+                                  GestureDetector(
+                //                         onHorizontalDragEnd: (details){
+                //                           final vel = details.primaryVelocity ?? 0;
+                //                           if (vel > 0 && currentSlide>0 ){
+                
+                // setState(() {
+                //   currentSlide--;
+                // });
+                //                           }
+                
+                //                           if (vel<0 && widget.slideData.where((e) => e['slide'] == currentSlide && e['subslide'] == subslide).single['type'] != 'choice'){
+                
+                // setState(() {
+                //   currentSlide++;
+                //   subslide=null;
+                // });
+                //   print(currentSlide);
+                //                           }
+                                    
+                                    child: GestureDetector(
+                //                         },
+                                      onTap: (){
+                                        setState(() {
+     
+                                          
+                                        tappedId = null;
+                                        
+                                        });
+                                      },
+                                      child: Container(
+                                          width: containerWidth, 
+                                                         
+                                          height: containerHeight,
+                                          decoration: BoxDecoration(
+                                       image: currentImg == null && currentPath == null  ? null : DecorationImage(image:
+                                       currentPath != null ? 
+                                       NetworkImage
+                                       (
+                                   supabase.storage.from('stories').getPublicUrl
+                                       ('slides/${currentPath}${currentID}.png'))
+                                       :
+                                       FileImage
+                                       (
+                                    currentImg
+                                       ) ),
+                                          color:
+                                          
+                                         
+                                           const Color.fromARGB(255, 255, 255, 255), borderRadius: BorderRadius.circular(10)),
+                                           
+                                          child:
+                                        
+                                           Stack(
+                                             children: [
+                                                                                  ...optionData.where((e) => e['slide_id'] == currentSlide && e['subslide'] == subslide).map((e) 
+                                                        {
                                                        
-                                                     ),
-                                                     child: Padding(
-                                                       padding: const EdgeInsets.all(8),
-                                                       child: Center(child: 
-                                                     
-                                                       Row(
-                                                         mainAxisAlignment: MainAxisAlignment.center,
-                                                         crossAxisAlignment: CrossAxisAlignment.center,
-                                                         children: [
-                                                     
-                                                      GestureDetector(
-                                                        onTap: (){
-                                                      delSlide();
-                                                        },
-                                                        child: Icon(
-                                                           Icons.delete, size: 27,  color: const Color.fromARGB(255, 255, 84, 84)),
-                                                      )
-                                                         ],
-                                                       ),),
-                                                     ),
-                                                                                                                                       ) : SizedBox.shrink(),
-                                                                                        ],
-                                                                                      ),
-            
+                                             return Positioned(
+                                               left: ((e['left'].toDouble() )),
+                                               top: ((e['top'].toDouble() )),
+                                                child: GestureDetector(
+                                                 onTap: () {
+                                                  tappedId= e['id'];
                                                 
-                                               ],
-                                               ),
-                                             ),
-            SizedBox(height: 10,),
-                              GestureDetector(
-            //                         onHorizontalDragEnd: (details){
-            //                           final vel = details.primaryVelocity ?? 0;
-            //                           if (vel > 0 && currentSlide>0 ){
-            
-            // setState(() {
-            //   currentSlide--;
-            // });
-            //                           }
-            
-            //                           if (vel<0 && widget.slideData.where((e) => e['slide'] == currentSlide && e['subslide'] == subslide).single['type'] != 'choice'){
-            
-            // setState(() {
-            //   currentSlide++;
-            //   subslide=null;
-            // });
-            //   print(currentSlide);
-            //                           }
-                                
-                                child: GestureDetector(
-            //                         },
-                                  onTap: (){
-                                    setState(() {
-
-                                      
-                                    tappedId = null;
-                                    
-                                    });
-                                  },
-                                  child: Container(
-                                      width: containerWidth, 
+                                                   setState(() {
                                                      
-                                      height: containerHeight,
-                                      decoration: BoxDecoration(
-                                   image: currentImg == null && currentPath == null  ? null : DecorationImage(image:
-                                   currentPath != null ? 
-                                   NetworkImage
-                                   (
-                               supabase.storage.from('stories').getPublicUrl
-                                   ('slides/${currentPath}${currentID}.png'))
-                                   :
-                                   FileImage
-                                   (
-                                currentImg
-                                   ) ),
-                                      color:
-                                      
-                                     
-                                       const Color.fromARGB(255, 255, 255, 255), borderRadius: BorderRadius.circular(10)),
-                                       
-                                      child:
-                                    
-                                       Stack(
-                                         children: [
-                                                                              ...optionData.where((e) => e['slide_id'] == currentSlide && e['subslide'] == subslide).map((e) 
-                                                    {
+                                                   });
+                                                 
+                                                 },
+                                                onScaleEnd: (details){
+                   
+                                                                    
+                                                  if ((widget.isDraft??false) ){
+                                                                      //  canUpdateOption=false;
+                                                                        
+                                                                      updateOption(e, [e['left'], e['top'], e['width'], e['height'], e['size'] ]);
+                //                                                             debounceTimer = Timer(Duration(milliseconds: 100), (){
+                // canUpdateOption=true;
+                
+                //                                                             }) ;
+                                                                      }
+                                                },
+                                                 onScaleUpdate: (details){
+                                                  
+                                                   isSaving=true;
+                                                   if (tappedId == e['id']){
+     
+                                                    setState(() {
+                                                    
+                                                      final left = ( (e['left'] + (details.focalPointDelta.dx)).clamp(0, 
+                                                     (e['type'] == 'img' ?   ((containerWidth- e['width'])) : (360-textMap[e['id']]['width'])).abs()
+                                                     .round()
+                                                            
+                                                     ) ).round();
+                                                     final top = (e['top'] + (details.focalPointDelta.dy)).clamp(0,
+                                                                                   (e['type'] !=  'img' ? 490-textMap[e['id']]['height']
+                                                                                    :(containerHeight- e['height'])).abs()).round();
+                                                    
+                                                     optionData[optionData.indexOf(e)]['left'] = left;
                                                    
-                                         return Positioned(
-                                           left: ((e['left'].toDouble() )),
-                                           top: ((e['top'].toDouble() )),
-                                            child: GestureDetector(
-                                             onTap: () {
-                                              tappedId= e['id'];
-                                            
+                                                      optionData[optionData.indexOf(e)]['top'] = top;
+                                                                                 dynamic width;
+                                                                                 dynamic height;
+                                                                                 dynamic size;
+                                                      if (e['type'] == 'img'){
+                                                        width = ((e['width']) * (((details.scale-1)/10)+1)).clamp(100,(0.9*containerWidth))  .round();
+                                                        height = ((e['height']) *  (((details.scale-1)/10)+1)).clamp(100,(0.9*containerHeight))  .round();
+                                                      optionData[optionData.indexOf(e)]['width'] = width;
+                                                      optionData[optionData.indexOf(e)]['height'] = height;
+                                                      }
+                                                      
+                                                                      if (e['size'] != null){
+                                                                        size= (e['size'] * (((details.scale-1)/10)+1)).clamp(13,35).round();
+                                                                     optionData[optionData.indexOf(e)]['size'] =size;
+                                                                    
+                                                 
+                                                    final  painterText = TextPainter(text: TextSpan(text: e['text'], style: TextStyle(fontSize: e['size'].toDouble(),
+                                                      fontFamily: 'Poppins'
+     
+                                                      )),
+                                                      textDirection: TextDirection.ltr
+                                                      )..layout();
+                                                    textMap[e['id']] = {'width':painterText.width, 'height':painterText.height};
+                                                                      }
+                                                                    
+                                                     });
+                                                   } 
+                                                 },
+                                                 child:
+                                                 Row(
+                                                   mainAxisAlignment: MainAxisAlignment.start,
+                                                               crossAxisAlignment: CrossAxisAlignment.start,
+                                                   children: [
+                                                  
+                                                     Padding(
+                                                       padding: const EdgeInsets.all(2),
+                                                       child: Container(
+                                                         alignment: Alignment.center,
+                                                       
+                                                         width: e['type'] == 'img' ? (e['width'] ?? 150).toDouble()  : null,
+                                                         height:  e['type'] == 'img' ? (e['height']??150).toDouble() : null, 
+                                                         decoration: tappedId == e['id'] ?  
+                                                         
+                                                         BoxDecoration(
+                                                           border: Border.all(width: 2.5, color:  const Color.fromARGB(255, 246, 95, 145),)
+                                                         ) : null,
+                                                         child: 
+                                                         Padding(padding: EdgeInsets.all(0),
+                                                         child:
+                                                        (e['img'] == null  && e['path'] == null) || e['type'] == 'text'? Text('${e['text']}', style: TextStyle(
+                                                          fontFamily: 'Poppins',
+                                                          fontSize: e['size'] == null ? 10 :e['size'].toDouble())) : Container(
+                                                         
+                                                         
+                                                                                 decoration: BoxDecoration(
+                                                                                   image: DecorationImage(image: 
+                                                                                   
+                                                                                    e['path'] != null?
+                                       NetworkImage
+                                       (
+                                   supabase.storage.from('stories').getPublicUrl
+                                       ('options/${e['path']}${e['id']}.png'))
+                                       :
+                                                                                   FileImage(e['img']) , fit: BoxFit.contain )
+                                                                                 ),
+                                                                                 
+                                                         )) ),
+                                                     ),
+                                                       SizedBox(width: 10,),
+                                                          tappedId!=e['id'] ? SizedBox.shrink() :
+                                                           Column(
+                                                             children: [
+                                                               GestureDetector(
+                                                                onTap: ()async{
+                                                              
+                                                              List sameSubslide = optionData.where((entry) => entry['slide_id'] == e['slide_id'] && entry['next_slide_id'] == e['next_slide_id']).toList();
+                                                      
+                                                              if (sameSubslide.length==1 && int.tryParse(e['next_slide_id'].toString()) == null){
+                                                                  if (widget.isDraft ?? false){
+                                                               await supabase.from('slide').delete().eq('slide', e['slide_id']).eq('subslide', e['next_slide_id']);
+                                                                  }
+                                                               slideData.remove(slideData.where((entry) => entry['slide'] == e['slide_id'] && entry['subslide'] == e['next_slide_id']).single);
+                                                               
+                                                               List withSubslides = slideData.where((entry) {
+                                                            
+                                                                 return 
+                                                                 entry['slide'] == currentSlide &&
+                                                                 entry['subslide'] != null && alphabet.indexOf(entry['subslide']?.toLowerCase()) > alphabet.indexOf(e['next_slide_id']?.toLowerCase());}).toList();
+     
+                                                               for (final slide in withSubslides){
+                                           
+                                                               List optionslide =  optionData.where((era) => era['slide_id'] == slide['slide'] && era['next_slide_id'] == slide['subslide']).toList();
+                                                              
+                                                               for (final option in optionslide){
+                                                                  option['next_slide_id'] = alphabet[alphabet.indexOf(slide['subslide'].toLowerCase())-1].toUpperCase();
+                                                                     if (widget.isDraft ?? false){
+                                                                   await supabase.from('options').update({'next_slide_id':alphabet[alphabet.indexOf(slide['subslide'].toLowerCase())-1].toUpperCase()
+                                                                   }).eq('id', option['id']);
+                                                                     }
+                                                               }
+                                                                 slide['subslide'] = alphabet[alphabet.indexOf(slide['subslide'].toLowerCase())-1].toUpperCase();
+                                                                 if (widget.isDraft ?? false){
+                                                                  await supabase.from('slide').update({'subslide':alphabet[alphabet.indexOf(slide['subslide'].toLowerCase())-1].toUpperCase
+                                                                   }).eq('id', slide['id']);
+                                                                 }
+                                                               }
+                                                              }
+                                                            
+                                                                if (optionData.where((er)=>er['slide_id'] == currentSlide).length==1 ){
+                                                                  final current=slideData.where((e)
+                                                                  { 
+                                                                
+                                                                    return e['slide']==currentSlide && e['subslide'] == null;} ).single;
+     current['type']= 'text';
+     if (widget.isDraft??false){
+       await supabase.from('slide').update({'type':'text'}).eq('id', current['id']);
+     }
+                                                              }
+                                                              optionData.remove(e);
+                                                              
+                                                              if (widget.isDraft??false){
+                                                                   await supabase.from('options').delete().eq('id', e['id']);
+                                                                    await supabase.storage.from('story').remove(['options/${e['path']}${e['id']}']);
+                
+                                                              }
+                                             setState(() {
+                                                                });
+                                                                },
+                                                                 child:  Container(
+                                                                             width: 40,                                                         decoration: BoxDecoration(color: const Color.fromARGB(255, 252, 181, 181).withAlpha(200),  borderRadius: BorderRadius.circular(12)),
+                                                                                                                                      child: Center(child: Padding(
+                                                                  padding: const EdgeInsets.all(8.0),
+                                                                  child: Icon(Icons.delete, color: Colors.red,),
+                                                                                                                                   ),),
+                                                                                                                                    ),
+                                                               ),
+                                                                SizedBox(height: 10,),
+                                                                    GestureDetector(
+                                                                onTap: (){
+                                                               setState(() {
+     
+      final nextSlide = int.tryParse(e['next_slide_id']?.toString() ?? '');
+     print('ummmmmmmm $nextSlide');
+      if (nextSlide != null) {
+      
+        subslide = null;
+        currentSlide = nextSlide;
+      } else {
+     
+        subslide = e['next_slide_id'];
+        currentSlide = e['slide_id']; 
+      }
+     });
+                                                                },
+                                                                 child:  Container(
+                                                                   width: 40,
+                                                                                                                                      decoration: BoxDecoration(color: const Color.fromARGB(255, 195, 166, 246).withAlpha(100),
+                                                              borderRadius: BorderRadius.circular(12)),
+                                                                                                                                      child: Center(child: Padding(
+                                                                  padding: const EdgeInsets.all(8.0),
+                                                                 child: Text('${int.tryParse(e['next_slide_id'].toString()) == null ? e['slide_id'] : ''}${e['next_slide_id']}', 
+                                                                   style: TextStyle(fontFamily: 'Poppins',fontWeight: FontWeight.bold,
+                                                   fontSize: 18,
+                                                    color:const Color.fromARGB(255, 173, 142, 227),))
+                                                                                                                                   ),),
+                                                                                                                                    ),
+                                                               ),
+                                                             ],
+                                                           ),
+                                                   ],
+                                                 ))
+                                             );
+                                                        }
+                                              ),
+                                             // widget.data['lives'] != null ?  Positioned(
+                                               
+                                             //     right: 10,
+                                             //     child: 
+                                             // Row(
+                                             //     children: [
+                                             //       Icon(Icons.favorite_rounded, color: const Color.fromARGB(255, 255, 87, 75),),
+                                             //       SizedBox(width: 10,),
+                                             //       Text('${lives ?? widget.data['lives']}', style: TextStyle(fontFamily: 'Poppins',fontWeight: FontWeight.bold,
+                                             //       fontSize: 18,
+                                             //        color: const Color.fromARGB(255, 136, 74, 69)),)
+                                             //     ],
+                                             //   )
+                                             //   ) : SizedBox.shrink(),
+                                               Column(
+                                                 children: [
+                                                   
+                                                
+                                                 
+                                                 ],
+                                               ),
+                                                                     //                                    ...widget.optionData.where((e) => e['slide_id'] == currentSlide).map((e) 
+                                                                     //                    {
+                                                       
+                                                                     //                                 return Positioned(
+                                                                     //                                   left: ((e['left'] as double) * containerWidth),
+                                                                     //                                   top: ((e['top'] as double)* containerHeight),
+                                                                     //                                    child: GestureDetector(
+                                                                     //                                     onTap: () {
+                                                   
+                                                                     //                                      subslide = widget.slideData.where((entry) => entry['subslide'] == e['next_slide_id'] && (entry['slide'] == (currentSlide+1))).first['subslide']as int;
+                                                                              
+                                                                     //                                         currentSlide++;
+                                                                     //                                         if (e['lives'] != null && widget.data['lives'] != null){
+                                                                     // lives == null ? lives = widget.data['lives']+(e['lives'] as int) : lives = lives! + (e['lives'] as int);
+                                                                     // if (lives == 0){gameOVer=true;}
+                                                                     //                                         }
+                                                                     //                                       setState(() {
+                                                     
+                                                                     //                                       });
+                                                                     //                                     },
+                                                                     //                                     child: e['img'] == null ? Text('${e['text']}') : Container(
+                                                   
+                                                                     // width: ((e['width'] as double) * containerWidth), height: ((e['height'] as double) * containerWidth),
+                                                                     // decoration: BoxDecoration(
+                                                                     //   image: DecorationImage(image: NetworkImage(e['img'] as String))
+                                                                     // ),
+                                                                     
+                                                                     //                                     )),
+                                                                     //                                  );
+                                                                     //                    }
+                                                          ] ),
+                                            ),
+                                    ),
+                
+                                     
+                                        ),
+                                        SizedBox(height: 20,),
+                                           Padding(
+                                            padding: const EdgeInsets.only(left: 20, bottom: 12),
+                                            child: SizedBox(
+                                              width: containerWidth,
+                                              child: Align(
+                                                                                         alignment: Alignment.topLeft,
+                                                child: Text('Slides', style: 
+                                                                                                                        TextStyle(fontFamily: 'Poppins', 
+                                                                                                                          color: const Color.fromARGB(255, 0, 0, 0),
+                                                                                                                            fontWeight: FontWeight.bold,
+                                                                                                                                                                                                    fontSize: 17)),
+                                              ),
+                                            ),
+                                          ),
+                                        SizedBox(
+                                          width: containerWidth,
+                                          height: 80,
+                                          child: ListView.builder(
+                                            scrollDirection: Axis.horizontal,
+                                            itemCount: slideData.length+1,
+                                            itemBuilder: (context, index){
+                                            return index == slideData.length ?
+                                            GestureDetector(
+                                              onTap: () async {
                                                setState(() {
                                                  
+                                             
+                                                isSaving=true;
+                                                  });
+                                                dynamic addSlide = {'slide':slideData.where((e)=>e['subslide'] == null).length+1, "type":"text", 'subslide':null, 'id':
+                                            idis+1};
+                                                  final newSlide = widget.isDraft?? false
+                    ? Map<String, dynamic>.from({
+                  ...addSlide, 
+                  'id': await saveSlide(addSlide),
+                })
+                    : Map<String, dynamic>.from(addSlide);
+                
+                                               slideData.add(newSlide);
+                                               setState(() {
+                                                 isSaving=false;
                                                });
-                                             
-                                             },
-                                            onScaleEnd: (details){
-               
-                                                                
-                                              if ((widget.isDraft??false) ){
-                                                                  //  canUpdateOption=false;
-                                                                    
-                                                                  updateOption(e, [e['left'], e['top'], e['width'], e['height'], e['size'] ]);
-            //                                                             debounceTimer = Timer(Duration(milliseconds: 100), (){
-            // canUpdateOption=true;
-            
-            //                                                             }) ;
-                                                                  }
-                                            },
-                                             onScaleUpdate: (details){
-                                              
-                                               isSaving=true;
-                                               if (tappedId == e['id']){
-                                                setState(() {
-                                                  final left = ( (e['left'] + (details.focalPointDelta.dx)).clamp(0, 
-                                                 (e['type'] == 'img' ?   ((containerWidth- e['width'])) : (containerWidth-((e['text'].length *13 )+4))).abs()
-                                                 .round()
-                                                        
-                                                 ) ).round();
-                                                 final top = (e['top'] + (details.focalPointDelta.dy)).clamp(0,
-                                                                               (e['type'] !=  'img' ? 425 :(containerHeight- e['height'])).abs()).round();
-                                                
-                                                 optionData[optionData.indexOf(e)]['left'] = left;
-                                               
-                                                  optionData[optionData.indexOf(e)]['top'] = top;
-                                                                             dynamic width;
-                                                                             dynamic height;
-                                                                             dynamic size;
-                                                  if (e['type'] == 'img'){
-                                                    width = ((e['width']) * (((details.scale-1)/10)+1)).clamp(100,(0.9*containerWidth))  .round();
-                                                    height = ((e['height']) *  (((details.scale-1)/10)+1)).clamp(100,(0.9*containerHeight))  .round();
-                                                  optionData[optionData.indexOf(e)]['width'] = width;
-                                                  optionData[optionData.indexOf(e)]['height'] = height;
-                                                  }
-                                                  
-                                                                  if (e['size'] != null){
-                                                                    size= (e['size'] * (((details.scale-1)/10)+1)).clamp(13,35).round();
-                                                                 optionData[optionData.indexOf(e)]['size'] =size;
-                                                                  }
-                                                                
-                                                 });
-                                               } 
-                                             },
-                                             child:
-                                             Row(
-                                               mainAxisAlignment: MainAxisAlignment.start,
-                                                           crossAxisAlignment: CrossAxisAlignment.start,
-                                               children: [
-                                              
-                                                 Padding(
-                                                   padding: const EdgeInsets.all(2),
-                                                   child: Container(
-                                                     alignment: Alignment.center,
-                                                   
-                                                     width: e['type'] == 'img' ? (e['width'] ?? 150).toDouble()  : null,
-                                                     height:  e['type'] == 'img' ? (e['height']??150).toDouble() : null, 
-                                                     decoration: tappedId == e['id'] ?  
-                                                     
-                                                     BoxDecoration(
-                                                       border: Border.all(width: 2.5, color:  const Color.fromARGB(255, 246, 95, 145),)
-                                                     ) : null,
-                                                     child: 
-                                                     Padding(padding: EdgeInsets.all(0),
-                                                     child:
-                                                    (e['img'] == null  && e['path'] == null) || e['type'] == 'text'? Text('${e['text']}', style: TextStyle(fontSize: e['size'] == null ? 10 :e['size'].toDouble())) : Container(
-                                                     
-                                                     
-                                                                             decoration: BoxDecoration(
-                                                                               image: DecorationImage(image: 
-                                                                               
-                                                                                e['path'] != null?
-                                   NetworkImage
-                                   (
-                               supabase.storage.from('stories').getPublicUrl
-                                   ('options/${e['path']}${e['id']}.png'))
-                                   :
-                                                                               FileImage(e['img']) , fit: BoxFit.contain )
-                                                                             ),
-                                                                             
-                                                     )) ),
-                                                 ),
-                                                   SizedBox(width: 10,),
-                                                      tappedId!=e['id'] ? SizedBox.shrink() :
-                                                       Column(
-                                                         children: [
-                                                           GestureDetector(
-                                                            onTap: ()async{
-                                                          
-                                                          List sameSubslide = optionData.where((entry) => entry['slide_id'] == e['slide_id'] && entry['next_slide_id'] == e['next_slide_id']).toList();
-                                                  
-                                                          if (sameSubslide.length==1 && int.tryParse(e['next_slide_id'].toString()) == null){
-                                                              if (widget.isDraft ?? false){
-                                                           await supabase.from('slide').delete().eq('slide', e['slide_id']).eq('subslide', e['next_slide_id']);
-                                                              }
-                                                           slideData.remove(slideData.where((entry) => entry['slide'] == e['slide_id'] && entry['subslide'] == e['next_slide_id']).single);
-                                                           
-                                                           List withSubslides = slideData.where((entry) {
-                                                        
-                                                             return 
-                                                             entry['slide'] == currentSlide &&
-                                                             entry['subslide'] != null && alphabet.indexOf(entry['subslide']?.toLowerCase()) > alphabet.indexOf(e['next_slide_id']?.toLowerCase());}).toList();
-
-                                                           for (final slide in withSubslides){
-                                       
-                                                           List optionslide =  optionData.where((era) => era['slide_id'] == slide['slide'] && era['next_slide_id'] == slide['subslide']).toList();
-                                                          
-                                                           for (final option in optionslide){
-                                                              option['next_slide_id'] = alphabet[alphabet.indexOf(slide['subslide'].toLowerCase())-1].toUpperCase();
-                                                                 if (widget.isDraft ?? false){
-                                                               await supabase.from('options').update({'next_slide_id':alphabet[alphabet.indexOf(slide['subslide'].toLowerCase())-1].toUpperCase()
-                                                               }).eq('id', option['id']);
-                                                                 }
-                                                           }
-                                                             slide['subslide'] = alphabet[alphabet.indexOf(slide['subslide'].toLowerCase())-1].toUpperCase();
-                                                             if (widget.isDraft ?? false){
-                                                              await supabase.from('slide').update({'subslide':alphabet[alphabet.indexOf(slide['subslide'].toLowerCase())-1].toUpperCase
-                                                               }).eq('id', slide['id']);
-                                                             }
-                                                           }
-                                                          }
-                                                        
-                                                            if (optionData.where((er)=>er['slide_id'] == currentSlide).length==1 ){
-                                                              final current=slideData.where((e)
-                                                              { 
-                                                            
-                                                                return e['slide']==currentSlide && e['subslide'] == null;} ).single;
- current['type']= 'text';
-if (widget.isDraft??false){
-   await supabase.from('slide').update({'type':'text'}).eq('id', current['id']);
-}
-                                                          }
-                                                          optionData.remove(e);
-                                                          
-                                                          if (widget.isDraft??false){
-                                                               await supabase.from('options').delete().eq('id', e['id']);
-                                                                await supabase.storage.from('story').remove(['options/${e['path']}${e['id']}']);
-            
-                                                          }
-                                         setState(() {
-                                                            });
-                                                            },
-                                                             child:  Container(
-                                                                         width: 40,                                                         decoration: BoxDecoration(color: const Color.fromARGB(255, 252, 181, 181).withAlpha(200),  borderRadius: BorderRadius.circular(12)),
-                                                                                                                                  child: Center(child: Padding(
-                                                              padding: const EdgeInsets.all(8.0),
-                                                              child: Icon(Icons.delete, color: Colors.red,),
-                                                                                                                               ),),
-                                                                                                                                ),
-                                                           ),
-                                                            SizedBox(height: 10,),
-                                                                GestureDetector(
-                                                            onTap: (){
-                                                           setState(() {
- 
-  final nextSlide = int.tryParse(e['next_slide_id']?.toString() ?? '');
-print('ummmmmmmm $nextSlide');
-  if (nextSlide != null) {
-  
-    subslide = null;
-    currentSlide = nextSlide;
-  } else {
-
-    subslide = e['next_slide_id'];
-    currentSlide = e['slide_id']; 
-  }
-});
-                                                            },
-                                                             child:  Container(
-                                                               width: 40,
-                                                                                                                                  decoration: BoxDecoration(color: const Color.fromARGB(255, 195, 166, 246).withAlpha(100),
-                                                          borderRadius: BorderRadius.circular(12)),
-                                                                                                                                  child: Center(child: Padding(
-                                                              padding: const EdgeInsets.all(8.0),
-                                                             child: Text('${int.tryParse(e['next_slide_id'].toString()) == null ? e['slide_id'] : ''}${e['next_slide_id']}', 
-                                                               style: TextStyle(fontFamily: 'Poppins',fontWeight: FontWeight.bold,
-                                               fontSize: 18,
-                                                color:const Color.fromARGB(255, 173, 142, 227),))
-                                                                                                                               ),),
-                                                                                                                                ),
-                                                           ),
-                                                         ],
-                                                       ),
-                                               ],
-                                             ))
-                                         );
-                                                    }
-                                          ),
-                                         // widget.data['lives'] != null ?  Positioned(
                                            
-                                         //     right: 10,
-                                         //     child: 
-                                         // Row(
-                                         //     children: [
-                                         //       Icon(Icons.favorite_rounded, color: const Color.fromARGB(255, 255, 87, 75),),
-                                         //       SizedBox(width: 10,),
-                                         //       Text('${lives ?? widget.data['lives']}', style: TextStyle(fontFamily: 'Poppins',fontWeight: FontWeight.bold,
-                                         //       fontSize: 18,
-                                         //        color: const Color.fromARGB(255, 136, 74, 69)),)
-                                         //     ],
-                                         //   )
-                                         //   ) : SizedBox.shrink(),
-                                           Column(
-                                             children: [
-                                               
-                                            
-                                             
-                                             ],
-                                           ),
-                                                                 //                                    ...widget.optionData.where((e) => e['slide_id'] == currentSlide).map((e) 
-                                                                 //                    {
-                                                   
-                                                                 //                                 return Positioned(
-                                                                 //                                   left: ((e['left'] as double) * containerWidth),
-                                                                 //                                   top: ((e['top'] as double)* containerHeight),
-                                                                 //                                    child: GestureDetector(
-                                                                 //                                     onTap: () {
-                                               
-                                                                 //                                      subslide = widget.slideData.where((entry) => entry['subslide'] == e['next_slide_id'] && (entry['slide'] == (currentSlide+1))).first['subslide']as int;
-                                                                          
-                                                                 //                                         currentSlide++;
-                                                                 //                                         if (e['lives'] != null && widget.data['lives'] != null){
-                                                                 // lives == null ? lives = widget.data['lives']+(e['lives'] as int) : lives = lives! + (e['lives'] as int);
-                                                                 // if (lives == 0){gameOVer=true;}
-                                                                 //                                         }
-                                                                 //                                       setState(() {
-                                                 
-                                                                 //                                       });
-                                                                 //                                     },
-                                                                 //                                     child: e['img'] == null ? Text('${e['text']}') : Container(
-                                               
-                                                                 // width: ((e['width'] as double) * containerWidth), height: ((e['height'] as double) * containerWidth),
-                                                                 // decoration: BoxDecoration(
-                                                                 //   image: DecorationImage(image: NetworkImage(e['img'] as String))
-                                                                 // ),
-                                                                 
-                                                                 //                                     )),
-                                                                 //                                  );
-                                                                 //                    }
-                                                      ] ),
-                                        ),
-                                ),
-            
-                                 
-                                    ),
-                                    SizedBox(height: 20,),
-                                       Padding(
-                                        padding: const EdgeInsets.only(left: 20, bottom: 12),
-                                        child: Align(
-                                       alignment: MediaQuery.of(context).size.width>700? Alignment.center : Alignment.topLeft,
-                                          child: Text('Slides', style: 
-                                                                                                                  TextStyle(fontFamily: 'Poppins', 
-                                                                                                                    color: const Color.fromARGB(255, 0, 0, 0),
-                                                                                                                      fontWeight: FontWeight.bold,
-                                                                                                                                                                                              fontSize: 17)),
-                                        ),
-                                      ),
-                                    SizedBox(
-                                      width: containerWidth,
-                                      height: 80,
-                                      child: ListView.builder(
-                                        scrollDirection: Axis.horizontal,
-                                        itemCount: slideData.length+1,
-                                        itemBuilder: (context, index){
-                                        return index == slideData.length ?
-                                        GestureDetector(
-                                          onTap: () async {
-                                           setState(() {
-                                             
-                                         
-                                            isSaving=true;
-                                              });
-                                            dynamic addSlide = {'slide':slideData.where((e)=>e['subslide'] == null).length+1, "type":"text", 'subslide':null, 'id':
-                                        idis+1};
-                                              final newSlide = widget.isDraft?? false
-                ? Map<String, dynamic>.from({
-              ...addSlide, 
-              'id': await saveSlide(addSlide),
-            })
-                : Map<String, dynamic>.from(addSlide);
-            
-                                           slideData.add(newSlide);
-                                           setState(() {
-                                             isSaving=false;
-                                           });
-                                       
-                                          },
-                                          child: Container(
-                                            width: 70,
-                        decoration: BoxDecoration(
-                                                             borderRadius: BorderRadius.circular(10),
-                                                         color: const Color.fromARGB(255, 195, 166, 246).withAlpha(100),
-                                   ),
-                             child: Padding(
-                                                                                
-                                                                                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 0),
-                                                                                child: Center(
-                                                                                  child: Icon(Icons.add, size: 45,
-                                                                                   color:  const Color.fromARGB(255, 173, 142, 227),
-                                                                                  ),
-                                                                                ),
-                                                                              )),
-                                        )
-                                         :  GestureDetector(
-                                          onTap: (){
-                                            currentSlide = slideData[index]['slide'];
-                                             subslide = slideData[index]['subslide'];
-                                             setState(() {
-                                               
-                                             });
-                                             
-                                               
-                                          },
-                                           child: Padding(
-                                             padding: const EdgeInsets.only(right: 15),
-                                             child: Container(
-                                              width: 70,
-                                                                                  decoration: BoxDecoration(
-                                                                                                                    borderRadius: BorderRadius.circular(10),
-                                                                                                                    color: 
-                                                                                                                    currentSlide == slideData[index]['slide'] && subslide == slideData[index]['subslide'] 
-                                                                                                                    ?  const Color.fromARGB(255, 247, 124, 165).withAlpha(100):
-                                                                                                                    const Color.fromARGB(255, 254, 189, 211).withAlpha(100)
-                                                                                                                   ),
-                                                                                child: Padding(
-                                                                                  
-                                                                                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 0),
-                                                                                  child: Center(
-                                                                                    child: Text('${ slideData[index]['slide']}${slideData[index]['subslide'] == null ? '' : '${slideData[index]['subslide']}'}', style: TextStyle(fontSize:  30,fontFamily: 'Poppins',
-                                                                                    fontWeight: FontWeight.bold,
-                                                                                     color: const Color.fromARGB(255, 246, 95, 145),),
+                                              },
+                                              child: Container(
+                                                width: 70,
+                            decoration: BoxDecoration(
+                                                                 borderRadius: BorderRadius.circular(10),
+                                                             color: const Color.fromARGB(255, 195, 166, 246).withAlpha(100),
+                                       ),
+                                 child: Padding(
+                                                                                    
+                                                                                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 0),
+                                                                                    child: Center(
+                                                                                      child: Icon(Icons.add, size: 45,
+                                                                                       color:  const Color.fromARGB(255, 173, 142, 227),
+                                                                                      ),
                                                                                     ),
-                                                                                  ),
-                                                                                )),
-                                           ),
-                                         );
-                                      }),
-                                    ),
-            //                             SizedBox(height: 20,),
-            //                             Row(
-            //                               mainAxisAlignment: MainAxisAlignment.center,
-            //                               crossAxisAlignment: CrossAxisAlignment.center,
-            //                               children: [
-            //                                 Container(
-            //                                                                                     width: 100,
-            //                                                                                       decoration: BoxDecoration(
-            //                                                                                         color: const Color.fromARGB(255, 255, 209, 224),
-            //                                                                                         borderRadius: BorderRadius.circular(20),
+                                                                                  )),
+                                            )
+                                             :  GestureDetector(
+                                              onTap: (){
+                                                currentSlide = slideData[index]['slide'];
+                                                 subslide = slideData[index]['subslide'];
+                                                 setState(() {
+                                                   
+                                                 });
+                                                 
+                                                   
+                                              },
+                                               child: Padding(
+                                                 padding: const EdgeInsets.only(right: 15),
+                                                 child: Container(
+                                                  width: 70,
+                                                                                      decoration: BoxDecoration(
+                                                                                                                        borderRadius: BorderRadius.circular(10),
+                                                                                                                        color: 
+                                                                                                                        currentSlide == slideData[index]['slide'] && subslide == slideData[index]['subslide'] 
+                                                                                                                        ?  const Color.fromARGB(255, 247, 124, 165).withAlpha(100):
+                                                                                                                        const Color.fromARGB(255, 254, 189, 211).withAlpha(100)
+                                                                                                                       ),
+                                                                                    child: Padding(
+                                                                                      
+                                                                                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 0),
+                                                                                      child: Center(
+                                                                                        child: Text('${ slideData[index]['slide']}${slideData[index]['subslide'] == null ? '' : '${slideData[index]['subslide']}'}', style: TextStyle(fontSize:  30,fontFamily: 'Poppins',
+                                                                                        fontWeight: FontWeight.bold,
+                                                                                         color: const Color.fromARGB(255, 246, 95, 145),),
+                                                                                        ),
+                                                                                      ),
+                                                                                    )),
+                                               ),
+                                             );
+                                          }),
+                                        ),
+                //                             SizedBox(height: 20,),
+                //                             Row(
+                //                               mainAxisAlignment: MainAxisAlignment.center,
+                //                               crossAxisAlignment: CrossAxisAlignment.center,
+                //                               children: [
+                //                                 Container(
+                //                                                                                     width: 100,
+                //                                                                                       decoration: BoxDecoration(
+                //                                                                                         color: const Color.fromARGB(255, 255, 209, 224),
+                //                                                                                         borderRadius: BorderRadius.circular(20),
+                                                                                                    
+                //                                                                                       ),
+                //                                                                                       child: Padding(
+                //                                                                                         padding: const EdgeInsets.all(12),
+                //                                                                                         child: Center(child: Text('Previous', style: 
+                //                                                                                         TextStyle(fontFamily: 'Poppins', 
+                //                                                                                           color: const Color.fromARGB(255, 246, 95, 145),
+                //                                                                                             fontWeight: FontWeight.bold,
+                //                                                                                                                                                                     fontSize: 14)),),
                                                                                                 
-            //                                                                                       ),
-            //                                                                                       child: Padding(
-            //                                                                                         padding: const EdgeInsets.all(12),
-            //                                                                                         child: Center(child: Text('Previous', style: 
-            //                                                                                         TextStyle(fontFamily: 'Poppins', 
-            //                                                                                           color: const Color.fromARGB(255, 246, 95, 145),
-            //                                                                                             fontWeight: FontWeight.bold,
-            //                                                                                                                                                                     fontSize: 14)),),
-                                                                                            
-            //                                                                                       ),
-            //                                                                                     ),
-            //                                                                                     SizedBox(width: 20),
-            // Container(
-            //                                                                                     width: 100,
-            //                                                                                       decoration: BoxDecoration(
-            //                                                                                         color: const Color.fromARGB(255, 255, 209, 224),
-            //                                                                                         borderRadius: BorderRadius.circular(20),
+                //                                                                                       ),
+                //                                                                                     ),
+                //                                                                                     SizedBox(width: 20),
+                // Container(
+                //                                                                                     width: 100,
+                //                                                                                       decoration: BoxDecoration(
+                //                                                                                         color: const Color.fromARGB(255, 255, 209, 224),
+                //                                                                                         borderRadius: BorderRadius.circular(20),
+                                                                                                    
+                //                                                                                       ),
+                //                                                                                       child: Padding(
+                //                                                                                         padding: const EdgeInsets.all(12),
+                //                                                                                         child: Center(child: Text('Next', style: 
+                //                                                                                         TextStyle(fontFamily: 'Poppins', 
+                //                                                                                           color: const Color.fromARGB(255, 246, 95, 145),
+                //                                                                                             fontWeight: FontWeight.bold,
+                //                                                                                                                                                                     fontSize: 14)),),
                                                                                                 
-            //                                                                                       ),
-            //                                                                                       child: Padding(
-            //                                                                                         padding: const EdgeInsets.all(12),
-            //                                                                                         child: Center(child: Text('Next', style: 
-            //                                                                                         TextStyle(fontFamily: 'Poppins', 
-            //                                                                                           color: const Color.fromARGB(255, 246, 95, 145),
-            //                                                                                             fontWeight: FontWeight.bold,
-            //                                                                                                                                                                     fontSize: 14)),),
-                                                                                            
-            //                                                                                       ),
-            //                                                                                     ),
-            
-            //                               ],
-            //                             )
-                         ]),
-                              ]),
+                //                                                                                       ),
+                //                                                                                     ),
+                
+                //                               ],
+                //                             )
+                             ]),
+                                  ]),
+                                     
+                
+                                  
                                  
-            
-                              
-                             
-                                       
-                                         
-                             
-                        
-                           
-                        
-                       )
+                                           
+                                             
+                                 
+                            
+                               
+                            
+                           )
+                  ),
               ),
-          ),
-        ),
+            ),
+   ],
+ ),
       ),
     ));
     }

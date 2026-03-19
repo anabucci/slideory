@@ -194,16 +194,19 @@ void loadStoriesAfterScrolling() async {
     DateTime oneWeekAgo = DateTime.now().subtract(Duration(days: 7));
 final recentPosts = await supabase.from('story').select()
 .not('id', 'in', alrdySeenIds)
+.not('draft', 'is', true)
 .order('created_at', ascending: false)
 .limit(5);
 alrdySeenIds.addAll(recentPosts.map((e)=>e['id']));
 final risingPosts = await supabase.from('story').select().lt('created_at', oneWeekAgo)
+.not('draft', 'is', true)
 .not('id', 'in', alrdySeenIds)
 .lt('score', 80)
 .limit(5);
 alrdySeenIds.addAll(risingPosts.map((e)=>e['id']));
 final popularPosts = await supabase.from('story').select()
 // .lt('created_at', oneDayAgo)
+.not('draft', 'is', true)
 .not('id', 'in', alrdySeenIds)
 .gt('created_at', oneMonthAgo).gte('score', 80)
 .order('score', ascending: false)
@@ -270,10 +273,12 @@ final recentPosts = await supabase.from('story').select()
 
 //.gt('created_at', oneDayAgo)
 .not('id', 'in', alrdySeenIds)
+.not('draft', 'is', true)
 .order('created_at', ascending: false)
 .limit(5); 
 alrdySeenIds.addAll(recentPosts.map((e)=>e['id']).toList());
 final risingPosts = await supabase.from('story').select()
+.not('draft', 'is', true)
 .lt('created_at', oneWeekAgo)
 .not('id', 'in', alrdySeenIds)
 .lt('score', 80).limit(5);
@@ -281,6 +286,7 @@ final risingPosts = await supabase.from('story').select()
 alrdySeenIds.addAll(risingPosts.map((e)=>e['id']));
 final popularPosts = await supabase.from('story')
 .select()
+.not('draft', 'is', true)
 //.lt('created_at', oneDayAgo)
 .gt('created_at', oneMonthAgo).not('id', 'in', alrdySeenIds).gte('score', 80)
 
@@ -471,13 +477,16 @@ bottom: false,
                               setState(() {
                                 
                               });
-           Navigator.of(context).push(
-                                        PageRouteBuilder(
-                                          pageBuilder: (context, animation, secondaryAnimation) => Notifications(listen4Notifications: listen4Notifications,),
-                                          transitionDuration: Duration.zero,
-                                          reverseTransitionDuration: Duration.zero,
-                                        ),
-                                                              );
+         Navigator.of(context).push(
+                                      PageRouteBuilder(
+                                        pageBuilder: (context, animation, secondaryAnimation) => Notifications(
+                                      listen4Notifications: listen4Notifications,
+                                          
+                                          ),
+                                        transitionDuration: Duration.zero,
+                                        reverseTransitionDuration: Duration.zero,
+                                      ),
+                                                            );
                             },
                             child:
                             
@@ -530,7 +539,7 @@ bottom: false,
                                                             );
                             },
                             child: Text('Stories For You',  style: TextStyle(
-                              color:   const Color.fromARGB(255, 246, 95, 145),
+                              color:   const Color.fromARGB(255, 255, 127, 170),
                               fontWeight: FontWeight.bold,
                               fontSize: 35,
                               fontFamily: 'Poppins',
@@ -579,17 +588,26 @@ bottom: false,
                                           onTap: () async {
                                             
                                             
-                                            final hasLiked = user == null ? []: await supabase.from('likes').select().eq('target_id', stories[index]['id'])
-                                            .eq('user_id', supabase.auth.currentUser?.id ??0);
-                                            final slideData = await supabase.from('slide').select().eq('story_id', stories[index]['id']);
-                                            final optionData = await supabase.from('options').select().eq('story_id', stories[index]['id']);
+                                            // final hasLiked = user == null ? []: await supabase.from('likes').select().eq('target_id', stories[index]['id'])
+                                            // .eq('user_id', supabase.auth.currentUser?.id ??0);
+                                            // final slideData = await supabase.from('slide').select().eq('story_id', stories[index]['id']);
+                                            // final optionData = await supabase.from('options').select().eq('story_id', stories[index]['id']);
+                                            final results = await Future.wait([
+
+supabase.from('slide').select().eq('story_id', stories[index]['id']),
+supabase.from('options').select().eq('story_id', stories[index]['id']),
+if (user == null)  Future.value([]) else supabase.from('likes').select().eq('target_id', stories[index]['id'])
+                                            .eq('user_id', supabase.auth.currentUser?.id ??0),
+                                            supabase.from('story').select('comments, likes').eq('id', stories[index]['id']),
+                                            ]
                                             
+                                            );
                                               Navigator.of(context).push(
                                         PageRouteBuilder(
                                           pageBuilder: (context, animation, secondaryAnimation) => DetailsPage(
-                                                     data:stories[index], 
-                                                     slideData: slideData, optionData: optionData, hasLiked: 
-                                                           hasLiked.isNotEmpty 
+                                                     data:{...stories[index], 'likes':results[3][0]['likes'], 'comments':results[3][0]['comments']}, 
+                                                     slideData: results[0], optionData: results[1], hasLiked: 
+                                                           results[2].isNotEmpty 
                                                      ,
                                                     // data: stories[index],  slideData: slides, optionData: options, hasLiked: hasLiked.isNotEmpty,
                                           ),

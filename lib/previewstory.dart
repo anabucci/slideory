@@ -255,7 +255,7 @@ currentPath =match['path'];
                          Supabase.instance.client.storage.from('stories').getPublicUrl
                              ('slides/${currentPath}${currentID}.png'))
                              :
-                             MemoryImage
+                             FileImage
                              (
                           currentImg
                              
@@ -347,7 +347,10 @@ final compare = widget.slideData.where((er){
                                            currentSlide = (e['next_slide_id']);
                                               } else {
                                                 currentSlide =(e['next_slide_id']);
-                                                if (widget.data['storytype'] != 'Basic' || widget.slideData.where((e)=>e['subslide']==null).length>=currentSlide+1){
+                                           
+                                                if (widget.data['storytype'] != 'Basic' || widget.slideData.where((e)=>e['subslide']==null).length>=currentSlide+(
+                                                  
+                                             widget.data['storytype'] == 'Basic'? 0:     1)){
                                                 
                                                   Toast.show(context, 'Ending reached!', false);
                                               
@@ -387,7 +390,7 @@ final compare = widget.slideData.where((er){
                                           width: e['type'] == 'img' ? e['width'].toDouble()  : null,
                                                  height:  e['type'] == 'img' ? e['height'].toDouble() : null, 
                                         decoration: BoxDecoration(
-                                          image: e['type'] == 'text'?null: DecorationImage(image: e['path'] == null ? MemoryImage(e['img'] ) :
+                                          image: e['type'] == 'text'?null: DecorationImage(image: e['path'] == null ? FileImage(e['img'] ) :
                              NetworkImage
                              (
                          Supabase.instance.client.storage.from('stories').getPublicUrl
