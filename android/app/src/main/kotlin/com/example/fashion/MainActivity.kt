@@ -1,4 +1,4 @@
-package com.example.fashion
+package com.abucci.slideory
 
 import io.flutter.embedding.android.FlutterActivity
 
