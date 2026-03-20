@@ -152,8 +152,8 @@ int currentPage = 0;
                             GestureDetector(
                                          
                                                                onTap: () async {
-                                                          print('hi')
-;                                                              if ((currentPage+1) < pages.length){
+                                                        
+                                         if ((currentPage+1) < pages.length){
                                                                 currentPage+=1;
                                                               } else {
                                                                 final pref =  await SharedPreferences.getInstance();

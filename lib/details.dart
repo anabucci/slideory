@@ -563,7 +563,7 @@ await supabase.from('notifications').insert({
   'type':isReply == null ? 'comment_post' : 'comment_reply',
  });
 }             
- print('ih2');
+ 
                  
                                           cmnts = [ {'content':cmntController,  'author_id':id,
                                           'username':getUsername?['username'] , 

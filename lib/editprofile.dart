@@ -195,7 +195,7 @@ Colors.black,
                         colors[widget.data[0]['theme']] == savedTheme ? null : colors.indexOf(selected), 
                          (widget.banner == null ? bannerFile : null ),  (widget.picture == null ? pictureFile : null )
                         ];
-                     print('themmebio: $themebio');
+                     
                                Navigator.pop(context, themebio);
                                     } else {
                                          Navigator.of(context).push(
@@ -399,7 +399,7 @@ Colors.black,
                                          await  updatePic(supabase.auth.currentUser?.id, pictureFile);
                                         }
                                         
-                                                print('pic, $pictureFile $bannerFile ${widget.banner} ${widget.picture}');   
+                                               
                                              Toast.show(context, 'Update successful. ${
                                          ((widget.banner!= null && widget.picture != null)) ?  bannerFile != null || pictureFile != null ?
                                               'Please wait at most a couple hours for the images to update.' : '' :
@@ -409,7 +409,7 @@ Colors.black,
                                               'Please wait at most a couple hours for the images to update.' : '' 
                                               }', false);
                                 } catch (e) {
-                                  print('error  $e');
+                                 
                                         Toast.show(context, 'Update failed!', true);
                                 }
                                 isLoading = false;

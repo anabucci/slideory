@@ -658,15 +658,15 @@ return;
             'draft':true,
             'path':insertCoverTime.toString(),
             }).select('id');
-            print('phoo $photo');
+            
             if (photo!=null){
 
                                                final path = 'cover/${insertCoverTime.toString()}${storyInsert[0]['id']}.png';
-                                               print('path $path');
+                                              
                                                try{
           await supabase.storage.from('stories').upload(path, photo, fileOptions: FileOptions(upsert: true)); 
                                                } catch (e){
-                                                print('error: $e');
+                                             
                                                }
             }
 //        final slideFutures = widget.slideData.map((slide) async {

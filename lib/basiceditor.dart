@@ -1876,7 +1876,7 @@ currentPath =match['path'];
                                                                setState(() {
      
       final nextSlide = int.tryParse(e['next_slide_id']?.toString() ?? '');
-     print('ummmmmmmm $nextSlide');
+   
       if (nextSlide != null) {
       
         subslide = null;
