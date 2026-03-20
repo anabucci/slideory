@@ -378,7 +378,7 @@ if (!(widget.data['liked'] ?? true)){
   cats.remove('Liked');
 }
 if (!(widget.data['completed'] ?? true)){
-  cats.remove('Played');
+  cats.remove('Completed');
 }
 
  banner =supabase.storage.from('profile').getPublicUrl('banner/${widget.data['user_id']}.png');
@@ -586,7 +586,7 @@ Color darkBlue =   Color(0xFF5988F0);
 final tags = ['books', 'charger', 'clothes'];
 dynamic returnedBio;
 dynamic returnedTheme;
-List cats = ["Stories", 'Liked', 'Played'];
+List cats = ["Stories", 'Liked', 'Completed'];
 
 dynamic selected = 'Stories';
 final listings = [{'name': 'charger1', 'status': 'For Trade'}, {'name': 'book', 'status': 'For Borrowing'}];
@@ -811,7 +811,7 @@ onTap: (){
   setState(() {
 
   selected = entry;
-  if (entry != 'Stories' && ((entry == 'Liked' ? likedStoryData.isEmpty  : false) || (entry == 'Played' ? completedStoryData.isEmpty: false)) ){
+  if (entry != 'Stories' && ((entry == 'Liked' ? likedStoryData.isEmpty  : false) || (entry == 'Completed' ? completedStoryData.isEmpty: false)) ){
     
     loadOthers();
   }
@@ -829,7 +829,7 @@ onTap: (){
                       child: Center(
                         child:Text(entry, 
                              style: TextStyle( color: color, fontWeight: FontWeight.bold, 
-                             fontFamily: "Poppins", fontSize: 14
+                             fontFamily: "Poppins", fontSize: 13
                              ),
                       ),)
                     ),
@@ -840,12 +840,13 @@ onTap: (){
                              SizedBox(height: 15,),
                        RefreshIndicator(
                         onRefresh: () async {
-                          
-selected == 'Liked' ? loadOthers() : loadOwnStories();
+                        
+selected != 'Stories' ? loadOthers() : loadOwnStories();
                         },
                          child: SizedBox(
                           height: MediaQuery.of(context).size.height-(widget.data == null ? 450 : 375),
                            child: GridView.builder(
+                            physics: const AlwaysScrollableScrollPhysics(),
                             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2, crossAxisSpacing: 10, mainAxisSpacing:3,
                             childAspectRatio: 0.6,
                             ),

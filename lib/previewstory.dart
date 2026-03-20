@@ -59,7 +59,7 @@ currentPath =match['path'];
      child: SingleChildScrollView(
         
         child: Container(
-          height: MediaQuery.of(context).size.height < 790 ? null : MediaQuery.of(context).size.height,
+          height: MediaQuery.of(context).size.height > 880 ?  MediaQuery.of(context).size.height : 880,
                width: double.infinity,
            decoration: BoxDecoration(
               
@@ -132,40 +132,55 @@ currentPath =match['path'];
                                                  const Color.fromARGB(255, 195, 166, 246), fontWeight: FontWeight.bold,
                                                                                 fontSize: MediaQuery.of(context).size.height*0.028),),
                                                                                       SizedBox(height: 10,),
-                                                      SizedBox(
-                                                width: double.infinity,
-                                                   child: SingleChildScrollView(
-                                                     child: Row(
-                                                      children: [
-                                                                      ... (widget.tags??[]).map((e) {
-                                                                                 return Padding(
-                                                                                   padding: const EdgeInsets.only(right: 10),
-                                                                                   child: Container(
-                                                                                   
-                                                                                   decoration: BoxDecoration(
-                                                                                     border: Border.all(color: const Color.fromARGB(255, 190, 156, 250), width: 2),
-                                                                                     color:   const Color.fromARGB(255, 244, 237, 255),
-                                                                                   
-                                                                                     borderRadius: BorderRadius.circular(20)
-                                                                                   ),
-                                                                                   child: Padding(
-                                                                                     padding: const EdgeInsets.symmetric(vertical: 7, horizontal: 12),
-                                                                                     child: Center(child: Row(
-                                                                                       children: [
-                                                                                       
-                                                                                         Text('#$e', style: TextStyle(fontFamily: 'Poppins', 
-                                                                                         decoration: TextDecoration.none,
-                                                                                         color:   const Color.fromARGB(255, 190, 156, 250), fontWeight: FontWeight.bold, fontSize: 14),),
-                                                                                       ],
-                                                                                     )),
-                                                                                   ),
-                                                                                             ),
-                                                                                 );
-                                                                       })]),
-                                                   ),
-                                                                     
-                                                 ),
-                                                   SizedBox(height: 10,),
+                                                                                                 widget.data['tags'] == null || widget.data['tags'].isEmpty ? SizedBox.shrink() :
+                                                                                  
+                                           SizedBox(
+                                         
+                                               child: Column(
+                                                 children: [
+                                                    SizedBox(height: 10,),
+Align(
+   alignment:  MediaQuery.of(context).size.width>700? Alignment.center:Alignment.centerLeft,
+  child: SizedBox(
+     width:   MediaQuery.of(context).size.width>700?containerWidth:MediaQuery.of(context).size.width-40,
+                                                                                      height: 38,
+                                                                                      child: ListView.builder(
+                                                                                       scrollDirection: Axis.horizontal,
+                                                                                        itemCount: widget.data['tags'].length,
+                                                                                        itemBuilder: (context, index){
+                                                                                        return Padding(
+                                                                                                                 padding:  EdgeInsets.only(right: index == widget.data['tags'].length +1 ? 0 :10),
+                                                                                                                 child: Container(
+                                                                                                                 
+                                                                                                                 decoration: BoxDecoration(
+                                                                                                                   border: Border.all(color: const Color.fromARGB(255, 190, 156, 250), width: 2),
+                                                                                                                   color:   const Color.fromARGB(255, 244, 237, 255),
+                                                                                                                 
+                                                                                                                   borderRadius: BorderRadius.circular(20)
+                                                                                                                 ),
+                                                                                                                 child: Padding(
+                                                                                                                   padding: const EdgeInsets.symmetric(vertical: 7, horizontal: 12),
+                                                                                                                   child: Center(child: Row(
+                                                                                                                     children: [
+                                                                                                                     
+                                                                                                                                Text('#${widget.data['tags'][index]}', style: TextStyle(fontFamily: 'Poppins', 
+                                                                                                                                decoration: TextDecoration.none,
+                                                                                                                                color:   const Color.fromARGB(255, 190, 156, 250), fontWeight: FontWeight.bold, fontSize: 14),),
+                                                                                                                                
+                                                                                                                     ],
+                                                                                                                   )),
+                                                                                                                 ),
+                                                                                                                                                                                                         ),
+                                                                                                               );
+                                                                                      }),
+                                                                                    ),
+),
+                                                                    
+                                                 ],
+                                               ),
+                                                                 
+                                             ),
+                                             SizedBox(height: 10,),
                                                                                 Text("@${widget.data['username']}",
                                                                                 
                                                                                 style: TextStyle(fontFamily: 'Poppins', color: 

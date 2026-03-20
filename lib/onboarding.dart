@@ -152,8 +152,8 @@ int currentPage = 0;
                             GestureDetector(
                                          
                                                                onTap: () async {
-                                                          
-                                                              if ((currentPage+1) < pages.length){
+                                                          print('hi')
+;                                                              if ((currentPage+1) < pages.length){
                                                                 currentPage+=1;
                                                               } else {
                                                                 final pref =  await SharedPreferences.getInstance();
@@ -178,6 +178,7 @@ int currentPage = 0;
                                         
                                                                  ),
                                                                  height: 55,
+                                                                 
                                                                  width: MediaQuery.of(context).size.width*0.7,
                                                                  child: const Center(
                                         child: Row(
@@ -201,6 +202,7 @@ int currentPage = 0;
                                                                  ),
                                                                ),
                                                            ),
+                                                             
                             ],
                           
                           ),
@@ -211,25 +213,27 @@ int currentPage = 0;
           right: 0,
           left: 0, bottom: 0, top: 0,
           child: 
-            Center(
-                          child: Transform.scale(
-                            scale:  MediaQuery.of(context).size.width > 700  ? (MediaQuery.of(context).size.height/800) : (MediaQuery.of(context).size.height/720), 
-                            child: Container(
-                              
-                            
-                              height: MediaQuery.of(context).size.height > 1000 ? MediaQuery.of(context).size.height*0.7: MediaQuery.of(context).size.height*0.4,
-                              decoration: BoxDecoration(
+            IgnorePointer(
+              child: Center(
+                            child: Transform.scale(
+                              scale:  MediaQuery.of(context).size.width > 700  ? (MediaQuery.of(context).size.height/800) : (MediaQuery.of(context).size.height/720), 
+                              child: Container(
                                 
-                                 image: DecorationImage(
-                                     alignment: Alignment.center,
-                                                
-
-                                                          image: AssetImage('assets/${
-                                                       MediaQuery.of(context).size.width > 700   ?    '${pages[currentPage].toLowerCase()}ipad':  
-                                                             currentPage == 1 ? 'playstories' : pages[currentPage].toLowerCase()}.png')),
-                              ),),
+                              
+                                height: MediaQuery.of(context).size.height > 1000 ? MediaQuery.of(context).size.height*0.7: MediaQuery.of(context).size.height*0.4,
+                                decoration: BoxDecoration(
+                                  
+                                   image: DecorationImage(
+                                       alignment: Alignment.center,
+                                                  
+              
+                                                            image: AssetImage('assets/${
+                                                         MediaQuery.of(context).size.width > 700   ?    '${pages[currentPage].toLowerCase()}ipad':  
+                                                               currentPage == 1 ? 'playstories' : pages[currentPage].toLowerCase()}.png')),
+                                ),),
+                            ),
                           ),
-                        )),
+            )),
          ],
        )
     );

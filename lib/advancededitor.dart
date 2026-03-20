@@ -935,7 +935,7 @@ addImg( nextSlide, count, existingSlide, lives, photo) ;
                                                                                             
                                                                                              'left':37 , 'top':149, 
                      'width':null, 'height':null, 'size':23, "lives":lives, 'id': (optionData.isNotEmpty ? optionData.last['id']??0 : 0)+1, 
-                                                                                             'next_slide_id': nextSlide== 'new' ? slideData.length : existingSlide};
+                                                                                             'next_slide_id': nextSlide== 'new' ? slideData.length+1 : existingSlide};
                                           
       final newOption = (widget.isDraft ??false)
     ? Map<String, dynamic>.from({

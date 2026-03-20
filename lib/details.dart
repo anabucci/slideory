@@ -5,7 +5,6 @@ import 'package:fashion/storiesforyou.dart';
 import 'package:fashion/tagsearch.dart';
 import 'package:fashion/toast.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
@@ -378,7 +377,9 @@ List cmnts = [];
   String selectedCat = 'Select...';
 List categories=['Select...', 'Harrasment', 'Violence', 'Sexual content', 'Promoting illegal activity', 'Spam', 'Copyright violation'] ;
      showModalBottomSheet(context: context,
-                               
+                               constraints: BoxConstraints(
+    maxWidth: double.infinity
+  ),
                                 builder:(context) {
                                  return StatefulBuilder(
                                    builder: (context, setState) {
@@ -634,6 +635,9 @@ String? isReply;
 int? cmntid;
 
   showModalBottomSheet(
+    constraints: BoxConstraints(
+    maxWidth: double.infinity
+  ),
   sheetAnimationStyle: AnimationStyle(duration: Duration(milliseconds: 500)),
     backgroundColor: Colors.white,
     isScrollControlled: true,
@@ -643,7 +647,7 @@ int? cmntid;
   final height = MediaQuery.of(context).size.height;
 return SizedBox(
     height: height*0.85,
-  width: double.infinity,
+
   child: Padding(
  padding: EdgeInsets.only(
   bottom: MediaQuery.of(context).viewInsets.bottom ,
@@ -686,10 +690,10 @@ return SizedBox(
     },
           child: SingleChildScrollView(
             scrollDirection: Axis.vertical,
-            child:  ConstrainedBox(
-    constraints: BoxConstraints(
-      maxHeight: height * 0.85,
-    ),      child: Padding(
+            child:  Container(
+    height:  height * 0.85,
+    
+        child: Padding(
       padding: const EdgeInsets.all(24),
       child: Column(
                   mainAxisSize: MainAxisSize.min,
@@ -699,7 +703,7 @@ return SizedBox(
                                                                                               fontSize: 22),),
                                                                                               SizedBox(height: 40,),
                 SizedBox(
-                  height: height*0.6,
+                  height: user == null ?  height*0.7 : height*0.6,
                   child: ListView.builder(
                     controller: lazyLoading,
                     itemCount: cmnts.where((e)=>e['replied_to'] == null).toList().length,
@@ -708,6 +712,7 @@ return SizedBox(
                     return Padding(
                       padding: const EdgeInsets.only(bottom: 20),
                       child: Column(
+                        mainAxisSize: MainAxisSize.min,
                         children: [
                           Container(
                             decoration: BoxDecoration(
@@ -1241,7 +1246,7 @@ void initState() {
                         child: GestureDetector(
                           onTap: (){
                           
-                            report('story', widget.data['author']);
+                            report('story', widget.data['id']);
                           },
                           child: Container(
                               
@@ -1541,10 +1546,9 @@ Align(
                                      top: ((e['top']).toDouble()),
                                       child: GestureDetector(
                                        onTap: ()  async {
-                                
                                            if (int.tryParse(e['next_slide_id'].toString()) == null){
-                                           
                                         subslide = widget.slideData.where((entry) => entry['subslide'] == e['next_slide_id'] && (entry['slide'] == (currentSlide))).first['subslide'];
+                                    
                                         if (currentSlide==widget.slideData.where((e)=>e['subslide']==null).length){
                                          Toast.show(context, 'Ending reached!', false);
                                          reachedEnding=true;
@@ -1561,7 +1565,7 @@ final compare = widget.slideData.where((er){
                                             
                                           return   er['subslide'] == null && er['slide']==int.parse(e['next_slide_id']);}).toList();
                                         
-                                              if (compare == null ? false : (compare[0]['next_slide_id'] != null || compare[0]['type'] == 'choice')){
+                                              if (compare == null? false : (compare[0]['next_slide_id'] != null || compare[0]['type'] == 'choice')){
                                            currentSlide = e['next_slide_id'].runtimeType == String ? int.tryParse(e['next_slide_id']) : e['next_slide_id'];
                                               } else {
                                                 currentSlide = e['next_slide_id'].runtimeType == String ? int.tryParse(e['next_slide_id']) : e['next_slide_id'];
@@ -1589,7 +1593,7 @@ final compare = widget.slideData.where((er){
                                            }
                                            if (e['lives'] != null && widget.data['lives'] != null){
                                          lives == null ? lives = widget.data['lives']+(e['lives'] as int) : lives = lives! + (e['lives'] as int);
-                                         if (lives == 0){
+                                         if (lives! <= 0){
                                          
                                      if     (int.tryParse(e['next_slide_id'].toString()) == null) {
                                            gameOverShowEnding=true;
@@ -1742,7 +1746,9 @@ final compare = widget.slideData.where((er){
           
           
                                                                       });
-                                                                       final id = supabase.auth.currentUser!.id;
+                                                                        final id = supabase.auth.currentUser!.id;
+                                                                      if (hasLiked){
+                                                                     
       final getUsername = await supabase.from('profile').select('username').eq('user_id', id).maybeSingle();
       if (id != widget.data['author'] ) {
       await supabase.from('notifications').insert({
@@ -1753,6 +1759,7 @@ final compare = widget.slideData.where((er){
         'type':'like'
        });  
       } 
+                                                                      }
            hasLiked ?  await supabase.from('likes').insert({'target_id':widget.data['id'], 'type':'story', 
              
               }) :  await supabase.from('likes').delete().eq('target_id', widget.data['id']).eq('user_id', id);

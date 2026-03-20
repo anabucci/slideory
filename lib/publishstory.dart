@@ -45,6 +45,7 @@ void initState(){
   if (widget.draftData != null){
     titleController = TextEditingController(text: widget.draftData['title'] ?? '');
     if (widget.draftData['tags'] != null && widget.draftData['tags'].isNotEmpty){
+
       tags.addAll(widget.draftData['tags']);
     }
     if (widget.draftData['lives'] != null){
@@ -158,6 +159,10 @@ final supabase = Supabase.instance.client;
   TextEditingController tagController = TextEditingController();
 void addTag() async {
   setState(() {
+       if (tags.length>=5){
+Toast.show(context, 'Stories cannot have more than 5 tags', true);
+return;
+                }
     tags.add(tagController.text.toLowerCase());
     tagController.clear();
   });
@@ -605,6 +610,7 @@ dynamic subslide;
                                   pageBuilder: (context, animation, secondaryAnimation) => PreviewStory(
           data:{"id":3,
             "lives":livesEnabled ? startingLivs : null,
+            'tags':tags,
             'title':titleController.text, 
             "username":"seasalt",
              'storytype':widget.storyType,
@@ -624,7 +630,7 @@ dynamic subslide;
 Toast.show(context, 'Title cannot be left blank', true);
 return;
                 }
-                 if (tags.length>5){
+                 if (tags.length>=5){
 Toast.show(context, 'Stories cannot have more than 5 tags', true);
 return;
                 }
@@ -753,7 +759,7 @@ return;
 Toast.show(context, 'Title cannot be left blank', true);
 return;
                 }
-                     if (tags.length>5){
+                     if (tags.length>=5){
 Toast.show(context, 'Stories cannot have more than 5 tags', true);
 return;
                 }
