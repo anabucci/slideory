@@ -132,7 +132,7 @@ currentPath =match['path'];
                                                  const Color.fromARGB(255, 195, 166, 246), fontWeight: FontWeight.bold,
                                                                                 fontSize: MediaQuery.of(context).size.height*0.028),),
                                                                                       SizedBox(height: 10,),
-                                                                                                 widget.data['tags'] == null || widget.data['tags'].isEmpty ? SizedBox.shrink() :
+widget.data['tags'] == null || widget.data['tags'].isEmpty ? SizedBox.shrink() :
                                                                                   
                                            SizedBox(
                                          

@@ -685,6 +685,12 @@ return SizedBox(
   }
         return GestureDetector(
             onTap:(){
+            
+                 FocusScopeNode currentFocus = FocusScope.of(context);
+        if (!currentFocus.hasPrimaryFocus && currentFocus.focusedChild != null) {
+          currentFocus.unfocus();
+        }
+              
   isReply = null;
   useState((){});
     },
@@ -1652,13 +1658,13 @@ final compare = widget.slideData.where((er){
                                          });
                                        },
                                        child: Container(
-                                         width: 120,
+                                         width: 130,
                                          decoration: BoxDecoration(color: Colors.red, borderRadius: BorderRadius.circular(20)),
                                          child: Padding(
                                            padding: const EdgeInsets.symmetric(horizontal: 13, vertical: 8),
                                            child: Center(child: Text('Try Again', style: TextStyle(fontFamily: 'Poppins', color: 
                                                   const Color.fromARGB(255, 0, 0, 0),  fontWeight: FontWeight.bold,
-                                                                                     fontSize: 16),),)
+                                                                                     fontSize: 15),),)
                                          ),
                                        ),
                                      )
@@ -1698,13 +1704,13 @@ final compare = widget.slideData.where((er){
                                          });
                                        },
                                        child: Container(
-                                         width: 120,
+                                         width: 130,
                                          decoration: BoxDecoration(color: const Color.fromARGB(255, 190, 156, 250), borderRadius: BorderRadius.circular(20)),
                                          child: Padding(
                                            padding: const EdgeInsets.symmetric(horizontal: 13, vertical: 8),
                                            child: Center(child: Text('Play Again', style: TextStyle(fontFamily: 'Poppins', color: 
                                            const Color.fromARGB(255, 244, 237, 255),  fontWeight: FontWeight.bold,
-                                                                                     fontSize: 16),),)
+                                                                                     fontSize: 15),),)
                                          ),
                                        ),
                                      )

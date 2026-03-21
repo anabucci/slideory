@@ -165,13 +165,13 @@ class _SettingsPageState extends State<SettingsPage> {
     });
   }
 Map sections = { "Account":['Manage Account', ],
-"App":["Privacy Policy", 'Terms of Service', 'Contact Us'],
+"App":["Privacy Policy", 'Terms of Service', 'Help Center', 'Contact Us'],
 "Actions":
 ['Logout', 'Delete Account', ]};
 Map sectionIcon = {
   'Manage Account':Icons.person,
   'Security':Icons.security,
-  'Contact Us':Icons.help,
+  'Contact Us':Icons.mail,
   "Notifications":Icons.notifications,
   'Help Center': Icons.help,
   'Privacy Policy':Icons.privacy_tip,
@@ -189,220 +189,227 @@ void initState() {
   Widget build (BuildContext context){
   return Scaffold(
     backgroundColor: const Color.fromARGB(255, 248, 248, 248),
-    body: SafeArea(
-      child: Stack(
-        children: [
-           Positioned(
-                    left: 20,
-                    top: 20,
-                    child: SizedBox(
-                      width: MediaQuery.of(context).size.width,
-                      child: Row(
-                      
-                        children: [
-                          Align(
-      alignment: Alignment.centerLeft,
-                            child: GestureDetector(
-                              onTap: (){
-                                if (Navigator.canPop(context)){
-                                  Navigator.pop(context, returnusername);
-                                } else {
-                                Navigator.of(context).push(
-                                      PageRouteBuilder(
-                                        pageBuilder: (context, animation, secondaryAnimation) =>MyApp(selectedIndex: 2,),
-                                        transitionDuration: Duration.zero,
-                                        reverseTransitionDuration: Duration.zero,
-                                      ),
-                                                            );
-                                }
-                                
-                              },
-                              child:Container(
-                            
-                                decoration: BoxDecoration(
-                                  color: const Color.fromARGB(255, 205, 205, 205).withAlpha(50),
-                                  shape: BoxShape.circle
-                                ),
-                                child: Padding(
-                                  padding: const EdgeInsets.all(5),
-                                  child: Center(child: Icon(Icons.arrow_back, size: 23, 
-                                  color: const Color.fromARGB(255, 0, 0, 0), )),
+    body: SingleChildScrollView(
+      child: SafeArea(
+        child: Stack(
+          children: [
+             Positioned(
+                      left: 20,
+                      top: 20,
+                      child: SizedBox(
+                        width: MediaQuery.of(context).size.width,
+                        child: Row(
+                        
+                          children: [
+                            Align(
+        alignment: Alignment.centerLeft,
+                              child: GestureDetector(
+                                onTap: (){
+                                  if (Navigator.canPop(context)){
+                                    Navigator.pop(context, returnusername);
+                                  } else {
+                                  Navigator.of(context).push(
+                                        PageRouteBuilder(
+                                          pageBuilder: (context, animation, secondaryAnimation) =>MyApp(selectedIndex: 2,),
+                                          transitionDuration: Duration.zero,
+                                          reverseTransitionDuration: Duration.zero,
+                                        ),
+                                                              );
+                                  }
+                                  
+                                },
+                                child:Container(
+                              
+                                  decoration: BoxDecoration(
+                                    color: const Color.fromARGB(255, 205, 205, 205).withAlpha(50),
+                                    shape: BoxShape.circle
+                                  ),
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(5),
+                                    child: Center(child: Icon(Icons.arrow_back, size: 23, 
+                                    color: const Color.fromARGB(255, 0, 0, 0), )),
+                                  ),
                                 ),
                               ),
                             ),
-                          ),
-                       
-                        ],
-                      ),
-                    )),
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 30 ),
-            child: Center(
-              child: Column(
-                
-                children: [
-              Text('Settings', style: TextStyle(fontFamily: 'Poppins', color: 
-                                                                 const Color.fromARGB(255, 0, 0, 0), fontWeight: FontWeight.bold,
-                                                                                                    fontSize: 22),),
-                      SizedBox(height: 50,),
-                        Text('@${widget.data['username']}', style: TextStyle(fontFamily: 'Poppins', color: 
-                                             const Color.fromARGB(255, 195, 166, 246), fontWeight: FontWeight.bold,
-                                                                                fontSize: 22),),     
-                      SizedBox(height: 20,),                  
-        ...sections.entries.map((entry) {
-          return Padding(
-            padding: const EdgeInsets.all(15),
-            child: Container(
-              decoration: BoxDecoration(
-                color: const Color.fromARGB(255, 255, 209, 224),
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: Column(
-                  children: [
-                     ...( entry.value as Iterable).toList().map((e) {
-              return 
-              
-              GestureDetector(
-                onTap: () async {
-                
-                      if (e == 'Manage Account'){
-                    final data =  await supabase.from('profile').select('username, liked, completed').eq('user_id',id).maybeSingle();
- returnusername =   await   Navigator.of(context).push(
-                                      PageRouteBuilder(
-                                        pageBuilder: (context, animation, secondaryAnimation) => ManagePage(completed: data?['completed'], liked: data?['liked'], username: data?['username'],),
-                                        transitionDuration: Duration.zero,
-                                        reverseTransitionDuration: Duration.zero,
-                                      ),
-                                                            );
-                                                            if (returnusername != null){
-                                                              widget.data['username'] = returnusername;
-                                                              setState(() {
-                                                                
-                                                              });
-                                                            }
-            } else if (e=='Privacy Policy'){
-           final Uri url =  Uri.parse('https://anabucci.github.io/slideorypolicy/privacy-policy');
-                              if (!await launchUrl(url, mode: LaunchMode.externalApplication,)){
-                                Toast.show(context, 'Error loading terms of service', true);
-                              }
-            } else if (e=='Terms of Service'){
-             final Uri url =  Uri.parse('https://anabucci.github.io/slideorypolicy/terms-of-service');
-                              if (!await launchUrl(url, mode: LaunchMode.externalApplication,)){
-                                Toast.show(context, 'Error loading terms of service', true);
-                              }
-            }
-            
-             else if (e=='Logout'){
-              supabase.auth.signOut();
-                Navigator.of(context).push(
-                                      PageRouteBuilder(
-                                        pageBuilder: (context, animation, secondaryAnimation) => Welcome(),
-                                        transitionDuration: Duration.zero,
-                                        reverseTransitionDuration: Duration.zero,
-                                      ),
-                                                            );
-            } else if (e == 'Delete Account'){
-              delAcc();
-            } else if (e=='Contact Us'){
-              showContactInfo=!showContactInfo;
-              setState(() {
-                
-              });
-            }
-                },
-                child: Container(
-                  decoration: BoxDecoration(
-                    border: Border(bottom: entry.value.indexOf(e) == entry.value.length-1 ? BorderSide.none : BorderSide(width: 1,  color:  const Color.fromARGB(255, 246, 95, 145),))
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(20),
-                    child: Column(
-                      children: [
-                        Row(
-                          children: [
-                                    Icon(
-                                    sectionIcon[e], color:   const Color.fromARGB(255, 246, 95, 145),
-                                    ),
-                            SizedBox(width: 10,),
-                            Text(e, style: TextStyle(fontFamily: 'Poppins', 
-                            fontWeight: FontWeight.bold, color:  const Color.fromARGB(255, 246, 95, 145),
-                            ),),
-                            Spacer(),
-                                    Container(
-                                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: Colors.white
-                        
-                                      ),
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(2),
-                                        child: Center(child: Icon(
-                                           e=='Contact Us' && showContactInfo ? Icons.keyboard_arrow_down :
-                                       
-                                          Icons.chevron_right, color: const Color.fromARGB(255, 195, 166, 246),)),
-                                      ))
+                         
                           ],
                         ),
-                        AnimatedSize(
-                           duration: const Duration(milliseconds: 300),
-  curve: Curves.easeInOut,
-                          child:  e=='Contact Us' && showContactInfo ?SizedBox(
-                              height:130,
-                               child:   Column(
-                                 children: [
-                               
-                                                                                                       SizedBox(height: 25,),
-                                                          Text('Use the following email to contact us:', style: TextStyle(fontFamily: 'Poppins', color: const Color.fromARGB(255, 0, 0, 0), fontWeight: FontWeight.bold,
-                                                fontSize: 16)),
-                                            SizedBox(height: 20,),
-                                              Container(
-                                               
-                                                decoration: BoxDecoration(
-                                                                             color:    Color.fromARGB(255, 244, 237, 255),
-                                                                              border: Border.all(color: Color.fromARGB(255, 190, 156, 250), width: 2 ),
-                                                                              borderRadius: BorderRadius.circular(30),
-                                                                              
-                                                ),
-                                                height: 45,
-                                                width: double.infinity,
-                                                child: const Center(
-                                                                              child: Row(
-                                                                                mainAxisAlignment: MainAxisAlignment.center,
-                                                                                crossAxisAlignment: CrossAxisAlignment.center,
-                                                                                children: [
-                                                                                  
-                                                                                  Text(
-                                                                                    'slideory@gmail.com',
-                                                                                    style: TextStyle(
-                                                                                      color:     Color.fromARGB(255, 190, 156, 250),
-                                                                                      fontFamily: 'Poppins',
-                                                                                      fontWeight: FontWeight.bold,
-                                                                                      fontSize: 15,
-                                                                                    ),
-                                                                                  ),
-                                                                                 
-                                                                                ],
-                                                                              ),
-                                                ),
-                                              ),              
-                                                 ]) ) : SizedBox.shrink(),
-                        ),
-                      ],
-                    ),
-                  ),
-                
+                      )),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 30 ),
+              child: Center(
+                child: Column(
+                  
+                  children: [
+                Text('Settings', style: TextStyle(fontFamily: 'Poppins', color: 
+                                                                   const Color.fromARGB(255, 0, 0, 0), fontWeight: FontWeight.bold,
+                                                                                                      fontSize: 22),),
+                        SizedBox(height: 50,),
+                          Text('@${widget.data['username']}', style: TextStyle(fontFamily: 'Poppins', color: 
+                                               const Color.fromARGB(255, 195, 166, 246), fontWeight: FontWeight.bold,
+                                                                                  fontSize: 22),),     
+                        SizedBox(height: 20,),                  
+          ...sections.entries.map((entry) {
+            return Padding(
+              padding: const EdgeInsets.all(15),
+              child: Container(
+                decoration: BoxDecoration(
+                  color: const Color.fromARGB(255, 255, 209, 224),
+                  borderRadius: BorderRadius.circular(10),
                 ),
-              );}
-              )
-              ]),
-            ),
-          );
-        })
-                ],
+                child: Column(
+                    children: [
+                       ...( entry.value as Iterable).toList().map((e) {
+                return 
+                
+                GestureDetector(
+                  onTap: () async {
+                  
+                        if (e == 'Manage Account'){
+                      final data =  await supabase.from('profile').select('username, liked, completed').eq('user_id',id).maybeSingle();
+       returnusername =   await   Navigator.of(context).push(
+                                        PageRouteBuilder(
+                                          pageBuilder: (context, animation, secondaryAnimation) => ManagePage(completed: data?['completed'], liked: data?['liked'], username: data?['username'],),
+                                          transitionDuration: Duration.zero,
+                                          reverseTransitionDuration: Duration.zero,
+                                        ),
+                                                              );
+                                                              if (returnusername != null){
+                                                                widget.data['username'] = returnusername;
+                                                                setState(() {
+                                                                  
+                                                                });
+                                                              }
+              } else if (e=='Privacy Policy'){
+             final Uri url =  Uri.parse('https://anabucci.github.io/slideorypolicy/privacy-policy');
+                                if (!await launchUrl(url, mode: LaunchMode.externalApplication,)){
+                                  Toast.show(context, 'Error loading terms of service', true);
+                                }
+              } else if (e=='Terms of Service'){
+               final Uri url =  Uri.parse('https://anabucci.github.io/slideorypolicy/terms-of-service');
+                                if (!await launchUrl(url, mode: LaunchMode.externalApplication,)){
+                                  Toast.show(context, 'Error loading terms of service', true);
+                                }
+              }
+              
+               else if (e=='Logout'){
+                supabase.auth.signOut();
+                  Navigator.of(context).push(
+                                        PageRouteBuilder(
+                                          pageBuilder: (context, animation, secondaryAnimation) => Welcome(),
+                                          transitionDuration: Duration.zero,
+                                          reverseTransitionDuration: Duration.zero,
+                                        ),
+                                                              );
+              } else if (e == 'Delete Account'){
+                delAcc();
+              } else if (e=='Contact Us'){
+                showContactInfo=!showContactInfo;
+                setState(() {
+                  
+                });
+              } else if (e=='Help Center'){
+                final Uri url =  Uri.parse('https://anabucci.github.io/slideorypolicy/support');
+                                if (!await launchUrl(url, mode: LaunchMode.externalApplication,)){
+                                  Toast.show(context, 'Error loading support page', true);
+                                }
+              }
+                  },
+                  child: Container(
+                    decoration: BoxDecoration(
+                      border: Border(bottom: entry.value.indexOf(e) == entry.value.length-1 ? BorderSide.none : BorderSide(width: 1,  color:  const Color.fromARGB(255, 246, 95, 145),))
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(20),
+                      child: Column(
+                        children: [
+                          Row(
+                            children: [
+                                      Icon(
+                                      sectionIcon[e], color:   const Color.fromARGB(255, 246, 95, 145),
+                                      ),
+                              SizedBox(width: 10,),
+                              Text(e, style: TextStyle(fontFamily: 'Poppins', 
+                              fontWeight: FontWeight.bold, color:  const Color.fromARGB(255, 246, 95, 145),
+                              ),),
+                              Spacer(),
+                                      Container(
+                                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Colors.white
+                          
+                                        ),
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(2),
+                                          child: Center(child: Icon(
+                                             e=='Contact Us' && showContactInfo ? Icons.keyboard_arrow_down :
+                                         
+                                            Icons.chevron_right, color: const Color.fromARGB(255, 195, 166, 246),)),
+                                        ))
+                            ],
+                          ),
+                          AnimatedSize(
+                             duration: const Duration(milliseconds: 300),
+        curve: Curves.easeInOut,
+                            child:  e=='Contact Us' && showContactInfo ?SizedBox(
+                                height:150,
+                                 child:   Column(
+                                   children: [
+                                 
+                                                                                                         SizedBox(height: 25,),
+                                                            Text('Use the following email to contact us:', style: TextStyle(fontFamily: 'Poppins', color: const Color.fromARGB(255, 0, 0, 0), fontWeight: FontWeight.bold,
+                                                  fontSize: 16)),
+                                              SizedBox(height: 20,),
+                                                Container(
+                                                 
+                                                  decoration: BoxDecoration(
+                                                                               color:    Color.fromARGB(255, 244, 237, 255),
+                                                                                border: Border.all(color: Color.fromARGB(255, 190, 156, 250), width: 2 ),
+                                                                                borderRadius: BorderRadius.circular(30),
+                                                                                
+                                                  ),
+                                                  height: 45,
+                                                  width: double.infinity,
+                                                  child: const Center(
+                                                                                child: Row(
+                                                                                  mainAxisAlignment: MainAxisAlignment.center,
+                                                                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                                                                  children: [
+                                                                                    
+                                                                                    Text(
+                                                                                      'slideory@gmail.com',
+                                                                                      style: TextStyle(
+                                                                                        color:     Color.fromARGB(255, 190, 156, 250),
+                                                                                        fontFamily: 'Poppins',
+                                                                                        fontWeight: FontWeight.bold,
+                                                                                        fontSize: 15,
+                                                                                      ),
+                                                                                    ),
+                                                                                   
+                                                                                  ],
+                                                                                ),
+                                                  ),
+                                                ),              
+                                                   ]) ) : SizedBox.shrink(),
+                          ),
+                        ],
+                      ),
+                    ),
+                  
+                  ),
+                );}
+                )
+                ]),
+              ),
+            );
+          })
+                  ],
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     ),
         );

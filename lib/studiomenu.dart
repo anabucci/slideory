@@ -68,7 +68,7 @@ class _StudioMenuState extends State<StudioMenu> {
                 stops: [0.0,0.6])
             ),
               child: SizedBox(
-                height: MediaQuery.of(context).size.height-(MediaQuery.of(context).size.height * 0.095),
+                height: MediaQuery.of(context).size.height,
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Center(
@@ -350,7 +350,7 @@ class _StudioMenuState extends State<StudioMenu> {
           if (supabase.auth.currentUser != null)
             Positioned(
                         left: 20,
-                        top: 60,
+                        top: 70,
                         child: GestureDetector(
                           onTap: (){
          Navigator.of(context).push(

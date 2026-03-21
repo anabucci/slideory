@@ -523,513 +523,523 @@ int lives = 0;
   builder:(context) {
     return StatefulBuilder(
       builder: (context, setLocalState) {
-        return SizedBox(
-          height: height*0.8 ,
-          width: double.infinity,
-          child: Padding(
-            padding: const EdgeInsets.all(20),
-            child: Column(
-                 crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                     Text('Add Choice', style: TextStyle(fontFamily: 'Poppins', color: 
-                                                           const Color.fromARGB(255, 195, 166, 246), fontWeight: FontWeight.bold,
-                                                                                              fontSize: 22),),
-                                                                                              SizedBox(height: 15,),
-                SizedBox(
-                  height: height*0.55,
-                  child: SingleChildScrollView(
-                    scrollDirection: Axis.vertical,
-                    child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                      
-                      
-                    children: [
-                 
-                                                                                              Row(
-                                                                                                children: [
-                            GestureDetector(
-                              onTap: () {
-                            
-                              text = !text;
-                            
-                            
-                               setLocalState(() {
-                              
-                            });
-                              },
-                              child: SizedBox(
-                            width: width>700 ? width*0.2:width*0.4,
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                       Text('Text', style: TextStyle(fontFamily: 'Poppins', color: text ?  const Color.fromARGB(255, 246, 95, 145)
-                       : const Color.fromARGB(255, 255, 209, 224), fontWeight: FontWeight.w600
-                       , 
-                                                                                                  fontSize: 15),),
-                                                                                                      SizedBox(height: 5,),
-                                                                      Container(
-                                                                    width: double.infinity,
-                                                                    height: 2,
-                                                                    decoration: BoxDecoration(
-                                                                      color: 
-                                                                      text ?  const Color.fromARGB(255, 246, 95, 145)
-                       : const Color.fromARGB(255, 255, 209, 224), 
-                                                                      borderRadius: BorderRadius.circular(10)
-                                                                    ),
-                                                                      )
-                              ],
-                            ),
-                              ),
-                            ),
-                            SizedBox(width: 20,),
-                            GestureDetector(
-                            onTap: () {
-                            
-                              text = !text;
-                              
-                            setLocalState(() {
-                              
-                            });
-                              },
-                              child: SizedBox(
-                         width: width>700 ? width*0.2:width*0.4,
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                       Text('Image', style: TextStyle(fontFamily: 'Poppins',  fontWeight: FontWeight.w600, color: 
-                       !text ?  const Color.fromARGB(255, 246, 95, 145)
-                       : const Color.fromARGB(255, 255, 209, 224), 
-                              
-                                                                                                  fontSize: 15),),
-                                                                                                  SizedBox(height: 5,),
-                                                                      Container(
-                                                                    width: double.infinity,
-                                                                    height: 2,
-                                                                    decoration: BoxDecoration(
-                                                                      color: 
-                                                                      !text ?  const Color.fromARGB(255, 246, 95, 145)
-                       : const Color.fromARGB(255, 255, 209, 224), 
-                                                                      borderRadius: BorderRadius.circular(10)
-                                                                    ),
-                                                                      )
-                              ],
-                            ),
-                              ),
-                            ),
-                               
-                                        
-                                                                                                ],
-                                                                                              ),
-                                                                                              SizedBox(height: 20,),
-                                                                                                   text ? Container(
-                               
-                              width:width-40,
-                              decoration: BoxDecoration(
-                               border: Border.all(color: const Color.fromARGB(255, 195, 166, 246), width: 2 ),
-                               borderRadius: BorderRadius.circular(10) 
-                              ),
-                              child:  TextField(
-                              maxLines: null,
-                            controller: choiceText,
-                            maxLength: 60,
-                            decoration: InputDecoration(border: InputBorder.none, contentPadding: EdgeInsets.symmetric(horizontal: 10),
-                            hint: Text('Type...', style:   TextStyle(fontFamily: 'Poppins', color: 
-                                                           const Color.fromARGB(255, 0, 0, 0),
-                                                                                              fontSize: 15))
-                            ),
-                            style: TextStyle(fontFamily: 'Poppins', color: 
-                                                           const Color.fromARGB(255, 0, 0, 0),
-                                                                                              fontSize: 16)
-                              ),
-                            ) : GestureDetector(
-                              onTap: (){
-optionImage(setLocalState);
-                              },
-                              child: Container(
-                                width: width-40,
-                                                height: 100,         
-                                 decoration: BoxDecoration(
-                                  image: photo == null ? null : DecorationImage(image: FileImage
-                           (
-                          photo
-                           
-                           )),
-                              color: const Color.fromARGB(255, 195, 166, 246).withAlpha(100),
-                                 borderRadius: BorderRadius.circular(10) 
+        return FocusScope(
+          child: GestureDetector(
+            onTap: (){
+              
+                  FocusScope.of(context).unfocus();
+            },
+            child: SizedBox(
+              height: height*0.8 ,
+              width: double.infinity,
+              child: Padding(
+                padding: const EdgeInsets.all(20),
+                child: Column(
+                     crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                         Text('Add Choice', style: TextStyle(fontFamily: 'Poppins', color: 
+                                                               const Color.fromARGB(255, 195, 166, 246), fontWeight: FontWeight.bold,
+                                                                                                  fontSize: 22),),
+                                                                                                  SizedBox(height: 15,),
+                    SizedBox(
+                      height: height*0.55,
+                      child: SingleChildScrollView(
+                        scrollDirection: Axis.vertical,
+                        child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                          
+                          
+                        children: [
+                     
+                                                                                                  Row(
+                                                                                                    children: [
+                                GestureDetector(
+                                  onTap: () {
+                                
+                                  text = !text;
+                                
+                                
+                                   setLocalState(() {
+                                  
+                                });
+                                  },
+                                  child: SizedBox(
+                                width: width>700 ? width*0.2:width*0.4,
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                           Text('Text', style: TextStyle(fontFamily: 'Poppins', color: text ?  const Color.fromARGB(255, 246, 95, 145)
+                           : const Color.fromARGB(255, 255, 209, 224), fontWeight: FontWeight.w600
+                           , 
+                                                                                                      fontSize: 15),),
+                                                                                                          SizedBox(height: 5,),
+                                                                          Container(
+                                                                        width: double.infinity,
+                                                                        height: 2,
+                                                                        decoration: BoxDecoration(
+                                                                          color: 
+                                                                          text ?  const Color.fromARGB(255, 246, 95, 145)
+                           : const Color.fromARGB(255, 255, 209, 224), 
+                                                                          borderRadius: BorderRadius.circular(10)
+                                                                        ),
+                                                                          )
+                                  ],
                                 ),
-                                child:  Center(
-                                                  child: Padding(
-                                                    padding: const EdgeInsets.all(20),
-                                                    child: photo != null ? SizedBox.shrink() :Icon(Icons.image, color: const Color.fromARGB(255, 255, 255, 255), size: 70,),
-                                                  ),
-                                ),
-                              ),
-                            ),
-                            SizedBox(height: 20,),
-                            Row(
-                              children: [
-                                Text('Next Slide', style: 
-                                                                                                    TextStyle(fontFamily: 'Poppins', 
-                                                                                                    fontWeight: FontWeight.bold,
-                                  fontSize: 15,
-                                                                                                      color: const Color.fromARGB(255, 0, 0, 0),)),
-                                                                                                      SizedBox(width: 10,),
-                                                                                                      GestureDetector(
-                                                                                        onTap: (){
-                                                                                          explain('Next Slide');
-                                                                                        }                ,
-                                                                                                        child: Icon(Icons.help_outline, color: Colors.grey, size: 20,))
-                              ],
-                            ),
-                                                                                                  SizedBox(height: 10,),
-                                                                                                    GestureDetector(
-                                                                                            onTap: (){
-                                                                                             nextSlide = 'new' ;
-                                                                                             setLocalState(() {
-                                                                                               
-                                                                                             },);
-                                                                                            },
-                                                                                            child: Container(
-                                                                                                 decoration: nextSlide == 'new' ?  BoxDecoration(
-                                                                                                border: Border.all( color: const Color.fromARGB(255, 173, 142, 227),
-                                                                                                width: 2
-                                                                                                ),
-                                                                                                  borderRadius: BorderRadius.circular(12),
-                                                                                                  
-                                                                                                ) :null,
-                                                                                              child: Padding(
-                                                                                                padding: const EdgeInsets.all(3),
-                                                                                                child: Container(
-                                                                                                
-                                                                                                  decoration: BoxDecoration(
-                                                                                                    color: const Color.fromARGB(255, 195, 166, 246).withAlpha(100),
-                                                                                                    borderRadius: BorderRadius.circular(10),
-                                                                                                    
-                                                                                                  ),
-                                                                                                  child: Padding(
-                                                                                                    padding: const EdgeInsets.all(12),
-                                                                                                    child: Center(child: Text('Create New Slide', style: 
-                                                                                                    TextStyle(fontFamily: 'Poppins', 
-                                                                                                      color: const Color.fromARGB(255, 173, 142, 227),
-                                                                                                        fontWeight: FontWeight.bold,
-                                                                                                                                                                                fontSize: 14)),),
-                                                                                                
-                                                                                                  ),
-                                                                                                ),
-                                                                                              ),
-                                                                                            ),
-                                                                                          ),
-                                                                                           SizedBox(height: 10,),
-                                                                                           slideData.length==1 ? SizedBox.shrink():
-                                                                                                    GestureDetector(
-                                                                                            onTap: (){
-                                                                                             nextSlide = 'Use Existing Slide' ;
-                                                                                             setLocalState(() {
-                                                                                               
-                                                                                             },);
-                                                                                            },
-                                                                                            child: Container(
-                                                                                                 decoration:  nextSlide == 'new' || nextSlide == 'next' ? null: BoxDecoration(
-                                                                                                border: Border.all( color: const Color.fromARGB(255, 173, 142, 227),
-                                                                                                width: 2
-                                                                                                ),
-                                                                                                  borderRadius: BorderRadius.circular(12),
-                                                                                                  
-                                                                                                ),
-                                                                                              child: Padding(
-                                                                                                padding: const EdgeInsets.all(3),
-                                                                                           child:   nextSlide != 'new' && nextSlide != 'next' ?    DropdownButtonHideUnderline(
-                                                    child: DropdownButton2(
-                                                      alignment: Alignment.center,       
-                                                      isExpanded: true,                    
-                                          value:  existingSlide,
-                            items: [
-                                           DropdownMenuItem(
-                                           
-                                                                                               value: 'Use Existing Slide',
-                                                                                               child: Center(child: Text(
-                                                                                    'Use Existing Slide' ,style: 
-                                                                                                    TextStyle(fontFamily: 'Poppins', 
-                                                                                                      color: const Color.fromARGB(255, 173, 142, 227),
-                                                                                                        fontWeight: FontWeight.bold,
-                                                                                                                                                                                fontSize: 14))),),
-                                                                                         ...slideData.where((e)=>e['slide'] != currentSlide).map((entry) { 
-                                                                                      return  DropdownMenuItem(
-                                                                                               value: entry['slide'],
-                                                                                               child: Center(
-                                                                                                 child: Text('Slide ${entry['slide']}', style: 
-                                                                                                      TextStyle(fontFamily: 'Poppins', 
-                                                                                                        color: const Color.fromARGB(255, 173, 142, 227),
-                                                                                                          fontWeight: FontWeight.bold,
-                                                                                                                                                                                  fontSize: 14)),
-                                                                                               ));
-                                                                                 })
-                                                                                             
-                                                                                             
-                                                                                           
-                                                                                             ],
-                                                                                             onChanged: (value){
-                                                                                               setLocalState((){
-                                                                                       existingSlide= value;
-                                                                                      
-                                                                                               });
-                                                                                             setLocalState(() {
-                                                                                               
-                                                                                             });
-                                                                                             
-                                                                                          
-                                                                                             },
-                                                                                                        dropdownStyleData: DropdownStyleData(
-                                                        maxHeight: 200,
-                                                        decoration: BoxDecoration(
-                                                          color: Colors.white,
-                                                          borderRadius: BorderRadius.circular(10),
-                                                        ),
-                                                        offset: const Offset(0, 5),
-                                                        scrollbarTheme: ScrollbarThemeData(
-                                                          thumbColor: WidgetStatePropertyAll(   Color.fromARGB(255, 204, 191, 216),),
-                                                          radius: const Radius.circular(8),
-                                                          thickness: WidgetStatePropertyAll(4),
-                                                          trackVisibility: WidgetStatePropertyAll(false),
-                                                          mainAxisMargin: 10, 
-                                                        ),
-                                                      ),
-                                                      iconStyleData: IconStyleData(icon: Icon( Icons.keyboard_arrow_down_rounded),),
-                                                      menuItemStyleData: const MenuItemStyleData(
-                                                        overlayColor: WidgetStatePropertyAll(   Color.fromARGB(255, 244, 236, 255),), 
-                                                      ),
-                                                                             buttonStyleData:  ButtonStyleData(
-                    
-                                                        height: 45,
-                                                        width: width-40,
-                                                        padding: EdgeInsets.symmetric(horizontal: 0),
-                                                        decoration: BoxDecoration(
-                                                           color:  const Color.fromARGB(255, 195, 166, 246).withAlpha(100),
-                                                            borderRadius: BorderRadius.circular(10),
-                                                                                                    
-                                                        ),),
-                                                      ),
-                                                  ):
-                                                                                                 Container(
-                                                                                                
-                                                                                                  decoration: BoxDecoration(
-                                                                                                    color: const Color.fromARGB(255, 195, 166, 246).withAlpha(100),
-                                                                                                    borderRadius: BorderRadius.circular(10),
-                                                                                                    
-                                                                                                  ),
-                                                                                                  child: Padding(
-                                                                                                    padding: const EdgeInsets.all(12),
-                                                                                                    child: Center(child: Text('Use Existing Slide', style: 
-                                                                                                    TextStyle(fontFamily: 'Poppins', 
-                                                                                                      color: const Color.fromARGB(255, 173, 142, 227),
-                                                                                                        fontWeight: FontWeight.bold,
-                                                                                                                                                                                fontSize: 14)),),
-                                                                                                
-                                                                                                  ),
-                                                                                                ),
-                                                                                              ),
-                                                                                            ),
-                                                                                          ),
-                                                                                          
-                    SizedBox(height: 20,),
-                            Text('Consequences', style: 
-                                                                                                TextStyle(fontFamily: 'Poppins', fontWeight: FontWeight.bold,
-                                                                                                 
-                              fontSize: 15,  color: const Color.fromARGB(255, 0, 0, 0), )),
-                               SizedBox(height: 10,),
-                               Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                   Text('Live change:', style: 
-                                                                                                TextStyle(fontFamily: 'Poppins', 
-                                                                                                 
-                              fontSize: 15,  color: const Color.fromARGB(255, 0, 0, 0), )),
-                              Spacer(),
-                              Container(
-                                decoration: BoxDecoration(
-                                  color: const Color.fromARGB(255, 255, 255, 255),
-                                  borderRadius: BorderRadius.circular(10),
-                                  boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withAlpha(20),
-                            blurRadius: 10,
-                            offset: Offset(0, 4),
-                          ),
-                        ],
-                                ),
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                                  child: Row(
-                                    children: [
-                                         GestureDetector(
-                                          onTap: (){
-                                            setLocalState(() {
-                                              lives=lives-1;
-                                            });
-                                          },
-                                           child: Container(
-                                                                           decoration: BoxDecoration(color: const Color.fromARGB(255, 252, 181, 181),  borderRadius: BorderRadius.circular(12)),
-                                                                           child: Center(child: Padding(
-                                            padding: const EdgeInsets.all(8.0),
-                                            child: Icon(Icons.remove, color: Colors.red,),
-                                                                           ),),
-                                                                         ),
-                                         ),
-                                     
-                                      SizedBox(width: 25,),
-                                      Text('${lives.isNegative ? lives: '+ $lives'}', style: TextStyle(fontFamily: 'Poppins', 
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 18, color: Colors.black),),
-                                      SizedBox(width: 25,),
-                                       GestureDetector(
-                                         onTap: (){
-                                            setLocalState(() {
-                                              lives=lives+1;
-                                            });
-                                          },
-                                         child: Container(
-                                          decoration: BoxDecoration(color: const Color.fromARGB(255, 196, 255, 198),  borderRadius: BorderRadius.circular(12)),
-                                          child: Center(child: Padding(
-                                            padding: const EdgeInsets.all(8.0),
-                                            child: Icon(Icons.add, color: Colors.green,),
-                                          ),),
-                                                                       ),
-                                       ),
-                                      
-                                    ],
                                   ),
                                 ),
-                              )
-                                ]
-                               ),
-                                 ]
-                               ),
-                  ),
-                ),
-                        Spacer(),
-                  GestureDetector(
-                                                                                        onTap: ()async {
-                                                                                        if (!text && photo==null){
-                                                                                            Toast.show(context, 'Photo cannot be empty', true);
-                                                                                            return;
-                                                                                          } 
-                                                                                          if (text &&choiceText.text.isEmpty){
-                                                                                            Toast.show(context, 'Text cannot be empty', true);
-                                                                                            return;
-                                                                                          }
-                                                                                             if (existingSlide == 'Use Existing Slide' && nextSlide != 'new'){
-                                                                                            Toast.show(context, 'Please choose a next slide.', true);
-                                                                                            return;
-                                                                                          }
-                                                                                          if (optionData.where((e) => e['slide_id'] == currentSlide).length < 23){
-                                                                                           dynamic subslides = slideData.where((e) => e['slide'] == currentSlide && e['subslide'] != null).toList();
-                                                                                        
-                                                                                          int count = subslides.length;
-                                                                                          slideData.where((e) => e['slide'] == currentSlide && e['subslide'] == subslide).singleOrNull?['type'] = 'choice';
-                                                                                       if (!text){
-addImg( nextSlide, count, existingSlide, lives, photo) ;
-                                                                                       } else {
-                                                                                         dynamic optionInsert =       { 'slide_id':currentSlide,   'type': 'text',
-                                                                                            'text':  choiceText.text, 'img': null,
-                                                                                            
-                                                                                             'left':37 , 'top':149, 
-                     'width':null, 'height':null, 'size':23, "lives":lives, 'id': (optionData.isNotEmpty ? optionData.last['id']??0 : 0)+1, 
-                                                                                             'next_slide_id': nextSlide== 'new' ? slideData.length+1 : existingSlide};
+                                SizedBox(width: 20,),
+                                GestureDetector(
+                                onTap: () {
+                                
+                                  text = !text;
+                                  
+                                setLocalState(() {
+                                  
+                                });
+                                  },
+                                  child: SizedBox(
+                             width: width>700 ? width*0.2:width*0.4,
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                           Text('Image', style: TextStyle(fontFamily: 'Poppins',  fontWeight: FontWeight.w600, color: 
+                           !text ?  const Color.fromARGB(255, 246, 95, 145)
+                           : const Color.fromARGB(255, 255, 209, 224), 
+                                  
+                                                                                                      fontSize: 15),),
+                                                                                                      SizedBox(height: 5,),
+                                                                          Container(
+                                                                        width: double.infinity,
+                                                                        height: 2,
+                                                                        decoration: BoxDecoration(
+                                                                          color: 
+                                                                          !text ?  const Color.fromARGB(255, 246, 95, 145)
+                           : const Color.fromARGB(255, 255, 209, 224), 
+                                                                          borderRadius: BorderRadius.circular(10)
+                                                                        ),
+                                                                          )
+                                  ],
+                                ),
+                                  ),
+                                ),
+                                   
+                                            
+                                                                                                    ],
+                                                                                                  ),
+                                                                                                  SizedBox(height: 20,),
+                                                                                                       text ? Container(
+                                   
+                                  width:width-40,
+                                  decoration: BoxDecoration(
+                                   border: Border.all(color: const Color.fromARGB(255, 195, 166, 246), width: 2 ),
+                                   borderRadius: BorderRadius.circular(10) 
+                                  ),
+                                  child:  Focus(
+                                    child: TextField(
+                                    maxLines: null,
+                                                                  controller: choiceText,
+                                                                  maxLength: 60,
+                                                                  decoration: InputDecoration(border: InputBorder.none, contentPadding: EdgeInsets.symmetric(horizontal: 10),
+                                                                  hint: Text('Type...', style:   TextStyle(fontFamily: 'Poppins', color: 
+                                                                 const Color.fromARGB(255, 0, 0, 0),
+                                                                                                    fontSize: 15))
+                                                                  ),
+                                                                  style: TextStyle(fontFamily: 'Poppins', color: 
+                                                                 const Color.fromARGB(255, 0, 0, 0),
+                                                                                                    fontSize: 16)
+                                    ),
+                                  ),
+                                ) : GestureDetector(
+                                  onTap: (){
+            optionImage(setLocalState);
+                                  },
+                                  child: Container(
+                                    width: width-40,
+                                                    height: 100,         
+                                     decoration: BoxDecoration(
+                                      image: photo == null ? null : DecorationImage(image: FileImage
+                               (
+                              photo
+                               
+                               )),
+                                  color: const Color.fromARGB(255, 195, 166, 246).withAlpha(100),
+                                     borderRadius: BorderRadius.circular(10) 
+                                    ),
+                                    child:  Center(
+                                                      child: Padding(
+                                                        padding: const EdgeInsets.all(20),
+                                                        child: photo != null ? SizedBox.shrink() :Icon(Icons.image, color: const Color.fromARGB(255, 255, 255, 255), size: 70,),
+                                                      ),
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(height: 20,),
+                                Row(
+                                  children: [
+                                    Text('Next Slide', style: 
+                                                                                                        TextStyle(fontFamily: 'Poppins', 
+                                                                                                        fontWeight: FontWeight.bold,
+                                      fontSize: 15,
+                                                                                                          color: const Color.fromARGB(255, 0, 0, 0),)),
+                                                                                                          SizedBox(width: 10,),
+                                                                                                          GestureDetector(
+                                                                                            onTap: (){
+                                                                                              explain('Next Slide');
+                                                                                            }                ,
+                                                                                                            child: Icon(Icons.help_outline, color: Colors.grey, size: 20,))
+                                  ],
+                                ),
+                                                                                                      SizedBox(height: 10,),
+                                                                                                        GestureDetector(
+                                                                                                onTap: (){
+                                                                                                 nextSlide = 'new' ;
+                                                                                                 setLocalState(() {
+                                                                                                   
+                                                                                                 },);
+                                                                                                },
+                                                                                                child: Container(
+                                                                                                     decoration: nextSlide == 'new' ?  BoxDecoration(
+                                                                                                    border: Border.all( color: const Color.fromARGB(255, 173, 142, 227),
+                                                                                                    width: 2
+                                                                                                    ),
+                                                                                                      borderRadius: BorderRadius.circular(12),
+                                                                                                      
+                                                                                                    ) :null,
+                                                                                                  child: Padding(
+                                                                                                    padding: const EdgeInsets.all(3),
+                                                                                                    child: Container(
+                                                                                                    
+                                                                                                      decoration: BoxDecoration(
+                                                                                                        color: const Color.fromARGB(255, 195, 166, 246).withAlpha(100),
+                                                                                                        borderRadius: BorderRadius.circular(10),
+                                                                                                        
+                                                                                                      ),
+                                                                                                      child: Padding(
+                                                                                                        padding: const EdgeInsets.all(12),
+                                                                                                        child: Center(child: Text('Create New Slide', style: 
+                                                                                                        TextStyle(fontFamily: 'Poppins', 
+                                                                                                          color: const Color.fromARGB(255, 173, 142, 227),
+                                                                                                            fontWeight: FontWeight.bold,
+                                                                                                                                                                                    fontSize: 14)),),
+                                                                                                    
+                                                                                                      ),
+                                                                                                    ),
+                                                                                                  ),
+                                                                                                ),
+                                                                                              ),
+                                                                                               SizedBox(height: 10,),
+                                                                                               slideData.length==1 ? SizedBox.shrink():
+                                                                                                        GestureDetector(
+                                                                                                onTap: (){
+                                                                                                 nextSlide = 'Use Existing Slide' ;
+                                                                                                 setLocalState(() {
+                                                                                                   
+                                                                                                 },);
+                                                                                                },
+                                                                                                child: Container(
+                                                                                                     decoration:  nextSlide == 'new' || nextSlide == 'next' ? null: BoxDecoration(
+                                                                                                    border: Border.all( color: const Color.fromARGB(255, 173, 142, 227),
+                                                                                                    width: 2
+                                                                                                    ),
+                                                                                                      borderRadius: BorderRadius.circular(12),
+                                                                                                      
+                                                                                                    ),
+                                                                                                  child: Padding(
+                                                                                                    padding: const EdgeInsets.all(3),
+                                                                                               child:   nextSlide != 'new' && nextSlide != 'next' ?    DropdownButtonHideUnderline(
+                                                        child: DropdownButton2(
+                                                          alignment: Alignment.center,       
+                                                          isExpanded: true,                    
+                                              value:  existingSlide,
+                                items: [
+                                               DropdownMenuItem(
+                                               
+                                                                                                   value: 'Use Existing Slide',
+                                                                                                   child: Center(child: Text(
+                                                                                        'Use Existing Slide' ,style: 
+                                                                                                        TextStyle(fontFamily: 'Poppins', 
+                                                                                                          color: const Color.fromARGB(255, 173, 142, 227),
+                                                                                                            fontWeight: FontWeight.bold,
+                                                                                                                                                                                    fontSize: 14))),),
+                                                                                             ...slideData.where((e)=>e['slide'] != currentSlide).map((entry) { 
+                                                                                          return  DropdownMenuItem(
+                                                                                                   value: entry['slide'],
+                                                                                                   child: Center(
+                                                                                                     child: Text('Slide ${entry['slide']}', style: 
+                                                                                                          TextStyle(fontFamily: 'Poppins', 
+                                                                                                            color: const Color.fromARGB(255, 173, 142, 227),
+                                                                                                              fontWeight: FontWeight.bold,
+                                                                                                                                                                                      fontSize: 14)),
+                                                                                                   ));
+                                                                                     })
+                                                                                                 
+                                                                                                 
+                                                                                               
+                                                                                                 ],
+                                                                                                 onChanged: (value){
+                                                                                                   setLocalState((){
+                                                                                           existingSlide= value;
+                                                                                          
+                                                                                                   });
+                                                                                                 setLocalState(() {
+                                                                                                   
+                                                                                                 });
+                                                                                                 
+                                                                                              
+                                                                                                 },
+                                                                                                            dropdownStyleData: DropdownStyleData(
+                                                            maxHeight: 200,
+                                                            decoration: BoxDecoration(
+                                                              color: Colors.white,
+                                                              borderRadius: BorderRadius.circular(10),
+                                                            ),
+                                                            offset: const Offset(0, 5),
+                                                            scrollbarTheme: ScrollbarThemeData(
+                                                              thumbColor: WidgetStatePropertyAll(   Color.fromARGB(255, 204, 191, 216),),
+                                                              radius: const Radius.circular(8),
+                                                              thickness: WidgetStatePropertyAll(4),
+                                                              trackVisibility: WidgetStatePropertyAll(false),
+                                                              mainAxisMargin: 10, 
+                                                            ),
+                                                          ),
+                                                          iconStyleData: IconStyleData(icon: Icon( Icons.keyboard_arrow_down_rounded),),
+                                                          menuItemStyleData: const MenuItemStyleData(
+                                                            overlayColor: WidgetStatePropertyAll(   Color.fromARGB(255, 244, 236, 255),), 
+                                                          ),
+                                                                                 buttonStyleData:  ButtonStyleData(
+                        
+                                                            height: 45,
+                                                            width: width-40,
+                                                            padding: EdgeInsets.symmetric(horizontal: 0),
+                                                            decoration: BoxDecoration(
+                                                               color:  const Color.fromARGB(255, 195, 166, 246).withAlpha(100),
+                                                                borderRadius: BorderRadius.circular(10),
+                                                                                                        
+                                                            ),),
+                                                          ),
+                                                      ):
+                                                                                                     Container(
+                                                                                                    
+                                                                                                      decoration: BoxDecoration(
+                                                                                                        color: const Color.fromARGB(255, 195, 166, 246).withAlpha(100),
+                                                                                                        borderRadius: BorderRadius.circular(10),
+                                                                                                        
+                                                                                                      ),
+                                                                                                      child: Padding(
+                                                                                                        padding: const EdgeInsets.all(12),
+                                                                                                        child: Center(child: Text('Use Existing Slide', style: 
+                                                                                                        TextStyle(fontFamily: 'Poppins', 
+                                                                                                          color: const Color.fromARGB(255, 173, 142, 227),
+                                                                                                            fontWeight: FontWeight.bold,
+                                                                                                                                                                                    fontSize: 14)),),
+                                                                                                    
+                                                                                                      ),
+                                                                                                    ),
+                                                                                                  ),
+                                                                                                ),
+                                                                                              ),
+                                                                                              
+                        SizedBox(height: 20,),
+                                Text('Consequences', style: 
+                                                                                                    TextStyle(fontFamily: 'Poppins', fontWeight: FontWeight.bold,
+                                                                                                     
+                                  fontSize: 15,  color: const Color.fromARGB(255, 0, 0, 0), )),
+                                   SizedBox(height: 10,),
+                                   Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    children: [
+                                       Text('Live change:', style: 
+                                                                                                    TextStyle(fontFamily: 'Poppins', 
+                                                                                                     
+                                  fontSize: 15,  color: const Color.fromARGB(255, 0, 0, 0), )),
+                                  Spacer(),
+                                  Container(
+                                    decoration: BoxDecoration(
+                                      color: const Color.fromARGB(255, 255, 255, 255),
+                                      borderRadius: BorderRadius.circular(10),
+                                      boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withAlpha(20),
+                                blurRadius: 10,
+                                offset: Offset(0, 4),
+                              ),
+                            ],
+                                    ),
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                                      child: Row(
+                                        children: [
+                                             GestureDetector(
+                                              onTap: (){
+                                                setLocalState(() {
+                                                  lives=lives-1;
+                                                });
+                                              },
+                                               child: Container(
+                                                                               decoration: BoxDecoration(color: const Color.fromARGB(255, 252, 181, 181),  borderRadius: BorderRadius.circular(12)),
+                                                                               child: Center(child: Padding(
+                                                padding: const EdgeInsets.all(8.0),
+                                                child: Icon(Icons.remove, color: Colors.red,),
+                                                                               ),),
+                                                                             ),
+                                             ),
+                                         
+                                          SizedBox(width: 25,),
+                                          Text('${lives.isNegative ? lives: '+ $lives'}', style: TextStyle(fontFamily: 'Poppins', 
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 18, color: Colors.black),),
+                                          SizedBox(width: 25,),
+                                           GestureDetector(
+                                             onTap: (){
+                                                setLocalState(() {
+                                                  lives=lives+1;
+                                                });
+                                              },
+                                             child: Container(
+                                              decoration: BoxDecoration(color: const Color.fromARGB(255, 196, 255, 198),  borderRadius: BorderRadius.circular(12)),
+                                              child: Center(child: Padding(
+                                                padding: const EdgeInsets.all(8.0),
+                                                child: Icon(Icons.add, color: Colors.green,),
+                                              ),),
+                                                                           ),
+                                           ),
                                           
-      final newOption = (widget.isDraft ??false)
-    ? Map<String, dynamic>.from({
-        ...optionInsert, 
-        'id': await saveOption(optionInsert),
-      })
-    : Map<String, dynamic>.from(optionInsert);
-
-optionData.add(newOption  );
-
-   dynamic painterText = TextPainter(text: TextSpan(text: newOption['text'], style: TextStyle(fontSize: newOption['size'].toDouble(),
-                                                  fontFamily: 'Poppins'
-
-                                                  )),
-                                                  textDirection: TextDirection.ltr
-                                                  )..layout();
-                                                
-textMap[newOption['id']] = {'width': painterText.width, 'height':painterText.height};
-}
-                    //                                                                    !text ? addImg( nextSlide, count, existingSlide, lives, photo)  : optionData.add(
+                                        ],
+                                      ),
+                                    ),
+                                  )
+                                    ]
+                                   ),
+                                     ]
+                                   ),
+                      ),
+                    ),
+                            Spacer(),
+                      GestureDetector(
+                                                                                            onTap: ()async {
+                                                                                            if (!text && photo==null){
+                                                                                                Toast.show(context, 'Photo cannot be empty', true);
+                                                                                                return;
+                                                                                              } 
+                                                                                              if (text &&choiceText.text.isEmpty){
+                                                                                                Toast.show(context, 'Text cannot be empty', true);
+                                                                                                return;
+                                                                                              }
+                                                                                                 if (existingSlide == 'Use Existing Slide' && nextSlide != 'new'){
+                                                                                                Toast.show(context, 'Please choose a next slide.', true);
+                                                                                                return;
+                                                                                              }
+                                                                                              if (optionData.where((e) => e['slide_id'] == currentSlide).length < 23){
+                                                                                               dynamic subslides = slideData.where((e) => e['slide'] == currentSlide && e['subslide'] != null).toList();
                                                                                             
-                    //                                                                         { 'slide_id':currentSlide,   'type': 'text',
-                    //                                                                         'text':  choiceText.text, 'img': null,
+                                                                                              int count = subslides.length;
+                                                                                              slideData.where((e) => e['slide'] == currentSlide && e['subslide'] == subslide).singleOrNull?['type'] = 'choice';
+                                                                                           if (!text){
+            addImg( nextSlide, count, existingSlide, lives, photo) ;
+                                                                                           } else {
+                                                                                             dynamic optionInsert =       { 'slide_id':currentSlide,   'type': 'text',
+                                                                                                'text':  choiceText.text, 'img': null,
+                                                                                                
+                                                                                                 'left':37 , 'top':149, 
+                         'width':null, 'height':null, 'size':23, "lives":lives, 'id': (optionData.isNotEmpty ? optionData.last['id']??0 : 0)+1, 
+                                                                                                 'next_slide_id': nextSlide== 'new' ? slideData.length+1 : existingSlide};
+                                              
+                  final newOption = (widget.isDraft ??false)
+                ? Map<String, dynamic>.from({
+            ...optionInsert, 
+            'id': await saveOption(optionInsert),
+                  })
+                : Map<String, dynamic>.from(optionInsert);
+            
+            optionData.add(newOption  );
+            
+               dynamic painterText = TextPainter(text: TextSpan(text: newOption['text'], style: TextStyle(fontSize: newOption['size'].toDouble(),
+                                                      fontFamily: 'Poppins'
+            
+                                                      )),
+                                                      textDirection: TextDirection.ltr
+                                                      )..layout();
+                                                    
+            textMap[newOption['id']] = {'width': painterText.width, 'height':painterText.height};
+            }
+                        //                                                                    !text ? addImg( nextSlide, count, existingSlide, lives, photo)  : optionData.add(
+                                                                                                
+                        //                                                                         { 'slide_id':currentSlide,   'type': 'text',
+                        //                                                                         'text':  choiceText.text, 'img': null,
+                                                                                                
+                        //                                                                          'left':37 , 'top':150, 
+                        //  'width':null, 'height':null, 'size':23, "lives":lives, 'id': (optionData.isNotEmpty ? optionData.last['id']??0 : 0)+1, 
+                        //                                                                          'next_slide_id': nextSlide== 'new' ? slideData.length+1 : existingSlide}
+                        //                                                                       );
+            
+                                                                                         if (nextSlide == 'new'){
+                                                                                          dynamic addSlide =
+                                                                                           {
+                                                                                                'slide':slideData.length+1, 
+                                                                                                "type":"text",  
+            
+                                                                                              };
+                                            final newSlide = (widget.isDraft ??false)?? false
+                ? Map<String, dynamic>.from({
+            ...addSlide, 
+            'id': await saveSlide(addSlide),
+                  })
+                : Map<String, dynamic>.from(addSlide);
+            
+                                         slideData.add(newSlide);
+                                                                                            //  slideData.add(
+                                                                                            //  slideData.indexOf(subslides.isEmpty ? slideData.where((entry) => entry['slide'] == currentSlide && entry['subslide'] == null).single
+                                                                                            //  : subslides.last)+1,
+                                                                                              //   {
+                                                                                              //   'slide':slideData.length+1, 
+                                                                                              //   "type":"text",  
+            
+                                                                                              // }
+                                                                                              // );
+                                                                                         }
+                                                                                             
+                                                                                              } else {
+                                                                                                Toast.show(context, "Option limit reached.", true);
+                                                                                              }
+            //                                                                                            else if (nextSlide == 'next'){
+            // optionData.add(
+            //                                                                                             { 'slide_id':currentSlide,   'type':text ? 'text':'img', 
+            //                                                                                             'text':!text ? null :choiceText.text, 'img': text ? null :
+            //                                                                                             'https://media-photos.depop.com/b1/28697598/3276349821_815a17b8ad60432e9af1421d6e9c9a8b/P0.jpg',
+            //                                                                                              'left':0.1, 'top':0.3, 
+            //                      'width':0.4, 'height':0.4, 'size':23, "lives":lives, 'id':optionData.length+1, 
+            //                                                                                              'next_slide_id':currentSlide+1 }
+            //                                                                                           );
+                                                                                      
+            //                                                                                           }
+                                                                                               setState(() {
+                                                                                                isSaving=false;
+                                                                                              });
+                                                                                               Navigator.pop(context);
+                                                                                            },
+                                                                                            child: Container(
                                                                                             
-                    //                                                                          'left':37 , 'top':150, 
-                    //  'width':null, 'height':null, 'size':23, "lives":lives, 'id': (optionData.isNotEmpty ? optionData.last['id']??0 : 0)+1, 
-                    //                                                                          'next_slide_id': nextSlide== 'new' ? slideData.length+1 : existingSlide}
-                    //                                                                       );
-
-                                                                                     if (nextSlide == 'new'){
-                                                                                      dynamic addSlide =
-                                                                                       {
-                                                                                            'slide':slideData.length+1, 
-                                                                                            "type":"text",  
-
-                                                                                          };
-                                        final newSlide = (widget.isDraft ??false)?? false
-    ? Map<String, dynamic>.from({
-        ...addSlide, 
-        'id': await saveSlide(addSlide),
-      })
-    : Map<String, dynamic>.from(addSlide);
-
-                                     slideData.add(newSlide);
-                                                                                        //  slideData.add(
-                                                                                        //  slideData.indexOf(subslides.isEmpty ? slideData.where((entry) => entry['slide'] == currentSlide && entry['subslide'] == null).single
-                                                                                        //  : subslides.last)+1,
-                                                                                          //   {
-                                                                                          //   'slide':slideData.length+1, 
-                                                                                          //   "type":"text",  
-
-                                                                                          // }
-                                                                                          // );
-                                                                                     }
-                                                                                         
-                                                                                          } else {
-                                                                                            Toast.show(context, "Option limit reached.", true);
-                                                                                          }
-//                                                                                            else if (nextSlide == 'next'){
-// optionData.add(
-//                                                                                             { 'slide_id':currentSlide,   'type':text ? 'text':'img', 
-//                                                                                             'text':!text ? null :choiceText.text, 'img': text ? null :
-//                                                                                             'https://media-photos.depop.com/b1/28697598/3276349821_815a17b8ad60432e9af1421d6e9c9a8b/P0.jpg',
-//                                                                                              'left':0.1, 'top':0.3, 
-//                      'width':0.4, 'height':0.4, 'size':23, "lives":lives, 'id':optionData.length+1, 
-//                                                                                              'next_slide_id':currentSlide+1 }
-//                                                                                           );
-                                                                                  
-//                                                                                           }
-                                                                                           setState(() {
-                                                                                            isSaving=false;
-                                                                                          });
-                                                                                           Navigator.pop(context);
-                                                                                        },
-                                                                                        child: Container(
-                                                                                        
-                                                                                          decoration: BoxDecoration(
-                                                                                            color: const Color.fromARGB(255, 255, 209, 224),
-                                                                                            borderRadius: BorderRadius.circular(10),
+                                                                                              decoration: BoxDecoration(
+                                                                                                color: const Color.fromARGB(255, 255, 209, 224),
+                                                                                                borderRadius: BorderRadius.circular(10),
+                                                                                                
+                                                                                              ),
+                                                                                              child: Padding(
+                                                                                                padding: const EdgeInsets.all(15),
+                                                                                                child: Center(child: Text('Add Choice', style: 
+                                                                                                TextStyle(fontFamily: 'Poppins', 
+                                                                                                  color: const Color.fromARGB(255, 246, 95, 145),
+                                                                                                    fontWeight: FontWeight.bold,
+                                                                                                                                                                            fontSize: 15)),),
                                                                                             
+                                                                                              ),
+                                                                                            ),
                                                                                           ),
-                                                                                          child: Padding(
-                                                                                            padding: const EdgeInsets.all(15),
-                                                                                            child: Center(child: Text('Add Choice', style: 
-                                                                                            TextStyle(fontFamily: 'Poppins', 
-                                                                                              color: const Color.fromARGB(255, 246, 95, 145),
-                                                                                                fontWeight: FontWeight.bold,
-                                                                                                                                                                        fontSize: 15)),),
-                                                                                        
-                                                                                          ),
-                                                                                        ),
-                                                                                      ),
-              
-              ],
+                  
+                  ],
+                ),
+              ),
             ),
           ),
         );
@@ -1805,6 +1815,9 @@ currentPath =match['path'];
                                                             });
                                                           
                                                           },
+                                                           onVerticalDragStart: (_) {},
+  onVerticalDragUpdate: (_) {},
+  onVerticalDragEnd: (_) {},
                                                          onScaleEnd: (details){
                                                                                
                                                   if (((widget.isDraft ??false)??false) ){
@@ -1814,6 +1827,7 @@ currentPath =match['path'];
                 //                                                            
                                                                       }
                                                          },
+                                                         
                                                           onScaleUpdate: (details){
                                                            
                                               if (tappedId == e['id']){
@@ -1942,7 +1956,7 @@ currentPath =match['path'];
                                                                          });
                                                                          },
                                                                           child:  Container(
-                                                                                      width: 40,                                                         decoration: BoxDecoration(color: const Color.fromARGB(255, 252, 181, 181).withAlpha(200),  borderRadius: BorderRadius.circular(12)),
+                                                                                      width: 45,                                                         decoration: BoxDecoration(color: const Color.fromARGB(255, 252, 181, 181).withAlpha(200),  borderRadius: BorderRadius.circular(12)),
                                                                                                                                                child: Center(child: Padding(
                                                                            padding: const EdgeInsets.all(8.0),
                                                                            child: Icon(Icons.delete, color: Colors.red,),
@@ -1959,7 +1973,7 @@ currentPath =match['path'];
                                                                          });
                                                                          },
                                                                           child:  Container(
-                                                                            width: 40,
+                                                                            width: 45,
                                                                                                                                                decoration: BoxDecoration(color: const Color.fromARGB(255, 195, 166, 246).withAlpha(100),
                                                                        borderRadius: BorderRadius.circular(12)),
                                                                                                                                                child: Center(child: Padding(
@@ -2058,7 +2072,7 @@ currentPath =match['path'];
                                                                                                        
                                                                                                        SizedBox(width: 10 ,),
                                                                                                           if (typemap[currentSlide]== null)
-                                                                                                      GestureDetector(
+                                                                                                       GestureDetector(
                                                                                                 onTap: (){
                                                                    explain('Slide Type');
                                                                                                 },        
@@ -2240,7 +2254,7 @@ currentPath =match['path'];
                                           
                                         SizedBox(
                                           width: containerWidth,
-                                          height: 80,
+                                        height: 80,
                                           child: ListView.builder(
                                             scrollDirection: Axis.horizontal,
                                             itemCount: optionData.where((e)=>e['slide_id'] == currentSlide).length+1,
@@ -2304,8 +2318,8 @@ currentPath =match['path'];
                                                                                             fontWeight: FontWeight.bold,
                                                                                              color: const Color.fromARGB(255, 246, 95, 145),),
                                                                                             ),
-                                            SizedBox(height: 5,),
-                                            Text('Slide ${optionData.where((e)=>e['slide_id'] == currentSlide).toList()[index]['next_slide_id']}', style: TextStyle(fontFamily: "Poppins"),)
+                                            SizedBox(height: 2,),
+                                            Text('Slide ${optionData.where((e)=>e['slide_id'] == currentSlide).toList()[index]['next_slide_id']}', style: TextStyle(fontFamily: "Poppins", fontSize: 13),)
                                                                                           ],
                                                                                         ),
                                                                                       ),

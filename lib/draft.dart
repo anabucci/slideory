@@ -186,7 +186,7 @@ setState(() {
                                       fetchData();
                                     },
                                     child: SizedBox(
-                                    height: MediaQuery.of(context).size.height*0.75,
+                                    height: MediaQuery.of(context).size.height*0.7,
                                     child: 
                                                                   
                                     ListView.builder(

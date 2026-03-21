@@ -541,7 +541,7 @@ bottom: false,
                             child: Text('Stories For You',  style: TextStyle(
                               color:   const Color.fromARGB(255, 255, 127, 170),
                               fontWeight: FontWeight.bold,
-                              fontSize: 35,
+                              fontSize: 34,
                               fontFamily: 'Poppins',
                              )),
                           ),

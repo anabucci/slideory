@@ -362,6 +362,7 @@ if (data?['banner'] ?? false){
 }
 if (data?['picture']??false){
  picture = supabase.storage.from('profile').getPublicUrl('picture/$user.png');
+
 }
  setState(() {
    
@@ -432,6 +433,9 @@ dynamic lastCompletedAt;
 bool completedHasMore = true;
 bool storyHasMore = true;
 bool likedHasMore = true;
+
+
+
 
 bool continueHasMore = true;
 void loadOwnStoriesAfterScrolling() async{
@@ -818,7 +822,7 @@ onTap: (){
   });
 },
                     child: Container(
-                      width: 100,
+                      width:105,
                     decoration: BoxDecoration(
                  
                       color: entry == selected ? color.withAlpha(90) : null,
@@ -829,7 +833,7 @@ onTap: (){
                       child: Center(
                         child:Text(entry, 
                              style: TextStyle( color: color, fontWeight: FontWeight.bold, 
-                             fontFamily: "Poppins", fontSize: 13
+                             fontFamily: "Poppins", fontSize: 12.5
                              ),
                       ),)
                     ),
@@ -837,7 +841,6 @@ onTap: (){
                   ),
                 );
                             }).toList()),
-                             SizedBox(height: 15,),
                        RefreshIndicator(
                         onRefresh: () async {
                         
