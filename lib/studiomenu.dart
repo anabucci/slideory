@@ -370,13 +370,13 @@ class _StudioMenuState extends State<StudioMenu> {
                                  borderRadius: BorderRadius.circular(10)
                                 ),
                                 child: Padding(
-                                  padding: const EdgeInsets.all(10),
+                                  padding: const EdgeInsets.all(8),
                                   child: Center(child: Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     crossAxisAlignment: CrossAxisAlignment.center,
                                     children: [
                                       Text('Drafts', style: TextStyle(fontFamily: 'Poppins', color: Colors.white, 
-                                      fontSize: 18
+                                      fontSize: 16
                                       ),)
                            ,                                    
                            SizedBox(width: 10,),

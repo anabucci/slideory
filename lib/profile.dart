@@ -822,7 +822,7 @@ onTap: (){
   });
 },
                     child: Container(
-                      width:105,
+                      width:107,
                     decoration: BoxDecoration(
                  
                       color: entry == selected ? color.withAlpha(90) : null,
@@ -833,7 +833,7 @@ onTap: (){
                       child: Center(
                         child:Text(entry, 
                              style: TextStyle( color: color, fontWeight: FontWeight.bold, 
-                             fontFamily: "Poppins", fontSize: 12.5
+                             fontFamily: "Poppins", fontSize: 12
                              ),
                       ),)
                     ),
@@ -1167,7 +1167,7 @@ bannerFile = result[2];
                                           shape: BoxShape.circle
                                         ),
                                         child: Padding(
-                                          padding: const EdgeInsets.all(7),
+                                          padding: const EdgeInsets.all(5),
                                           child: Center(child: Icon(Icons.arrow_back, size: 26, 
                                           color: const Color.fromARGB(255, 255, 255, 255), )),
                                         ),

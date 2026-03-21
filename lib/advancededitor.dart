@@ -1815,9 +1815,7 @@ currentPath =match['path'];
                                                             });
                                                           
                                                           },
-                                                           onVerticalDragStart: (_) {},
-  onVerticalDragUpdate: (_) {},
-  onVerticalDragEnd: (_) {},
+
                                                          onScaleEnd: (details){
                                                                                
                                                   if (((widget.isDraft ??false)??false) ){
@@ -2318,8 +2316,8 @@ currentPath =match['path'];
                                                                                             fontWeight: FontWeight.bold,
                                                                                              color: const Color.fromARGB(255, 246, 95, 145),),
                                                                                             ),
-                                            SizedBox(height: 2,),
-                                            Text('Slide ${optionData.where((e)=>e['slide_id'] == currentSlide).toList()[index]['next_slide_id']}', style: TextStyle(fontFamily: "Poppins", fontSize: 13),)
+                                            SizedBox(height: 1,),
+                                            Text('Slide ${optionData.where((e)=>e['slide_id'] == currentSlide).toList()[index]['next_slide_id']}', style: TextStyle(fontFamily: "Poppins", fontSize: 12),)
                                                                                           ],
                                                                                         ),
                                                                                       ),

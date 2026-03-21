@@ -484,7 +484,7 @@ backgroundColor: const Color.fromARGB(255, 248, 248, 248),
             });
           },
                           child: Container(
-                            width: 100,
+                            width: 105,
                           decoration: BoxDecoration(
                             color: entry == type ?  const Color.fromARGB(255, 255, 209, 224) : null,
                             border: Border.all(color:    const Color.fromARGB(255, 246, 95, 145), width: 2, ), 
@@ -494,7 +494,7 @@ backgroundColor: const Color.fromARGB(255, 248, 248, 248),
                             child: Center(
                               child: Text(entry, style: TextStyle(fontFamily: 'Poppins', 
                                     decoration: TextDecoration.none,
-                                    color: const Color.fromARGB(255, 246, 95, 145), fontWeight: FontWeight.bold, fontSize: 14),),
+                                    color: const Color.fromARGB(255, 246, 95, 145), fontWeight: FontWeight.bold, fontSize: 13.5),),
                             ),
                           ),
                           ),

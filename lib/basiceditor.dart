@@ -1663,6 +1663,7 @@ currentPath =match['path'];
                                     
                                     child: GestureDetector(
                 //                         },
+            
                                       onTap: (){
                                         setState(() {
      
@@ -1711,9 +1712,7 @@ currentPath =match['path'];
                                                    });
                                                  
                                                  },
-                                                 onVerticalDragStart: (_) {}, 
-  onVerticalDragUpdate: (_) {},
-  onVerticalDragEnd: (_) {},
+                                                
                                                 onScaleEnd: (details){
                    
                                                                     
