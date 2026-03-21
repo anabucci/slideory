@@ -822,7 +822,7 @@ onTap: (){
   });
 },
                     child: Container(
-                      width:107,
+                      width:109,
                     decoration: BoxDecoration(
                  
                       color: entry == selected ? color.withAlpha(90) : null,
@@ -833,7 +833,7 @@ onTap: (){
                       child: Center(
                         child:Text(entry, 
                              style: TextStyle( color: color, fontWeight: FontWeight.bold, 
-                             fontFamily: "Poppins", fontSize: 12
+                             fontFamily: "Poppins", fontSize: 11.5
                              ),
                       ),)
                     ),
