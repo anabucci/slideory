@@ -154,6 +154,9 @@ List sampleStoryData = [
   isLoading = true;
    List splitText = value.toLowerCase().split(type == "Stories"  || type == 'Tags' ? RegExp(r'\s+'):RegExp(r''));
 
+   
+splitText.removeWhere((e)=> e.trim().isEmpty);
+
   Map scoreMap = {};
   List storyData = [];
   if (type == "Stories"){
@@ -484,7 +487,7 @@ backgroundColor: const Color.fromARGB(255, 248, 248, 248),
             });
           },
                           child: Container(
-                            width: 105,
+                            width: MediaQuery.of(context).size.width>600 ? 120: 105,
                           decoration: BoxDecoration(
                             color: entry == type ?  const Color.fromARGB(255, 255, 209, 224) : null,
                             border: Border.all(color:    const Color.fromARGB(255, 246, 95, 145), width: 2, ), 

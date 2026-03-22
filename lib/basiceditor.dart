@@ -44,6 +44,7 @@ class _BasicEditorState extends State<BasicEditor> {
   dynamic currentImg;
   dynamic currentID;
   Map textMap = {};
+  bool isDragging = false;
   dynamic currentPath;
 //   late NsfwDetector moderator;
 //   void loadModerator() async {
@@ -56,8 +57,13 @@ class _BasicEditorState extends State<BasicEditor> {
     if (widget.optionData != null){
       optionData=widget.optionData;
        for (final option in optionData.where((e)=>e['type']=='text')){
-  dynamic painterText = TextPainter(text: TextSpan(text: option['text'], style: TextStyle(fontSize: option['size'].toDouble(),
+  dynamic painterText = TextPainter(
+    textScaler: TextScaler.linear(1),
+    text: TextSpan(text: option['text'],
+  
+   style: TextStyle(fontSize: option['size'].toDouble(),
                                                   fontFamily: 'Poppins'
+
 
                                                   )),
                                                   textDirection: TextDirection.ltr
@@ -1045,7 +1051,9 @@ int lives = 0;
             
             optionData.add(newOption);
               
-                                                   dynamic painterText = TextPainter(text: TextSpan(text: newOption['text'], style: TextStyle(fontSize: newOption['size'].toDouble(),
+                                                   dynamic painterText = TextPainter(
+                                                     textScaler: TextScaler.linear(1),
+                                                    text: TextSpan(text: newOption['text'], style: TextStyle(fontSize: newOption['size'].toDouble(),
                                                       fontFamily: 'Poppins'
             
                                                       )),
@@ -1108,7 +1116,9 @@ int lives = 0;
             
             optionData.add(newOption); 
             
-                                                   dynamic painterText = TextPainter(text: TextSpan(text: newOption['text'], style: TextStyle(fontSize: newOption['size'].toDouble(),
+                                                   dynamic painterText = TextPainter(
+                                                     textScaler: TextScaler.linear(1),
+                                                    text: TextSpan(text: newOption['text'], style: TextStyle(fontSize: newOption['size'].toDouble(),
                                                       fontFamily: 'Poppins'
             
                                                       )),
@@ -1223,6 +1233,7 @@ currentPath =match['path'];
 ,
     body: SafeArea(
       child: SingleChildScrollView(
+    physics:     isDragging ?  NeverScrollableScrollPhysics() : AlwaysScrollableScrollPhysics(),
  child: Stack(
    children: [
               if (width>550)
@@ -1703,218 +1714,242 @@ currentPath =match['path'];
                                              return Positioned(
                                                left: ((e['left'].toDouble() )),
                                                top: ((e['top'].toDouble() )),
-                                                child: GestureDetector(
-                                                 onTap: () {
-                                                  tappedId= e['id'];
-                                                
-                                                   setState(() {
-                                                     
-                                                   });
-                                                 
-                                                 },
-                                                
-                                                onScaleEnd: (details){
-                   
-                                                                    
-                                                  if ((widget.isDraft??false) ){
-                                                                      //  canUpdateOption=false;
-                                                                        
-                                                                      updateOption(e, [e['left'], e['top'], e['width'], e['height'], e['size'] ]);
-                //                                                             debounceTimer = Timer(Duration(milliseconds: 100), (){
-                // canUpdateOption=true;
-                
-                //                                                             }) ;
-                                                                      }
+                                                child: Listener(
+                                                onPointerDown: (event){
+                                                  setState(() {
+                                                    isDragging=true;
+                                                  });
                                                 },
-                                                 onScaleUpdate: (details){
-                                                  
-                                                   isSaving=true;
-                                                   if (tappedId == e['id']){
-     
-                                                    setState(() {
+                                                  onPointerUp: (event){
+                                                  setState(() {
+                                                    isDragging=true;
+                                                  });
+                                                },
+                                                  child: AbsorbPointer(
+                                                    absorbing: false,
+                                                    child: GestureDetector(
+                                                     onTap: () {
+                                                      tappedId= e['id'];
                                                     
-                                                      final left = ( (e['left'] + (details.focalPointDelta.dx)).clamp(0, 
-                                                     (e['type'] == 'img' ?   ((containerWidth- e['width'])) : (360-textMap[e['id']]['width'])).abs()
-                                                     .round()
-                                                            
-                                                     ) ).round();
-                                                     final top = (e['top'] + (details.focalPointDelta.dy)).clamp(0,
-                                                                                   (e['type'] !=  'img' ? 490-textMap[e['id']]['height']
-                                                                                    :(containerHeight- e['height'])).abs()).round();
+                                                       setState(() {
+                                                         
+                                                       });
+                                                     
+                                                     },
+                                                                                                  
+                                                                                                 
+                                                    onScaleEnd: (details){
+                                                                       
+                                                            isDragging=false;
+                                                                            setState(() {
+                                                                              
+                                                                            });             
+                                                      if ((widget.isDraft??false) ){
+                                                                          //  canUpdateOption=false;
+                                                                           
+                                                                          updateOption(e, [e['left'], e['top'], e['width'], e['height'], e['size'] ]);
+                                                                    //                                                             debounceTimer = Timer(Duration(milliseconds: 100), (){
+                                                                    // canUpdateOption=true;
+                                                                    
+                                                                    //                                                             }) ;
+                                                                          }
+                                                    },
                                                     
-                                                     optionData[optionData.indexOf(e)]['left'] = left;
-                                                   
-                                                      optionData[optionData.indexOf(e)]['top'] = top;
-                                                                                 dynamic width;
-                                                                                 dynamic height;
-                                                                                 dynamic size;
-                                                      if (e['type'] == 'img'){
-                                                        width = ((e['width']) * (((details.scale-1)/10)+1)).clamp(100,(0.9*containerWidth))  .round();
-                                                        height = ((e['height']) *  (((details.scale-1)/10)+1)).clamp(100,(0.9*containerHeight))  .round();
-                                                      optionData[optionData.indexOf(e)]['width'] = width;
-                                                      optionData[optionData.indexOf(e)]['height'] = height;
-                                                      }
+                                                     onScaleUpdate: (details){
                                                       
-                                                                      if (e['size'] != null){
-                                                                        size= (e['size'] * (((details.scale-1)/10)+1)).clamp(13,35).round();
-                                                                     optionData[optionData.indexOf(e)]['size'] =size;
-                                                                    
-                                                 
-                                                    final  painterText = TextPainter(text: TextSpan(text: e['text'], style: TextStyle(fontSize: e['size'].toDouble(),
-                                                      fontFamily: 'Poppins'
-     
-                                                      )),
-                                                      textDirection: TextDirection.ltr
-                                                      )..layout();
-                                                    textMap[e['id']] = {'width':painterText.width, 'height':painterText.height};
-                                                                      }
-                                                                    
-                                                     });
-                                                   } 
-                                                 },
-                                                 child:
-                                                 Row(
-                                                   mainAxisAlignment: MainAxisAlignment.start,
-                                                               crossAxisAlignment: CrossAxisAlignment.start,
-                                                   children: [
-                                                  
-                                                     Padding(
-                                                       padding: const EdgeInsets.all(2),
-                                                       child: Container(
-                                                         alignment: Alignment.center,
-                                                       
-                                                         width: e['type'] == 'img' ? (e['width'] ?? 150).toDouble()  : null,
-                                                         height:  e['type'] == 'img' ? (e['height']??150).toDouble() : null, 
-                                                         decoration: tappedId == e['id'] ?  
+                                                       isSaving=true;
+                                                       if (tappedId == e['id']){
                                                          
-                                                         BoxDecoration(
-                                                           border: Border.all(width: 2.5, color:  const Color.fromARGB(255, 246, 95, 145),)
-                                                         ) : null,
-                                                         child: 
-                                                         Padding(padding: EdgeInsets.all(0),
-                                                         child:
-                                                        (e['img'] == null  && e['path'] == null) || e['type'] == 'text'? Text('${e['text']}', style: TextStyle(
-                                                          fontFamily: 'Poppins',
-                                                          fontSize: e['size'] == null ? 10 :e['size'].toDouble())) : Container(
-                                                         
-                                                         
-                                                                                 decoration: BoxDecoration(
-                                                                                   image: DecorationImage(image: 
-                                                                                   
-                                                                                    e['path'] != null?
-                                       NetworkImage
-                                       (
-                                   supabase.storage.from('stories').getPublicUrl
-                                       ('options/${e['path']}${e['id']}.png'))
-                                       :
-                                                                                   FileImage(e['img']) , fit: BoxFit.contain )
-                                                                                 ),
-                                                                                 
-                                                         )) ),
-                                                     ),
-                                                       SizedBox(width: 10,),
-                                                          tappedId!=e['id'] ? SizedBox.shrink() :
-                                                           Column(
-                                                             children: [
-                                                               GestureDetector(
-                                                                onTap: ()async{
-                                                              
-                                                              List sameSubslide = optionData.where((entry) => entry['slide_id'] == e['slide_id'] && entry['next_slide_id'] == e['next_slide_id']).toList();
-                                                      
-                                                              if (sameSubslide.length==1 && int.tryParse(e['next_slide_id'].toString()) == null){
-                                                                  if (widget.isDraft ?? false){
-                                                               await supabase.from('slide').delete().eq('slide', e['slide_id']).eq('subslide', e['next_slide_id']);
-                                                                  }
-                                                               slideData.remove(slideData.where((entry) => entry['slide'] == e['slide_id'] && entry['subslide'] == e['next_slide_id']).single);
-                                                               
-                                                               List withSubslides = slideData.where((entry) {
-                                                            
-                                                                 return 
-                                                                 entry['slide'] == currentSlide &&
-                                                                 entry['subslide'] != null && alphabet.indexOf(entry['subslide']?.toLowerCase()) > alphabet.indexOf(e['next_slide_id']?.toLowerCase());}).toList();
-     
-                                                               for (final slide in withSubslides){
-                                           
-                                                               List optionslide =  optionData.where((era) => era['slide_id'] == slide['slide'] && era['next_slide_id'] == slide['subslide']).toList();
-                                                              
-                                                               for (final option in optionslide){
-                                                                  option['next_slide_id'] = alphabet[alphabet.indexOf(slide['subslide'].toLowerCase())-1].toUpperCase();
-                                                                     if (widget.isDraft ?? false){
-                                                                   await supabase.from('options').update({'next_slide_id':alphabet[alphabet.indexOf(slide['subslide'].toLowerCase())-1].toUpperCase()
-                                                                   }).eq('id', option['id']);
-                                                                     }
-                                                               }
-                                                                 slide['subslide'] = alphabet[alphabet.indexOf(slide['subslide'].toLowerCase())-1].toUpperCase();
-                                                                 if (widget.isDraft ?? false){
-                                                                  await supabase.from('slide').update({'subslide':alphabet[alphabet.indexOf(slide['subslide'].toLowerCase())-1].toUpperCase
-                                                                   }).eq('id', slide['id']);
-                                                                 }
-                                                               }
-                                                              }
-                                                            
-                                                                if (optionData.where((er)=>er['slide_id'] == currentSlide).length==1 ){
-                                                                  final current=slideData.where((e)
-                                                                  { 
+                                                        setState(() {
+                                                        
+                                                          final left = ( (e['left'] + (details.focalPointDelta.dx)).clamp(0, 
+                                                         (e['type'] == 'img' ?   ((containerWidth- e['width'])) : (360-textMap[e['id']]['width'])).abs()
+                                                         .round()
                                                                 
-                                                                    return e['slide']==currentSlide && e['subslide'] == null;} ).single;
-     current['type']= 'text';
-     if (widget.isDraft??false){
-       await supabase.from('slide').update({'type':'text'}).eq('id', current['id']);
-     }
-                                                              }
-                                                              optionData.remove(e);
-                                                              
-                                                              if (widget.isDraft??false){
-                                                                   await supabase.from('options').delete().eq('id', e['id']);
-                                                                    await supabase.storage.from('story').remove(['options/${e['path']}${e['id']}']);
-                
-                                                              }
-                                             setState(() {
-                                                                });
-                                                                },
-                                                                 child:  Container(
-                                                                             width: 45,                                                         decoration: BoxDecoration(color: const Color.fromARGB(255, 252, 181, 181).withAlpha(200),  borderRadius: BorderRadius.circular(12)),
-                                                                                                                                      child: Center(child: Padding(
-                                                                  padding: const EdgeInsets.all(8.0),
-                                                                  child: Icon(Icons.delete, color: Colors.red,),
-                                                                                                                                   ),),
-                                                                                                                                    ),
+                                                         ) ).round();
+                                                         final top = (e['top'] + (details.focalPointDelta.dy)).clamp(0,
+                                                                                       (e['type'] !=  'img' ? 490-textMap[e['id']]['height']
+                                                                                        :(containerHeight- e['height'])).abs()).round();
+                                                        
+                                                         optionData[optionData.indexOf(e)]['left'] = left;
+                                                       
+                                                          optionData[optionData.indexOf(e)]['top'] = top;
+                                                                                     dynamic width;
+                                                                                     dynamic height;
+                                                                                     dynamic size;
+                                                          if (e['type'] == 'img'){
+                                                            width = ((e['width']) * (((details.scale-1)/10)+1)).clamp(100,(0.9*containerWidth))  .round();
+                                                            height = ((e['height']) *  (((details.scale-1)/10)+1)).clamp(100,(0.9*containerHeight))  .round();
+                                                          optionData[optionData.indexOf(e)]['width'] = width;
+                                                          optionData[optionData.indexOf(e)]['height'] = height;
+                                                          }
+                                                          
+                                                                          if (e['size'] != null){
+                                                                            size= (e['size'] * (((details.scale-1)/10)+1)).clamp(13,35).round();
+                                                                         optionData[optionData.indexOf(e)]['size'] =size;
+                                                                        
+                                                     
+                                                        final  painterText = TextPainter(
+                                                           textScaler: TextScaler.linear(1),
+                                                          text: TextSpan(text: e['text'], style: TextStyle(fontSize: e['size'].toDouble(),
+                                                          fontFamily: 'Poppins'
+                                                         
+                                                          )),
+                                                          textDirection: TextDirection.ltr
+                                                          )..layout();
+                                                        textMap[e['id']] = {'width':painterText.width, 'height':painterText.height};
+                                                                          }
+                                                                        
+                                                         });
+                                                       } 
+                                                     },
+                                                     child:
+                                                     Row(
+                                                       mainAxisAlignment: MainAxisAlignment.start,
+                                                                   crossAxisAlignment: CrossAxisAlignment.start,
+                                                       children: [
+                                                      
+                                                         Padding(
+                                                           padding: const EdgeInsets.all(2),
+                                                           child: Container(
+                                                             alignment: Alignment.center,
+                                                           
+                                                             width: e['type'] == 'img' ? (e['width'] ?? 150).toDouble()  : null,
+                                                             height:  e['type'] == 'img' ? (e['height']??150).toDouble() : null, 
+                                                             decoration: tappedId == e['id'] ?  
+                                                             
+                                                             BoxDecoration(
+                                                               border: Border.all(width: 2.5, color:  const Color.fromARGB(255, 246, 95, 145),)
+                                                             ) : null,
+                                                             child: 
+                                                             Padding(padding: EdgeInsets.all(0),
+                                                             child:
+                                                            (e['img'] == null  && e['path'] == null) || e['type'] == 'text'? Text('${e['text']}', 
+                                                               textScaler: TextScaler.linear(1),
+                                                            style: TextStyle(
+                                                              fontFamily: 'Poppins',
+                                                              fontSize: e['size'] == null ? 10 :e['size'].toDouble())) : Container(
+                                                             
+                                                             
+                                                                                     decoration: BoxDecoration(
+                                                                                       image: DecorationImage(image: 
+                                                                                       
+                                                                                        e['path'] != null?
+                                                                                           NetworkImage
+                                                                                           (
+                                                                                       supabase.storage.from('stories').getPublicUrl
+                                                                                           ('options/${e['path']}${e['id']}.png'))
+                                                                                           :
+                                                                                       FileImage(e['img']) , fit: BoxFit.contain )
+                                                                                     ),
+                                                                                     
+                                                             )) ),
+                                                         ),
+                                                           SizedBox(width: 10,),
+                                                              tappedId!=e['id'] ? SizedBox.shrink() :
+                                                               Column(
+                                                                 children: [
+                                                                   GestureDetector(
+                                                                    onTap: ()async{
+                                                                  
+                                                                  List sameSubslide = optionData.where((entry) => entry['slide_id'] == e['slide_id'] && entry['next_slide_id'] == e['next_slide_id']).toList();
+                                                          
+                                                                  if (sameSubslide.length==1 && int.tryParse(e['next_slide_id'].toString()) == null){
+                                                                      if (widget.isDraft ?? false){
+                                                                   await supabase.from('slide').delete().eq('slide', e['slide_id']).eq('subslide', e['next_slide_id']);
+                                                                      }
+                                                                   slideData.remove(slideData.where((entry) => entry['slide'] == e['slide_id'] && entry['subslide'] == e['next_slide_id']).single);
+                                                                   
+                                                                   List withSubslides = slideData.where((entry) {
+                                                                
+                                                                     return 
+                                                                     entry['slide'] == currentSlide &&
+                                                                     entry['subslide'] != null && alphabet.indexOf(entry['subslide']?.toLowerCase()) > alphabet.indexOf(e['next_slide_id']?.toLowerCase());}).toList();
+                                                         
+                                                                   for (final slide in withSubslides){
+                                                                                               
+                                                                   List optionslide =  optionData.where((era) => era['slide_id'] == slide['slide'] && era['next_slide_id'] == slide['subslide']).toList();
+                                                                  
+                                                                   for (final option in optionslide){
+                                                                      option['next_slide_id'] = alphabet[alphabet.indexOf(slide['subslide'].toLowerCase())-1].toUpperCase();
+                                                                         if (widget.isDraft ?? false){
+                                                                       await supabase.from('options').update({'next_slide_id':alphabet[alphabet.indexOf(slide['subslide'].toLowerCase())-1].toUpperCase()
+                                                                       }).eq('id', option['id']);
+                                                                         }
+                                                                   }
+                                                                     slide['subslide'] = alphabet[alphabet.indexOf(slide['subslide'].toLowerCase())-1].toUpperCase();
+                                                                     if (widget.isDraft ?? false){
+                                                                      await supabase.from('slide').update({'subslide':alphabet[alphabet.indexOf(slide['subslide'].toLowerCase())-1].toUpperCase
+                                                                       }).eq('id', slide['id']);
+                                                                     }
+                                                                   }
+                                                                  }
+                                                                
+                                                                    if (optionData.where((er)=>er['slide_id'] == currentSlide).length==1 ){
+                                                                      final current=slideData.where((e)
+                                                                      { 
+                                                                    
+                                                                        return e['slide']==currentSlide && e['subslide'] == null;} ).single;
+                                                         current['type']= 'text';
+                                                         if (widget.isDraft??false){
+                                                           await supabase.from('slide').update({'type':'text'}).eq('id', current['id']);
+                                                         }
+                                                                  }
+                                                                  optionData.remove(e);
+                                                                  
+                                                                  if (widget.isDraft??false){
+                                                                       await supabase.from('options').delete().eq('id', e['id']);
+                                                                        await supabase.storage.from('story').remove(['options/${e['path']}${e['id']}']);
+                                                                    
+                                                                  }
+                                                                                                 setState(() {
+                                                                    });
+                                                                    },
+                                                                     child:  Container(
+                                                                                 width: 45,                                                         decoration: BoxDecoration(color: const Color.fromARGB(255, 252, 181, 181).withAlpha(200),  borderRadius: BorderRadius.circular(12)),
+                                                                                                                                          child: Center(child: Padding(
+                                                                      padding: const EdgeInsets.all(8.0),
+                                                                      child: Icon(Icons.delete, color: Colors.red,),
+                                                                                                                                       ),),
+                                                                                                                                        ),
+                                                                   ),
+                                                                    SizedBox(height: 10,),
+                                                                        GestureDetector(
+                                                                    onTap: (){
+                                                                   setState(() {
+                                                         
+                                                          final nextSlide = int.tryParse(e['next_slide_id']?.toString() ?? '');
+                                                       
+                                                          if (nextSlide != null) {
+                                                          
+                                                            subslide = null;
+                                                            currentSlide = nextSlide;
+                                                          } else {
+                                                         
+                                                            subslide = e['next_slide_id'];
+                                                            currentSlide = e['slide_id']; 
+                                                          }
+                                                         });
+                                                                    },
+                                                                     child:  Container(
+                                                                       width: 45,
+                                                                                                                                          decoration: BoxDecoration(color: const Color.fromARGB(255, 195, 166, 246).withAlpha(100),
+                                                                  borderRadius: BorderRadius.circular(12)),
+                                                                                                                                          child: Center(child: Padding(
+                                                                      padding: const EdgeInsets.all(8.0),
+                                                                     child: Text('${int.tryParse(e['next_slide_id'].toString()) == null ? e['slide_id'] : ''}${e['next_slide_id']}', 
+                                                                       style: TextStyle(fontFamily: 'Poppins',fontWeight: FontWeight.bold,
+                                                       fontSize: 18,
+                                                        color:const Color.fromARGB(255, 173, 142, 227),))
+                                                                                                                                       ),),
+                                                                                                                                        ),
+                                                                   ),
+                                                                 ],
                                                                ),
-                                                                SizedBox(height: 10,),
-                                                                    GestureDetector(
-                                                                onTap: (){
-                                                               setState(() {
-     
-      final nextSlide = int.tryParse(e['next_slide_id']?.toString() ?? '');
-   
-      if (nextSlide != null) {
-      
-        subslide = null;
-        currentSlide = nextSlide;
-      } else {
-     
-        subslide = e['next_slide_id'];
-        currentSlide = e['slide_id']; 
-      }
-     });
-                                                                },
-                                                                 child:  Container(
-                                                                   width: 45,
-                                                                                                                                      decoration: BoxDecoration(color: const Color.fromARGB(255, 195, 166, 246).withAlpha(100),
-                                                              borderRadius: BorderRadius.circular(12)),
-                                                                                                                                      child: Center(child: Padding(
-                                                                  padding: const EdgeInsets.all(8.0),
-                                                                 child: Text('${int.tryParse(e['next_slide_id'].toString()) == null ? e['slide_id'] : ''}${e['next_slide_id']}', 
-                                                                   style: TextStyle(fontFamily: 'Poppins',fontWeight: FontWeight.bold,
-                                                   fontSize: 18,
-                                                    color:const Color.fromARGB(255, 173, 142, 227),))
-                                                                                                                                   ),),
-                                                                                                                                    ),
-                                                               ),
-                                                             ],
-                                                           ),
-                                                   ],
-                                                 ))
+                                                       ],
+                                                     )),
+                                                  ),
+                                                )
                                              );
                                                         }
                                               ),

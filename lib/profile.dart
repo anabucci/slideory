@@ -822,7 +822,7 @@ onTap: (){
   });
 },
                     child: Container(
-                      width:109,
+                      width:MediaQuery.of(context).size.width>600 ? 120: 109,
                     decoration: BoxDecoration(
                  
                       color: entry == selected ? color.withAlpha(90) : null,

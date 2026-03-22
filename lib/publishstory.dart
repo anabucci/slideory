@@ -294,31 +294,37 @@ dynamic subslide;
                   onTap: (){
             showImagePickerOptions();
                   },
-                                                    child: Container(
-                                                                                  width: (width-40)*0.6,
-                                                                                  height:  (MediaQuery.of(context).size.height * 0.59)*0.6,
-                                                                                  // height: 200,
-                                                                                   decoration: BoxDecoration(
-                                                                                    image: 
-                                                                                 
-                                                                                    photo==null && ( widget.draftData== null ? true :(widget.draftData!= null && !(widget.draftData['hasCover'] ?? false)))  ? null : DecorationImage(image: 
-                                                                                    
-                                                                                  photo==null?
-                                                                                   NetworkImage(
-                                                                                    supabase.storage.from('stories').getPublicUrl('cover/${widget.draftData['path']}${widget.draftData['id']}.png')) :
-        
-                                                                                    FileImage(photo), fit: BoxFit.cover),
-                                                                                color: const Color.fromARGB(255, 195, 166, 246).withAlpha(100),
-                                                                                   borderRadius: BorderRadius.circular(10) 
-                                                                                  ),
-                                                                                  child: photo!=null || (widget.draftData != null && (widget.draftData['hasCover'] ?? false)) ?SizedBox.shrink():
-                                                                                  Center(
-                                                                        child: Padding(
-                                                                          padding: const EdgeInsets.all(20),
-                                                                          child: Icon(Icons.image, color: const Color.fromARGB(255, 255, 255, 255), size: 80,),
-                                                                        ),
-                                                                                  ),
-                                                                                ),
+                                                    child: SizedBox(
+                                                height: MediaQuery.of(context).size.height*0.4,
+                                                      child: AspectRatio(
+                                                        aspectRatio: 10/16,
+                                                        child: Container(
+                                                                                   
+                                                                                      
+                                                                                      // height: 200,
+                                                                                       decoration: BoxDecoration(
+                                                                                        image: 
+                                                                                     
+                                                                                        photo==null && ( widget.draftData== null ? true :(widget.draftData!= null && !(widget.draftData['hasCover'] ?? false)))  ? null : DecorationImage(image: 
+                                                                                        
+                                                                                      photo==null?
+                                                                                       NetworkImage(
+                                                                                        supabase.storage.from('stories').getPublicUrl('cover/${widget.draftData['path']}${widget.draftData['id']}.png')) :
+                                                                
+                                                                                        FileImage(photo), fit: BoxFit.cover),
+                                                                                    color: const Color.fromARGB(255, 195, 166, 246).withAlpha(100),
+                                                                                       borderRadius: BorderRadius.circular(10) 
+                                                                                      ),
+                                                                                      child: photo!=null || (widget.draftData != null && (widget.draftData['hasCover'] ?? false)) ?SizedBox.shrink():
+                                                                                      Center(
+                                                                            child: Padding(
+                                                                              padding: const EdgeInsets.all(20),
+                                                                              child: Icon(Icons.image, color: const Color.fromARGB(255, 255, 255, 255), size: 80,),
+                                                                            ),
+                                                                                      ),
+                                                                                    ),
+                                                      ),
+                                                    ),
                                                   ), 
                                                                               SizedBox(height: 50,),
                                                                               Align(
@@ -466,7 +472,7 @@ dynamic subslide;
                                                                                                  })]),
                                         ),
                                       ),
-                                         SizedBox(height: 30,),
+                                         SizedBox(height: 10,),
                                                                                                                                                                                                         Align(
                                               alignment: Alignment.topLeft,
                                                                                 child: Padding(

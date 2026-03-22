@@ -580,8 +580,8 @@ bottom: false,
                                 itemBuilder: (context, index){
                                return   
                                    Padding(
-                                  padding: const EdgeInsets.only(bottom: 20),
-                                  child:
+                                                                     padding: const EdgeInsets.only(bottom: 20),
+                                                                     child:
                                       
                                       
                                       GestureDetector(
@@ -593,10 +593,10 @@ bottom: false,
                                             // final slideData = await supabase.from('slide').select().eq('story_id', stories[index]['id']);
                                             // final optionData = await supabase.from('options').select().eq('story_id', stories[index]['id']);
                                             final results = await Future.wait([
-
-supabase.from('slide').select().eq('story_id', stories[index]['id']),
-supabase.from('options').select().eq('story_id', stories[index]['id']),
-if (user == null)  Future.value([]) else supabase.from('likes').select().eq('target_id', stories[index]['id'])
+                                   
+                                   supabase.from('slide').select().eq('story_id', stories[index]['id']),
+                                   supabase.from('options').select().eq('story_id', stories[index]['id']),
+                                   if (user == null)  Future.value([]) else supabase.from('likes').select().eq('target_id', stories[index]['id'])
                                             .eq('user_id', supabase.auth.currentUser?.id ??0),
                                             supabase.from('story').select('comments, likes').eq('id', stories[index]['id']),
                                             ]
@@ -616,32 +616,41 @@ if (user == null)  Future.value([]) else supabase.from('likes').select().eq('tar
                                         ),
                                                               );
                                           },
-                                          child: Container(
-                                          width: double.infinity, 
-                                        
-                                          decoration: BoxDecoration(
-                                            image: (stories[index]['hasCover']??false) ? DecorationImage(image: 
-                                            
-                                            NetworkImage(stories[index]['cover']), fit: BoxFit.cover) : null,
-                                          border: Border.all(color: const Color.fromARGB(255, 195, 166, 246)),
-                                          color: 
-                                            Color.fromARGB(255, 255, 255, 255), borderRadius: BorderRadius.circular(10)),
-                                          child: (stories[index]['hasCover']??false) ?  null :
-                                          Padding(
-                                            padding: const EdgeInsets.all(8.0),
-                                            child: Center(
-                                              child: Text(stories[index]['title'] ?? '', style: TextStyle(fontFamily: 'Poppins', color: 
-                                               const Color.fromARGB(255, 246, 95, 145),
-                                               fontWeight: FontWeight.bold,
-                                              fontSize: 35),),
+                                          child: Center(
+                                            child: SizedBox(
+                                              child: AspectRatio(
+                                                aspectRatio:10/16,
+                                                child: Container(
+                                               // width: double.infinity, 
+                                                                                        
+                                                decoration: BoxDecoration(
+                                                  image: (stories[index]['hasCover']??false) ? DecorationImage(
+                                                    fit: BoxFit.cover,
+                                                    image: 
+                                                  
+                                                  NetworkImage(stories[index]['cover'])) : null,
+                                                border: Border.all(color: const Color.fromARGB(255, 195, 166, 246)),
+                                                color: 
+                                                  Color.fromARGB(255, 255, 255, 255), borderRadius: BorderRadius.circular(10)),
+                                                child: (stories[index]['hasCover']??false) ?  null :
+                                                Padding(
+                                                  padding: const EdgeInsets.all(8.0),
+                                                  child: Center(
+                                                    child: Text(stories[index]['title'] ?? '', style: TextStyle(fontFamily: 'Poppins', color: 
+                                                     const Color.fromARGB(255, 246, 95, 145),
+                                                     fontWeight: FontWeight.bold,
+                                                    fontSize: 35),),
+                                                  ),
+                                                ),
+                                                ),
+                                              ),
                                             ),
-                                          ),
                                           ),
                                         ),
                                       
                                    
-                                  
-                                );
+                                                                     
+                                                                   );
                                              }),
                              ),
                            ),

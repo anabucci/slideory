@@ -1,6 +1,4 @@
 import 'package:fashion/main.dart';
-import 'package:fashion/privacy.dart';
-import 'package:fashion/terms.dart';
 import 'package:fashion/toast.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';

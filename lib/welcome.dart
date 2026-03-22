@@ -1,5 +1,4 @@
 import 'package:fashion/main.dart';
-import 'package:fashion/studiomenu.dart';
 import 'package:flutter/material.dart';
 import 'package:fashion/login.dart';
 import 'package:shared_preferences/shared_preferences.dart';

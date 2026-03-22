@@ -1173,6 +1173,7 @@ if (fullChain.length>1){
 @override
 
 void initState() {
+ 
     WidgetsBinding.instance.addPostFrameCallback((_) {
    preLoadImgs();
   });
@@ -1333,7 +1334,9 @@ Align(
                                                                                                                                  child: Center(child: Row(
                                                                                                                                    children: [
                                                                                                                                    
-                                                                                                                                              Text('#${widget.data['tags'][index]}', style: TextStyle(fontFamily: 'Poppins', 
+                                                                                                                                              Text('#${widget.data['tags'][index]}', 
+                                                                                                                                              textScaler: TextScaler.linear(1),
+                                                                                                                                              style: TextStyle(fontFamily: 'Poppins', 
                                                                                                                                               decoration: TextDecoration.none,
                                                                                                                                               color:   const Color.fromARGB(255, 190, 156, 250), fontWeight: FontWeight.bold, fontSize: 14),),
                                                                                                                                               
@@ -1444,7 +1447,9 @@ Align(
                                            setState(() {
                                              
                                            });  
+                                           try {
                                                     await supabase.from('completion').insert({'story_id':widget.data['id']});
+                                           } catch(e){}
                                            return;
                                   }
           if ( widget.slideData.where((er)=>er['slide']==nextSlide && er['type']!= 'choice' &&
@@ -1464,7 +1469,9 @@ Align(
                                          setState(() {
                                            
                                          });
-         await supabase.from('completion').insert({'story_id':widget.data['id']});
+          try {
+                                                    await supabase.from('completion').insert({'story_id':widget.data['id']});
+                                           } catch(e){}
           }
                              preLoadImgs();     }
                               }
@@ -1561,7 +1568,9 @@ Align(
                                          setState(() {
                                            
                                          });
-                                        await supabase.from('completion').insert({'story_id':widget.data['id']});
+                                       try {
+                                                    await supabase.from('completion').insert({'story_id':widget.data['id']});
+                                           } catch(e){}
                                         }
                                            } else {
                                              if (e['next_slide_id']!=null){
@@ -1582,6 +1591,9 @@ final compare = widget.slideData.where((er){
                                                   Toast.show(context, 'Ending reached!', false);
                                               
                                                      reachedEnding=true;
+                                                       try {
+                                                    await supabase.from('completion').insert({'story_id':widget.data['id']});
+                                           } catch(e){}
                                                 }
                                          setState(() {
                                            
@@ -1594,7 +1606,9 @@ final compare = widget.slideData.where((er){
                                          setState(() {
                                            
                                          });
-                                                             await supabase.from('completion').insert({'story_id':widget.data['id']});
+                                                           try {
+                                                    await supabase.from('completion').insert({'story_id':widget.data['id']});
+                                           } catch(e){}
                                              }
                                            }
                                            if (e['lives'] != null && widget.data['lives'] != null){
@@ -1612,8 +1626,11 @@ final compare = widget.slideData.where((er){
                                          });
                                          preLoadImgs();
                                        },
-                                       child: e['type'] =='text' ? Text('${e['text']}', style: TextStyle(
-                                        fontFamily: 'Poppins',
+                                       child: e['type'] =='text' ? Text('${e['text']}', 
+                                      textScaler: TextScaler.linear(1),
+                                       style: TextStyle(
+                                        fontFamily: 'Poppins', 
+                                        
                                         fontSize: e['size'].toDouble()),) : Container(
                                          
                                          width: (e['width'].toDouble()), height: (e['height'].toDouble() ),
