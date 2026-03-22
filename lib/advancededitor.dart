@@ -1815,12 +1815,12 @@ currentPath =match['path'];
                                                          Listener(
                                                            onPointerDown: (event){
                                                   setState(() {
-                                                    isDragging=true;
+                                                    isDragging=!isDragging;
                                                   });
                                                 },
                                                   onPointerUp: (event){
                                                   setState(() {
-                                                    isDragging=true;
+                                                    isDragging=!isDragging;
                                                   });
                                                 },
                                                   child: AbsorbPointer(

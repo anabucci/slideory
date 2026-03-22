@@ -1717,12 +1717,13 @@ currentPath =match['path'];
                                                 child: Listener(
                                                 onPointerDown: (event){
                                                   setState(() {
-                                                    isDragging=true;
+                                                    isDragging=!isDragging;
+                                                  
                                                   });
                                                 },
                                                   onPointerUp: (event){
                                                   setState(() {
-                                                    isDragging=true;
+                                                    isDragging=!isDragging;  
                                                   });
                                                 },
                                                   child: AbsorbPointer(
@@ -1739,7 +1740,7 @@ currentPath =match['path'];
                                                                                                   
                                                                                                  
                                                     onScaleEnd: (details){
-                                                                       
+                                                                         print('hell3o');
                                                             isDragging=false;
                                                                             setState(() {
                                                                               
